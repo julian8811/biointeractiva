@@ -98,22 +98,16 @@ const cliCaptures = {
   'chmod +x': 'captures/chmod.svg',
   'chown': 'captures/chown.svg',
   'chgrp': 'captures/chgrp.svg',
-  
-  // Utilidades del sistema
-  'history': 'captures/history.svg',
-  'history | tail': 'captures/history.svg',
-  'uname': 'captures/uname.svg',
-  'uname -r': 'captures/uname.svg',
-  'date': 'captures/date_cmd.svg',
-  'whoami': 'captures/whoami.svg',
-  
+  'chgrp grupo archivo': 'captures/chgrp.svg',
+
   // Genómica
   'samtools': 'captures/samtools-flagstat.svg',
   'samtools flagstat': 'captures/samtools-flagstat.svg',
   'bcftools': 'captures/bcftools.svg',
   'bcftools view': 'captures/bcftools.svg',
   "bcftools view -i 'QUAL>=30 && DP>=10' variants.vcf.gz | head": 'captures/bcftools-view-i-head.svg',
-  'fastqc': 'captures/fastqc.svg'
+  'fastqc': 'captures/fastqc.svg',
+  'fastqc archivo.fastq.gz': 'captures/fastqc.svg'
 };
 
 const cliCommandCatalog = [
@@ -2107,8 +2101,46 @@ const terminalCommands = {
   'samtools': 'Usage: samtools <command> [options]',
   'samtools flagstat': '2450000 + 0 in total\n2300000 + 0 mapped (93.88%)\n120000 + 0 duplicate (4.90%)',
   'samtools view': '(convierte/filtrar BAM/SAM)',
+  'samtools sort': '(ordena archivos BAM por posición)',
+  'samtools index': '(crea índice .bai para BAM)',
   'bcftools': 'Usage: bcftools <command> [options]',
+  "bcftools view -i 'QUAL>=20'": 'chr1\t10583\t.\tG\tA\t45\tPASS\nchr1\t234567\trs123\tT\tC\t28\tPASS',
+  "bcftools view -i 'QUAL>=30 && DP>=10'": 'chr1\t12345\trs001\tG\tA\t45\tPASS\tDP=25',
+  'bcftools view': '(filtra variantes por calidad/profundidad)',
+  'bcftools call': '(variant calling - detecta SNPs/indels)',
+  'bcftools consensus': '(genera secuencia consenso)',
   'fastqc': 'Started analysis of PAC001_R1.fastq.gz\nApproximate read length: 150bp\nTotal Sequences: 12345678\nGC: 42%',
+  'fastp': 'Reads: 12345678 | Passed: 12000000 | Failed: 345678\nAdapter: 1.2% | Q30: 95.2%',
+  'trimmomatic': 'Input: 12345678 reads\nOutput: 11890123 reads (96.3%)\nDropped: 345655 reads (3.7%)',
+  
+  // Alineamiento
+  'bwa mem': '[Alignment] - paired-end alignment',
+  'bwa index': '(crea índice del genoma de referencia)',
+  'bowtie2': 'Usage: bowtie2 [options]* -x <bt2-idx> -U <reads> -S <output>',
+  'bowtie2-build': '(construir índice Bowtie2)',
+  'hisat2': 'Usage: hisat2 [options]* -x <ht2-idx> -U <reads> -S <output>',
+  'hisat2-build': '(construir índice HISAT2)',
+  'minimap2': 'Usage: minimap2 [options] <ref.fa> <query.fa>',
+  
+  // Variant calling
+  'freebayes': 'Usage: freebayes -f <reference.fa> <alignment.bam>',
+  'gatk haplotypecaller': 'VCF with GATK best practices',
+  'gatk': 'Usage: gatk <toolname> [java options]',
+  
+  // Ensamblaje
+  'spades': '(assembler de-novo para genomas)',
+  'megahit': '(ensamblaje de metagenomas)',
+  'canu': '(ensamblaje de lecturas largas)',
+  
+  // Anotación
+  'snpEff': 'Annotating variants... done.',
+  'annovar': 'ANNOVAR pipeline',
+  
+  // Permisos
+  'chmod': '(cambia permisos: chmod +x script.sh)',
+  'chmod +x': '(hace ejecutable un script)',
+  'chown': '(cambia propietario: chown user:group file)',
+  'chgrp': 'laboratorio\tcompartido/vcf/',
   
   // Utilidades
   'man': 'manual pages',
