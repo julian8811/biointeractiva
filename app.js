@@ -437,6 +437,185 @@ const cliLineByLineExamples = {
   }
 };
 
+const ubuntuCommandReference = {
+  "Informacion del sistema": [
+    ["arch", "Mostrar arquitectura de la maquina."],
+    ["uname -m", "Mostrar arquitectura de CPU."],
+    ["uname -r", "Mostrar version del kernel."],
+    ["dmidecode -q", "Mostrar componentes de hardware (requiere sudo)."],
+    ["hdparm -i /dev/sda", "Mostrar caracteristicas del disco."],
+    ["hdparm -tT /dev/sda", "Probar velocidad de lectura del disco."],
+    ["cat /proc/cpuinfo", "Mostrar informacion de CPU."],
+    ["cat /proc/interrupts", "Mostrar interrupciones del sistema."],
+    ["cat /proc/meminfo", "Mostrar uso de memoria."],
+    ["cat /proc/swaps", "Mostrar ficheros/particiones swap."],
+    ["cat /proc/version", "Mostrar version de kernel y compilador."],
+    ["cat /proc/net/dev", "Mostrar interfaces de red y estadisticas."],
+    ["cat /proc/mounts", "Mostrar sistemas de ficheros montados."],
+    ["lspci -tv", "Mostrar dispositivos PCI."],
+    ["lsusb -tv", "Mostrar dispositivos USB."],
+    ["date", "Mostrar fecha del sistema."],
+    ["cal 2011", "Mostrar calendario del anio indicado."],
+    ["cal 07 2011", "Mostrar calendario del mes y anio."],
+    ["date 041217002011.00", "Ajustar fecha/hora (uso administrativo)."],
+    ["clock -w", "Guardar fecha en BIOS/RTC (segun sistema)."]
+  ],
+  "Apagar y reiniciar": [
+    ["shutdown -h now", "Apagar sistema inmediatamente."],
+    ["init 0", "Apagar sistema (compatibilidad SysV)."],
+    ["telinit 0", "Apagar sistema (compatibilidad SysV)."],
+    ["halt", "Apagar el sistema."],
+    ["shutdown -h 22:30", "Programar apagado a hora definida."],
+    ["shutdown -c", "Cancelar apagado programado."],
+    ["shutdown -r now", "Reiniciar inmediatamente."],
+    ["reboot", "Reiniciar sistema."],
+    ["logout", "Cerrar sesion actual."]
+  ],
+  "Archivos y directorios": [
+    ["cd /home", "Entrar al directorio /home."],
+    ["cd ..", "Subir un nivel de directorio."],
+    ["cd ../..", "Subir dos niveles."],
+    ["cd ~user1", "Ir al home de user1."],
+    ["cd -", "Volver al directorio anterior."],
+    ["pwd", "Mostrar ruta del directorio actual."],
+    ["ls", "Listar archivos de directorio."],
+    ["ls -F", "Listar tipo de archivo con sufijos."],
+    ["ls -l", "Listar con detalle."],
+    ["ls -a", "Listar incluyendo ocultos."],
+    ["tree", "Mostrar estructura de directorios en arbol."],
+    ["mkdir dir1", "Crear directorio dir1."],
+    ["mkdir -p /tmp/dir1/dir2", "Crear arbol de directorios."],
+    ["rm -f file1", "Borrar archivo file1 forzando."],
+    ["rmdir dir1", "Borrar directorio vacio."],
+    ["rm -rf dir1", "Borrar directorio y contenido (peligroso)."],
+    ["mv dir1 new_dir", "Renombrar o mover directorio."],
+    ["cp file1 file2", "Copiar file1 a file2."],
+    ["cp -a dir1 dir2", "Copiar directorio preservando atributos."],
+    ["ln -s file1 lnk1", "Crear enlace simbolico."],
+    ["ln file1 lnk1", "Crear enlace duro."],
+    ["touch -t 0712250000 file1", "Ajustar marca de tiempo de archivo."],
+    ["file file1", "Mostrar tipo de archivo."],
+    ["iconv -l", "Listar codificaciones soportadas."],
+    ["iconv -f UTF-8 -t ISO-8859-1 in.txt > out.txt", "Convertir codificacion de texto."]
+  ],
+  "Encontrar archivos": [
+    ["find / -name file1", "Buscar archivo desde raiz."],
+    ["find / -user user1", "Buscar archivos de un usuario."],
+    ["find /home/user1 -name \"*.bin\"", "Buscar por extension."],
+    ["find /usr/bin -type f -atime +100", "Buscar ficheros no accedidos recientemente."],
+    ["find /usr/bin -type f -mtime -10", "Buscar ficheros modificados en ultimos dias."],
+    ["find / -name \"*.rpm\" -exec chmod 755 {} \\;", "Buscar y cambiar permisos."],
+    ["find / -xdev -name \"*.rpm\"", "Buscar ignorando otros dispositivos."],
+    ["locate \"*.ps\"", "Buscar por indice de base de datos locate."],
+    ["whereis halt", "Ubicar binario, man y fuente de comando."],
+    ["which halt", "Mostrar ruta del ejecutable."],
+    ["mount /dev/sda1 /mnt/usbdisk", "Montar dispositivo."],
+    ["umount /dev/sda1", "Desmontar dispositivo."]
+  ],
+  "Espacio de disco": [
+    ["df -h", "Ver particiones montadas y uso de disco."],
+    ["ls -lSr | more", "Ordenar archivos por tamano."],
+    ["du -sh dir1", "Espacio total usado por directorio."],
+    ["du -sk * | sort -rn", "Ordenar tamano de carpetas."],
+    ["dpkg-query -W -f='${Installed-Size}\\t${Package}\\n' | sort -k1,1n", "Uso de espacio por paquetes en Debian/Ubuntu."]
+  ],
+  "Usuarios y grupos": [
+    ["groupadd nombre_grupo", "Crear grupo."],
+    ["groupdel nombre_grupo", "Eliminar grupo."],
+    ["groupmod -n nuevo viejo", "Renombrar grupo."],
+    ["useradd user1", "Crear usuario."],
+    ["userdel -r user1", "Eliminar usuario y home."],
+    ["usermod -d /ftp/user1 -s /bin/nologin user1", "Modificar atributos de usuario."],
+    ["passwd", "Cambiar contrasena del usuario actual."],
+    ["passwd user1", "Cambiar contrasena de otro usuario (root)."],
+    ["chage -E 2011-12-31 user1", "Definir fecha de expiracion."],
+    ["pwck", "Verificar /etc/passwd."],
+    ["grpck", "Verificar /etc/group."],
+    ["newgrp group_name", "Cambiar grupo primario de sesion."]
+  ],
+  "Permisos y atributos": [
+    ["ls -lh", "Ver permisos y tamanos legibles."],
+    ["chmod ugo+rwx directory1", "Asignar permisos rwx a todos."],
+    ["chmod go-rwx directory1", "Quitar permisos a grupo y otros."],
+    ["chown user1 file1", "Cambiar propietario."],
+    ["chown -R user1 directory1", "Cambiar propietario recursivamente."],
+    ["chgrp group1 file1", "Cambiar grupo."],
+    ["chown user1:group1 file1", "Cambiar usuario y grupo."],
+    ["find / -perm -u+s", "Buscar ficheros con SUID."],
+    ["chmod u+s /bin/file1", "Activar bit SUID."],
+    ["chmod g+s /home/public", "Activar bit SGID."],
+    ["chmod o+t /home/public", "Activar sticky bit."],
+    ["chattr +i file1", "Hacer archivo inmutable."],
+    ["chattr +a file1", "Permitir solo append."],
+    ["lsattr", "Ver atributos especiales."]
+  ],
+  "Compresion y empaquetado": [
+    ["bunzip2 file1.bz2", "Descomprimir bz2."],
+    ["bzip2 file1", "Comprimir bz2."],
+    ["gunzip file1.gz", "Descomprimir gzip."],
+    ["gzip -9 file1", "Comprimir con maximo nivel."],
+    ["tar -cvf archive.tar file1", "Crear tar sin compresion."],
+    ["tar -xvf archive.tar", "Extraer tar."],
+    ["tar -cvfz archive.tar.gz dir1", "Crear tar.gz."],
+    ["tar -xvfz archive.tar.gz", "Extraer tar.gz."],
+    ["zip -r file1.zip dir1", "Comprimir zip recursivo."],
+    ["unzip file1.zip", "Descomprimir zip."]
+  ],
+  "Paquetes Debian/Ubuntu (APT/DPKG)": [
+    ["dpkg -i package.deb", "Instalar paquete .deb."],
+    ["dpkg -r package_name", "Eliminar paquete."],
+    ["dpkg -l", "Listar paquetes instalados."],
+    ["dpkg -s package_name", "Ver detalle de paquete."],
+    ["dpkg -L package_name", "Listar archivos instalados por paquete."],
+    ["dpkg -S /bin/ping", "Encontrar paquete que contiene archivo."],
+    ["apt-get update", "Actualizar indice de paquetes."],
+    ["apt-get upgrade", "Actualizar paquetes instalados."],
+    ["apt-get install package_name", "Instalar paquete."],
+    ["apt-get remove package_name", "Eliminar paquete."],
+    ["apt-get clean", "Limpiar cache de paquetes."],
+    ["apt-cache search searched-package", "Buscar paquetes por nombre."]
+  ],
+  "Contenido y texto": [
+    ["cat file1", "Mostrar contenido completo."],
+    ["tac file1", "Mostrar contenido de abajo hacia arriba."],
+    ["more file1", "Visualizar contenido paginado."],
+    ["less file1", "Visualizar contenido paginado con navegacion."],
+    ["head -2 file1", "Mostrar primeras lineas."],
+    ["tail -2 file1", "Mostrar ultimas lineas."],
+    ["tail -f /var/log/messages", "Seguimiento en tiempo real de log."],
+    ["grep '^Aug' /var/log/messages", "Buscar lineas por patron."],
+    ["grep [0-9] /var/log/messages", "Buscar lineas con numeros."],
+    ["sed 's/string1/string2/g' example.txt", "Reemplazo global en texto."],
+    ["sed '/^$/d' example.txt", "Eliminar lineas en blanco."],
+    ["echo 'texto' | tr '[:lower:]' '[:upper:]'", "Convertir minusculas a mayusculas."],
+    ["sed -e '1d' result.txt", "Eliminar primera linea."],
+    ["sed -n '/string1/p' result.txt", "Imprimir lineas que coinciden."]
+  ],
+  "Red y monitoreo": [
+    ["ip link show", "Estado de interfaces de red."],
+    ["ifconfig eth0", "Configuracion de interfaz (legacy)."],
+    ["route -n", "Tabla de rutas."],
+    ["netstat -tup", "Conexiones activas y procesos."],
+    ["netstat -tupl", "Puertos en escucha."],
+    ["tcpdump tcp port 80", "Capturar trafico HTTP."],
+    ["iwlist scan", "Escanear redes Wi-Fi."],
+    ["top", "Monitor de procesos en tiempo real."],
+    ["ps -eafw", "Listado detallado de procesos."],
+    ["pstree", "Arbol de procesos."],
+    ["kill -9 PID", "Finalizar proceso forzado."],
+    ["watch -n1 'cat /proc/interrupts'", "Monitoreo periodico de comando."],
+    ["free -m", "Estado de RAM en MB."],
+    ["lsof -p $$", "Archivos abiertos por proceso actual."],
+    ["strace -c ls >/dev/null", "Resumen de llamadas al sistema."]
+  ]
+};
+
+function getAllReferenceCommands() {
+  return Object.entries(ubuntuCommandReference).flatMap(([group, entries]) =>
+    entries.map(([cmd, desc]) => ({ group, cmd, desc }))
+  );
+}
+
 const moduleData = {
   cli: {
     title: "Linea de comando para bioinformatica",
@@ -527,6 +706,20 @@ y documentar cada paso de analisis usando linea de comando.</div>
   <p>Debajo podras seleccionar un comando para ver sintaxis, explicacion y ejemplo bioinformatico. La biblioteca se expandio usando categorias del repositorio de comandos Linux compartido (sistema, disco, procesos, red, permisos, compresion, etc.).</p>
   <p><b>Meta del modulo:</b> cubrir comandos Ubuntu de uso real en bioinformatica (nucleares, administracion, red, disco, permisos y depuracion). En Linux/Ubuntu no existe una lista cerrada "finita" de todos los comandos, por eso este curso cubre los mas importantes y su uso practico.</p>
   <div id="cliCoverageCount" class="code"></div>
+</div>
+
+<div class="lesson">
+  <h3>Enciclopedia Ubuntu por categorias (lista extensa)</h3>
+  <p>Aqui esta integrada la referencia amplia de comandos por bloques, incluyendo informacion del sistema, permisos, paquetes, red, texto y monitoreo.</p>
+  <div class="interactive">
+    <label for="cliRefGroup">Categoria:</label>
+    <select id="cliRefGroup"></select>
+    <label for="cliRefCommand">Comando:</label>
+    <select id="cliRefCommand"></select>
+    <button id="cliRefShowBtn">Mostrar explicacion y captura</button>
+    <div id="cliRefDetail" class="code"></div>
+    <div id="cliRefCapture" class="line-explain"></div>
+  </div>
 </div>
 
 <div class="lesson">
@@ -874,6 +1067,44 @@ function attachModuleHandlers(moduleKey) {
     coverageBox.textContent =
       `Comandos cubiertos en esta version: ${cliCommandCatalog.length}\n` +
       "Categorias: navegacion, archivos, inspeccion, busqueda, tabulares, procesamiento, compresion, permisos, sistema, disco, procesos, red y productividad.";
+
+    const refGroup = document.getElementById("cliRefGroup");
+    const refCommand = document.getElementById("cliRefCommand");
+    const refDetail = document.getElementById("cliRefDetail");
+    const refCapture = document.getElementById("cliRefCapture");
+    const refShowBtn = document.getElementById("cliRefShowBtn");
+    const groups = Object.keys(ubuntuCommandReference);
+    refGroup.innerHTML = groups.map((g) => `<option value="${g}">${g}</option>`).join("");
+    function loadGroupCommands(groupName) {
+      const entries = ubuntuCommandReference[groupName] || [];
+      refCommand.innerHTML = entries
+        .map(([cmd]) => `<option value="${cmd}">${cmd}</option>`)
+        .join("");
+    }
+    loadGroupCommands(groups[0]);
+    refGroup.addEventListener("change", (e) => loadGroupCommands(e.target.value));
+    refShowBtn.addEventListener("click", () => {
+      const groupName = refGroup.value;
+      const entries = ubuntuCommandReference[groupName] || [];
+      const selected = entries.find(([cmd]) => cmd === refCommand.value);
+      if (!selected) return;
+      const [cmd, desc] = selected;
+      const total = getAllReferenceCommands().length;
+      refDetail.textContent =
+        `Categoria: ${groupName}\nComando: ${cmd}\nDescripcion: ${desc}\n\n` +
+        `Total de comandos de referencia cargados en esta seccion: ${total}`;
+      const parts = cmd.split(" ");
+      refCapture.innerHTML =
+        `<p><b>Captura explicativa simulada</b></p>` +
+        `<p><code>$ ${cmd}</code></p>` +
+        parts
+          .map(
+            (part, idx) =>
+              `<p><b>Linea ${idx + 1}:</b> <code>${part}</code> - parte del comando que contribuye a la accion final.</p>`
+          )
+          .join("") +
+        `<p><b>Resultado esperado:</b> ${desc}</p>`;
+    });
 
     const commandSelect = document.getElementById("cliCommandSelect");
     const commandDetails = document.getElementById("cliCommandDetails");
