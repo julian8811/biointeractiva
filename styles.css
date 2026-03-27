@@ -1015,3 +1015,217 @@ textarea {
   color: #64748b;
   font-size: 0.8rem;
 }
+
+/* ============================================
+   ESTILOS PARA MÓDULOS DB, GENOMICS Y PHYLO
+   ============================================ */
+
+/* Database cards */
+.db-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.db-card {
+  background: var(--soft);
+  border: 1px solid #334155;
+  border-radius: 10px;
+  padding: 1rem;
+}
+
+.db-card h5 {
+  margin: 0 0 0.5rem;
+  color: var(--accent);
+}
+
+.db-card p {
+  margin: 0 0 0.5rem;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.db-card code {
+  background: #1e293b;
+  color: var(--accent);
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.8rem;
+}
+
+.db-query-builder {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.db-query-builder label {
+  font-weight: 600;
+  color: var(--text);
+}
+
+.db-query-builder input,
+.db-query-builder select {
+  background: var(--bg);
+  color: var(--text);
+  border: 1px solid #475569;
+  padding: 0.6rem;
+  border-radius: 6px;
+}
+
+.db-query-builder button {
+  background: var(--accent);
+  color: #06222b;
+  border: none;
+  padding: 0.7rem 1.2rem;
+  border-radius: 6px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+/* Genomics pipeline */
+.pipeline-flow {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.pipeline-step {
+  display: flex;
+  gap: 1rem;
+  padding: 1rem;
+  background: var(--soft);
+  border-radius: 10px;
+  border: 1px solid #334155;
+}
+
+.pipeline-step .step-num {
+  background: var(--accent);
+  color: #06222b;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.pipeline-step h5 {
+  margin: 0 0 0.3rem;
+  color: var(--accent);
+}
+
+.pipeline-step p {
+  margin: 0 0 0.5rem;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.pipeline-step code {
+  background: #1e293b;
+  color: var(--accent);
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.8rem;
+}
+
+.tools-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 0.8rem;
+}
+
+.tool-card {
+  background: var(--soft);
+  border: 1px solid #334155;
+  border-radius: 8px;
+  padding: 0.8rem;
+  text-align: center;
+}
+
+.tool-card h5 {
+  margin: 0 0 0.3rem;
+  color: var(--accent-2);
+}
+
+.tool-card p {
+  margin: 0;
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+.pipeline-sortable {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin: 1rem 0;
+}
+
+.sort-item {
+  background: var(--soft);
+  border: 1px solid #334155;
+  padding: 0.8rem;
+  border-radius: 6px;
+  cursor: move;
+}
+
+.sort-item:hover {
+  border-color: var(--accent);
+}
+
+/* Phylogenetics concepts */
+.phylo-concepts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.concept-card {
+  background: var(--soft);
+  border: 1px solid #334155;
+  border-radius: 10px;
+  padding: 1rem;
+}
+
+.concept-card h5 {
+  margin: 0 0 0.5rem;
+  color: var(--accent);
+}
+
+.concept-card p {
+  margin: 0 0 0.5rem;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.phylo-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin: 1rem 0;
+  padding: 1rem;
+  background: var(--bg);
+  border-radius: 8px;
+}
+
+.phylo-step {
+  padding: 0.6rem;
+  background: var(--soft);
+  border-radius: 6px;
+  font-size: 0.9rem;
+}
+
+.phylo-exercise select {
+  background: var(--bg);
+  color: var(--text);
+  border: 1px solid #475569;
+  padding: 0.6rem;
+  border-radius: 6px;
+  width: 100%;
+  margin-bottom: 0.5rem;
+}

@@ -836,12 +836,532 @@ function markModuleDone(moduleKey) {
 // RENDERIZADO DE MÓDULOS
 // ============================================
 
+// ============================================
+   // MÓDULOS ENHANCED PARA DB, GENOMICS Y PHYLO
+// ============================================
+
+// ---------- MÓDULO 2: BASES DE DATOS BIOLÓGICAS ----------
+
+function renderDBLesson() {
+  return `
+    <div class="lesson db-intro">
+      <h3>🔬 ¿Por qué aprender a buscar en bases de datos biológicas?</h3>
+      <p>Las bases de datos biológicas contienen millones de secuencias, estructuras proteicas, expresiones génicas y más. Saber consultarlas eficientemente es una habilidad fundamental para cualquier bioinformático.</p>
+      
+      <h4>📊 Principales bases de datos:</h4>
+      <div class="db-grid">
+        <div class="db-card">
+          <h5>🧬 NCBI (National Center for Biotechnology Information)</h5>
+          <p>Incluye GenBank, RefSeq, PubMed, BLAST. La base más completa.</p>
+          <code>https://www.ncbi.nlm.nih.gov/</code>
+        </div>
+        <div class="db-card">
+          <h5>🧪 UniProt</h5>
+          <p>Proteínas curadas manualmente. Anotaciones funcionales de alta calidad.</p>
+          <code>https://www.uniprot.org/</code>
+        </div>
+        <div class="db-card">
+          <h5>🧬 ENA (European Nucleotide Archive)</h5>
+          <p>Secuencias de nucleótidos de Europa. SRA para reads crudos.</p>
+          <code>https://www.ebi.ac.uk/ena/</code>
+        </div>
+        <div class="db-card">
+          <h5>🧬 PDB (Protein Data Bank)</h5>
+          <p>Estructuras 3D de proteínas y ácidos nucleicos.</p>
+          <code>https://www.rcsb.org/</code>
+        </div>
+      </div>
+    </div>
+
+    <div class="lesson">
+      <h3>🔍 Operadores de búsqueda avanzados</h3>
+      <div class="code">Ejemplos de consultas:
+# Buscar gen específico en organismo
+"BRCA1[Gene] AND Homo sapiens[Organism]"
+
+# Secuencias de un organismo
+txid9606[Organism:exp]
+
+# Por rango de fechas
+2020/01/01:2023/12/31[PDAT]
+
+# En UniProt
+organism:"Homo sapiens" AND keyword:"DNA repair"</div>
+    </div>
+
+    <div class="lesson">
+      <h3>📚 Recursos adicionales</h3>
+      <ul>
+        <li><a href="https://www.ncbi.nlm.nih.gov/books/NBK25497/" target="_blank">Tutorial NCBI E-utilities</a></li>
+        <li><a href="https://www.uniprot.org/help/api" target="_blank">UniProt API</a></li>
+        <li><a href="https://www.ebi.ac.uk/ena/browser/api" target="_blank">ENA API</a></li>
+      </ul>
+    </div>
+  `;
+}
+
+function renderDBInteractive() {
+  return `
+    <div class="interactive">
+      <h4>🛠️ Constructor de consultas NCBI</h4>
+      <div class="db-query-builder">
+        <label>Buscar por:</label>
+        <input type="text" id="dbGene" placeholder="Ej: cytochrome c oxidase">
+        
+        <label>En organismo:</label>
+        <input type="text" id="dbOrganism" placeholder="Ej: Theobroma grandiflorum">
+        
+        <label>Base de datos:</label>
+        <select id="dbSelect">
+          <option value="nucleotide">Nucleotide (GenBank)</option>
+          <option value="protein">Protein (UniProt)</option>
+          <option value="pubmed">PubMed</option>
+          <option value="structure">Structure (PDB)</option>
+        </select>
+        
+        <button onclick="buildDBQuery()">Generar consulta</button>
+        
+        <div id="dbQueryResult" class="code"></div>
+      </div>
+    </div>
+
+    <div class="interactive">
+      <h4>🎯 Ejercicios de consulta</h4>
+      <div class="exercise-card">
+        <h5>Ejercicio 1: Consulta simple</h5>
+        <p>Escribe una consulta para buscar el gen "cytochrome c" en humanos:</p>
+        <input type="text" id="exDB1" placeholder='"cytochrome c"[Gene] AND Homo sapiens[Organism]'>
+        <button onclick="checkDBEx1()">Verificar</button>
+        <div id="dbEx1Feedback" class="feedback hidden"></div>
+      </div>
+      
+      <div class="exercise-card">
+        <h5>Ejercicio 2: Consulta con operador</h5>
+        <p>Busca proteínas relacionadas con "DNA repair" en yeast:</p>
+        <input type="text" id="exDB2" placeholder='"DNA repair"[Keyword] AND yeast[Organism]'>
+        <button onclick="checkDBEx2()">Verificar</button>
+        <div id="dbEx2Feedback" class="feedback hidden"></div>
+      </div>
+    </div>
+
+    <div class="interactive">
+      <h4>🌐 Práctica: Simulador de búsqueda</h4>
+      <p>Introduce un término de búsqueda y veamos qué resultados simulados obtener:</p>
+      <input type="text" id="dbSimInput" placeholder="Ej: BRCA1">
+      <button onclick="simulateDBSearch()">Buscar</button>
+      <div id="dbSimResult" class="code"></div>
+    </div>
+  `;
+}
+
+function renderDBQuiz() {
+  const questions = [
+    { q: "¿Qué base de datos contiene secuencias de nucleótidos?", options: ["UniProt", "NCBI GenBank", "PDB"] },
+    { q: "¿Qué operador une términos en NCBI?", options: ["AND", "PLUS", "JOIN"] },
+    { q: "¿Cuál es la base de datos de estructuras proteicas?", options: ["UniProt", "PDB", "ENA"] },
+    { q: "¿Qué significa el filtro [Organism]?", options: ["Filtrar por organismo", "Filtrar por fecha", "Filtrar por tamaño"] },
+    { q: "¿Cuál API permite acceso programático a UniProt?", options: ["BLAST", "REST API", "FTP"] }
+  ];
+  const answers = [1, 0, 1, 0, 1];
+  
+  return `
+    <div class="cli-quiz">
+      ${questions.map((q, i) => `
+        <div class="quiz-q">
+          <p><strong>Pregunta ${i+1}:</strong> ${q.q}</p>
+          <div class="quiz-opts">
+            ${q.options.map((opt, j) => `
+              <button class="quiz-opt" data-q="${i}" data-correct="${j === answers[i]}">${opt}</button>
+            `).join('')}
+          </div>
+          <div id="dbQuizFb-${i}" class="quiz-feedback hidden"></div>
+        </div>
+      `).join('')}
+    </div>
+  `;
+}
+
+function renderDBModule() {
+  return `
+    <div class="cli-module-enhanced">
+      <div class="cli-header">
+        <h2>🔍 ${moduleData.db.title}</h2>
+        <p class="cli-description">${moduleData.db.description}</p>
+        <button class="back-btn" onclick="renderModulesList()">← Volver a módulos</button>
+      </div>
+      
+      <div class="cli-tabs">
+        <button class="cli-tab active" data-tab="conceptos">📚 Conceptos</button>
+        <button class="cli-tab" data-tab="ejercicios">✏️ Ejercicios</button>
+        <button class="cli-tab" data-tab="practica">🌐 Práctica</button>
+        <button class="cli-tab" data-tab="quiz">❓ Quiz</button>
+      </div>
+      
+      <div class="cli-tab-content" id="dbTabConceptos">
+        ${renderDBLesson()}
+      </div>
+      
+      <div class="cli-tab-content hidden" id="dbTabEjercicios">
+        ${renderDBInteractive()}
+      </div>
+      
+      <div class="cli-tab-content hidden" id="dbTabPractica">
+        ${renderDBInteractive()}
+      </div>
+      
+      <div class="cli-tab-content hidden" id="dbTabQuiz">
+        ${renderDBQuiz()}
+      </div>
+    </div>
+  `;
+}
+
+// ---------- MÓDULO 3: GENÓMICA ----------
+
+function renderGenomicsLesson() {
+  return `
+    <div class="lesson genomics-intro">
+      <h3>🧬 El flujo de análisis genómico</h3>
+      <p>El análisis genómico moderno sigue un pipeline estructurado donde cada etapa transforma los datos para obtener información biológica significativa.</p>
+      
+      <div class="pipeline-flow">
+        <div class="pipeline-step">
+          <span class="step-num">1</span>
+          <h5>📊 QC (Control de Calidad)</h5>
+          <p>Evaluar calidad de lecturas crudas con FastQC. Identificar adaptadores, низкое quality.</p>
+          <code>fastqc raw/*.fastq.gz</code>
+        </div>
+        <div class="pipeline-step">
+          <span class="step-num">2</span>
+          <h5>✂️ Trimming</h5>
+          <p>Recortar adaptadores y colas de baja calidad.</p>
+          <code>trimmomatic PE input.fq output.fq</code>
+        </div>
+        <div class="pipeline-step">
+          <span class="step-num">3</span>
+          <h5>🗺️ Alineamiento</h5>
+          <p>Mapear lecturas contra genoma de referencia.</p>
+          <code>bwa mem ref.fa reads.fq > aligned.sam</code>
+        </div>
+        <div class="pipeline-step">
+          <span class="step-num">4</span>
+          <h5>🧪 Variant Calling</h5>
+          <p>Identificar SNPs e indels comparando con referencia.</p>
+          <code>freebayes -f ref.fa aligned.bam > variants.vcf</code>
+        </div>
+        <div class="pipeline-step">
+          <span class="step-num">5</span>
+          <h5>📝 Anotación</h5>
+          <p>Determinar efecto de variantes en genes.</p>
+          <code>snpEff ann -v hg38 variants.vcf</code>
+        </div>
+      </div>
+    </div>
+
+    <div class="lesson">
+      <h3>🛠️ Herramientas principales</h3>
+      <div class="tools-grid">
+        <div class="tool-card">
+          <h5>FastQC</h5>
+          <p>Control de calidad de lecturas</p>
+        </div>
+        <div class="tool-card">
+          <h5>Trimmomatic</h5>
+          <p>Recorte de adaptadores y quality</p>
+        </div>
+        <div class="tool-card">
+          <h5>BWA</h5>
+          <p>Alineamiento short reads</p>
+        </div>
+        <div class="tool-card">
+          <h5>FreeBayes</h5>
+          <p>Variant calling</p>
+        </div>
+        <div class="tool-card">
+          <h5>IGV</h5>
+          <p>Visualización de resultados</p>
+        </div>
+        <div class="tool-card">
+          <h5>SnpEff</h5>
+          <p>Anotación de variantes</p>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function renderGenomicsInteractive() {
+  return `
+    <div class="interactive">
+      <h4>🧩 Ordena el pipeline genómico</h4>
+      <p>Arrastra los pasos en el orden correcto:</p>
+      <div class="pipeline-sortable" id="pipelineSortable">
+        <div class="sort-item" draggable="true" data-order="3">3. Alineamiento (BWA)</div>
+        <div class="sort-item" draggable="true" data-order="1">1. QC (FastQC)</div>
+        <div class="sort-item" draggable="true" data-order="5">5. Anotación (SnpEff)</div>
+        <div class="sort-item" draggable="true" data-order="4">4. Variant Calling</div>
+        <div class="sort-item" draggable="true" data-order="2">2. Trimming</div>
+      </div>
+      <button onclick="checkPipelineOrder()">Verificar orden</button>
+      <div id="genPipelineFeedback" class="feedback hidden"></div>
+    </div>
+
+    <div class="interactive">
+      <h4>🎯 Identifica las herramientas</h4>
+      <div class="exercise-card">
+        <p>¿Qué herramienta usarías para identificar SNPs?</p>
+        <input type="text" id="exGen1" placeholder="Ej: freebayes">
+        <button onclick="checkGenEx1()">Verificar</button>
+        <div id="genEx1Feedback" class="feedback hidden"></div>
+      </div>
+      
+      <div class="exercise-card">
+        <p>¿Qué formato se genera después del alineamiento?</p>
+        <input type="text" id="exGen2" placeholder="Ej: SAM/BAM">
+        <button onclick="checkGenEx2()">Verificar</button>
+        <div id="genEx2Feedback" class="feedback hidden"></div>
+      </div>
+    </div>
+
+    <div class="interactive">
+      <h4>📊 Simulador de formato VCF</h4>
+      <p>Ejemplo de archivo VCF con variantes:</p>
+      <div class="code">#CHROM  POS     ID       REF     ALT     QUAL    FILTER  INFO
+chr1    10403   .       G       A       63      PASS    DP=45;AF=0.5
+chr1    234567  rs123    T       C       120     PASS    DP=89;AF=0.3
+chr2    567890  .       A       AG     45      LowQual DP=23</div>
+    </div>
+  `;
+}
+
+function renderGenomicsQuiz() {
+  const questions = [
+    { q: "¿Qué herramienta realiza control de calidad?", options: ["FastQC", "BWA", "SnpEff"] },
+    { q: "¿Qué formato se usa para almacenar lecturas alineadas?", options: ["FASTA", "BAM", "VCF"] },
+    { q: "¿Qué etapa identifica SNPs e indels?", options: ["QC", "Variant Calling", "Trimming"] },
+    { q: "¿Qué herramienta anotación el efecto de variantes?", options: ["IGV", "SnpEff", "FreeBayes"] },
+    { q: "¿Qué significa QC en el contexto de bioinformática?", options: ["Quantum Computing", "Quality Control", "Query Complex"] }
+  ];
+  const answers = [0, 1, 1, 1, 1];
+  
+  return `
+    <div class="cli-quiz">
+      ${questions.map((q, i) => `
+        <div class="quiz-q">
+          <p><strong>Pregunta ${i+1}:</strong> ${q.q}</p>
+          <div class="quiz-opts">
+            ${q.options.map((opt, j) => `
+              <button class="quiz-opt" data-q="${i}" data-correct="${j === answers[i]}">${opt}</button>
+            `).join('')}
+          </div>
+          <div id="genQuizFb-${i}" class="quiz-feedback hidden"></div>
+        </div>
+      `).join('')}
+    </div>
+  `;
+}
+
+function renderGenomicsModule() {
+  return `
+    <div class="cli-module-enhanced">
+      <div class="cli-header">
+        <h2>🧬 ${moduleData.genomics.title}</h2>
+        <p class="cli-description">${moduleData.genomics.description}</p>
+        <button class="back-btn" onclick="renderModulesList()">← Volver a módulos</button>
+      </div>
+      
+      <div class="cli-tabs">
+        <button class="cli-tab active" data-tab="pipeline">🔄 Pipeline</button>
+        <button class="cli-tab" data-tab="herramientas">🛠️ Herramientas</button>
+        <button class="cli-tab" data-tab="ejercicios">✏️ Ejercicios</button>
+        <button class="cli-tab" data-tab="quiz">❓ Quiz</button>
+      </div>
+      
+      <div class="cli-tab-content" id="genTabPipeline">
+        ${renderGenomicsLesson()}
+      </div>
+      
+      <div class="cli-tab-content hidden" id="genTabHerramientas">
+        ${renderGenomicsLesson()}
+      </div>
+      
+      <div class="cli-tab-content hidden" id="genTabEjercicios">
+        ${renderGenomicsInteractive()}
+      </div>
+      
+      <div class="cli-tab-content hidden" id="genTabQuiz">
+        ${renderGenomicsQuiz()}
+      </div>
+    </div>
+  `;
+}
+
+// ---------- MÓDULO 4: FILOGENÉTICA ----------
+
+function renderPhyloLesson() {
+  return `
+    <div class="lesson phylo-intro">
+      <h3>🌳 Fundamentos de Filogenética</h3>
+      <p>La filogenética reconstruye la historia evolutiva de los organismos mediante el análisis comparativo de secuencias moleculares.</p>
+      
+      <div class="phylo-concepts">
+        <div class="concept-card">
+          <h5>📐 Alineamiento Múltiple (MSA)</h5>
+          <p>Alinear múltiples secuencias para identificar regiones conservadas.</p>
+          <p><strong>Herramientas:</strong> MAFFT, Clustal Omega, MUSCLE</p>
+        </div>
+        <div class="concept-card">
+          <h5>📊 Selección de Modelo</h5>
+          <p>Elegir el modelo evolutivo que mejor describe las sustituciones.</p>
+          <p><strong>Modelos:</strong> JTT, GTR, HKLY85</p>
+        </div>
+        <div class="concept-card">
+          <h5>🌲 Inferencia Filogenética</h5>
+          <p>Construir árboles que representan relaciones evolutivas.</p>
+          <p><strong>Métodos:</strong> NJ, ML, Bayesiano</p>
+        </div>
+        <div class="concept-card">
+          <h5>📈 Bootstrap</h5>
+          <p>Evaluar la robustez statistical de cada nodo en el árbol.</p>
+          <p><strong>Interpretación:</strong> >70% soporte moderate, >90% fuerte</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="lesson">
+      <h3>🧬 Interpretación de árboles</h3>
+      <div class="code">Ejemplo de árbol Newick:
+((SpeciesA:0.1,SpeciesB:0.1):0.5,(SpeciesC:0.2,SpeciesD:0.2):0.3);
+
+- Las ramas cortas = evolución rápida
+- Las ramas largas = evolución lenta  
+- Bootstrap alto = nodo bien soportado
+- outgroup = grupo externo para rooting</div>
+    </div>
+
+    <div class="lesson">
+      <h3>🛠️ Herramientas de Filogenética</h3>
+      <ul>
+        <li><strong>MAFFT:</strong> Alineamiento múltiple rápido</li>
+        <li><strong>IQ-TREE:</strong> Máxima verosimilitud + ultrafast bootstrap</li>
+        <li><strong>RAxML:</strong> Filogenias de máxima verosimilitud</li>
+        <li><strong>MrBayes:</strong> Inferencia bayesiana</li>
+        <li><strong>FigTree:</strong> Visualización de árboles</li>
+      </ul>
+    </div>
+  `;
+}
+
+function renderPhyloInteractive() {
+  return `
+    <div class="interactive">
+      <h4>🌳 Identifica el tipo de árbol</h4>
+      <div class="exercise-card">
+        <p>¿Qué método de inferencia es más usado para árboles filogenéticos grandes?</p>
+        <select id="phyloEx1">
+          <option value="">Selecciona...</option>
+          <option value="nj">Neighbor Joining</option>
+          <option value="ml">Maximum Likelihood</option>
+          <option value="bayes">Bayesiano</option>
+        </select>
+        <button onclick="checkPhyloEx1()">Verificar</button>
+        <div id="phyloEx1Feedback" class="feedback hidden"></div>
+      </div>
+      
+      <div class="exercise-card">
+        <p>Si un nodo tiene bootstrap 95%, ¿cómo lo interpretas?</p>
+        <input type="text" id="phyloEx2" placeholder="Alto soporte estadístico">
+        <button onclick="checkPhyloEx2()">Verificar</button>
+        <div id="phyloEx2Feedback" class="feedback hidden"></div>
+      </div>
+    </div>
+
+    <div class="interactive">
+      <h4>🧪 Laboratorio: Construye un alineamiento</h4>
+      <p>Ordena los pasos para crear un árbol filogenético:</p>
+      <div class="phylo-steps">
+        <div class="phylo-step">1. Obtener secuencias</div>
+        <div class="phylo-step">2. Alineamiento múltiple (MAFFT)</div>
+        <div class="phylo-step">3. Seleccionar modelo (ModelFinder)</div>
+        <div class="phylo-step">4. Inferir árbol (IQ-TREE)</div>
+        <div class="phylo-step">5. Visualizar (FigTree)</div>
+      </div>
+      <input type="text" id="phyloLabInput" placeholder="Escribe el orden: 1,2,3,4,5">
+      <button onclick="checkPhyloLab()">Verificar</button>
+      <div id="phyloLabFeedback" class="feedback hidden"></div>
+    </div>
+  `;
+}
+
+function renderPhyloQuiz() {
+  const questions = [
+    { q: "¿Qué herramienta para alineamiento múltiple es más rápida?", options: ["MAFFT", "Clustal", "T-Coffee"] },
+    { q: "¿Qué significa bootstrap en filogenética?", options: ["Un programa", "Soporte estadístico", "Un modelo"] },
+    { q: "¿Qué formato se usa para representar árboles?", options: ["FASTA", "Newick", "VCF"] },
+    { q: "¿Cuál método usa máxima verosimilitud?", options: ["NJ", "ML", "Parsimony"] },
+    { q: "¿Qué valor de bootstrap indica alto soporte?", options: ["50%", "95%", "10%"] }
+  ];
+  const answers = [0, 1, 1, 1, 1];
+  
+  return `
+    <div class="cli-quiz">
+      ${questions.map((q, i) => `
+        <div class="quiz-q">
+          <p><strong>Pregunta ${i+1}:</strong> ${q.q}</p>
+          <div class="quiz-opts">
+            ${q.options.map((opt, j) => `
+              <button class="quiz-opt" data-q="${i}" data-correct="${j === answers[i]}">${opt}</button>
+            `).join('')}
+          </div>
+          <div id="phyloQuizFb-${i}" class="quiz-feedback hidden"></div>
+        </div>
+      `).join('')}
+    </div>
+  `;
+}
+
+function renderPhyloModule() {
+  return `
+    <div class="cli-module-enhanced">
+      <div class="cli-header">
+        <h2>🌳 ${moduleData.phylo.title}</h2>
+        <p class="cli-description">${moduleData.phylo.description}</p>
+        <button class="back-btn" onclick="renderModulesList()">← Volver a módulos</button>
+      </div>
+      
+      <div class="cli-tabs">
+        <button class="cli-tab active" data-tab="conceptos">📚 Conceptos</button>
+        <button class="cli-tab" data-tab="herramientas">🛠️ Herramientas</button>
+        <button class="cli-tab" data-tab="ejercicios">✏️ Ejercicios</button>
+        <button class="cli-tab" data-tab="quiz">❓ Quiz</button>
+      </div>
+      
+      <div class="cli-tab-content" id="phyloTabConceptos">
+        ${renderPhyloLesson()}
+      </div>
+      
+      <div class="cli-tab-content hidden" id="phyloTabHerramientas">
+        ${renderPhyloLesson()}
+      </div>
+      
+      <div class="cli-tab-content hidden" id="phyloTabEjercicios">
+        ${renderPhyloInteractive()}
+      </div>
+      
+      <div class="cli-tab-content hidden" id="phyloTabQuiz">
+        ${renderPhyloQuiz()}
+      </div>
+    </div>
+  `;
+}
+
+// Función para renderizar módulos con tabs
 function renderModule(moduleKey) {
   const module = moduleData[moduleKey];
   const container = document.getElementById("moduleContent");
   
   if (moduleKey === 'cli') {
-    // Usar el nuevo renderizado con tabs
+    // Usar el nuevo renderizado con tabs para CLI
     container.classList.remove("hidden");
     container.innerHTML = `
       <div class="cli-module-enhanced">
@@ -875,6 +1395,12 @@ function renderModule(moduleKey) {
         </div>
       </div>
     `;
+  } else if (moduleKey === 'db') {
+    container.innerHTML = renderDBModule();
+  } else if (moduleKey === 'genomics') {
+    container.innerHTML = renderGenomicsModule();
+  } else if (moduleKey === 'phylo') {
+    container.innerHTML = renderPhyloModule();
   } else {
     // Renderizado original para otros módulos
     container.classList.remove("hidden");
@@ -888,7 +1414,52 @@ function renderModule(moduleKey) {
   }
 
   attachModuleHandlers(moduleKey);
+  attachTabHandlers();
   container.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+// Función para manejar tabs
+function attachTabHandlers() {
+  document.querySelectorAll('.cli-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      const module = tab.closest('.cli-module-enhanced');
+      module.querySelectorAll('.cli-tab').forEach(t => t.classList.remove('active'));
+      module.querySelectorAll('.cli-tab-content').forEach(c => c.classList.add('hidden'));
+      tab.classList.add('active');
+      
+      const contentId = tab.dataset.tab;
+      const moduleKey = module.querySelector('.cli-header h2').textContent.includes('Línea') ? 'cli' : 
+                        module.querySelector('.cli-header h2').textContent.includes('bases') ? 'db' :
+                        module.querySelector('.cli-header h2').textContent.includes('Genómica') ? 'gen' : 'phylo';
+      
+      const prefix = moduleKey === 'cli' ? 'cli' : 
+                     moduleKey === 'db' ? 'db' :
+                     moduleKey === 'gen' ? 'gen' : 'phylo';
+      
+      const contentEl = document.getElementById(prefix + 'Tab' + contentId.charAt(0).toUpperCase() + contentId.slice(1));
+      if (contentEl) contentEl.classList.remove('hidden');
+    });
+  });
+  
+  // Handlers para quiz de cada módulo
+  document.querySelectorAll('.quiz-opt').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      const q = e.target.closest('.quiz-q');
+      const fb = q.querySelector('.quiz-feedback');
+      const isCorrect = e.target.dataset.correct === 'true';
+      
+      q.querySelectorAll('.quiz-opt').forEach(b => b.disabled = true);
+      
+      fb.classList.remove('hidden');
+      if (isCorrect) {
+        fb.textContent = '✅ ¡Correcto!';
+        fb.className = 'quiz-feedback correct';
+      } else {
+        fb.textContent = '❌ Incorrecto';
+        fb.className = 'quiz-feedback incorrect';
+      }
+    });
+  });
 }
 
 // Renderizar Biblioteca
@@ -1151,6 +1722,120 @@ function setFeedback(el, ok, msg) {
 // ============================================
 // HANDLERS DE EVENTOS
 // ============================================
+
+// ============================================
+   // HANDLERS PARA MÓDULOS DB, GENOMICS Y PHYLO
+// ============================================
+
+// ---------- Handlers Módulo DB ----------
+window.buildDBQuery = function() {
+  const gene = document.getElementById('dbGene').value.trim();
+  const organism = document.getElementById('dbOrganism').value.trim();
+  const db = document.getElementById('dbSelect').value;
+  const result = document.getElementById('dbQueryResult');
+  
+  if (!gene || !organism) {
+    result.textContent = '⚠️ Completa todos los campos';
+    return;
+  }
+  
+  result.textContent = `Consulta generada para ${db}:\n"${gene}"[All Fields] AND "${organism}"[Organism]`;
+};
+
+window.checkDBEx1 = function() {
+  const input = document.getElementById('exDB1').value.toLowerCase();
+  const fb = document.getElementById('dbEx1Feedback');
+  const ok = input.includes('cytochrome') && input.includes('homo sapiens') && input.includes('gene');
+  fb.classList.remove('hidden');
+  if (ok) { fb.textContent = '✅ ¡Correcto!'; fb.className = 'feedback ok'; }
+  else { fb.textContent = '❌ Pista: usa "cytochrome c"[Gene] AND Homo sapiens[Organism]'; fb.className = 'feedback err'; }
+};
+
+window.checkDBEx2 = function() {
+  const input = document.getElementById('exDB2').value.toLowerCase();
+  const fb = document.getElementById('dbEx2Feedback');
+  const ok = input.includes('dna repair') && input.includes('yeast');
+  fb.classList.remove('hidden');
+  if (ok) { fb.textContent = '✅ ¡Correcto!'; fb.className = 'feedback ok'; }
+  else { fb.textContent = '❌ Pista: "DNA repair"[Keyword] AND yeast[Organism]'; fb.className = 'feedback err'; }
+};
+
+window.simulateDBSearch = function() {
+  const query = document.getElementById('dbSimInput').value.trim();
+  const result = document.getElementById('dbSimResult');
+  
+  if (!query) {
+    result.textContent = '⚠️ Ingresa un término de búsqueda';
+    return;
+  }
+  
+  result.textContent = `Simulando búsqueda de "${query}"...
+  
+Resultados encontrados: 1,234 secuencias
+- Seq_001: ${query} - Organism: Homo sapiens
+- Seq_002: ${query} variant - Organism: Pan troglodytes
+- Seq_003: ${query} related - Organism: Gorilla gorilla
+
+Total: 1,234 secuencias en 15.2 segundos`;
+};
+
+// ---------- Handlers Módulo Genomics ----------
+window.checkPipelineOrder = function() {
+  const items = document.querySelectorAll('#pipelineSortable .sort-item');
+  let order = [];
+  items.forEach(item => order.push(item.dataset.order));
+  const correct = order.join(',') === '1,2,3,4,5';
+  const fb = document.getElementById('genPipelineFeedback');
+  fb.classList.remove('hidden');
+  if (correct) { fb.textContent = '✅ ¡Correcto! Pipeline en orden'; fb.className = 'feedback ok'; }
+  else { fb.textContent = '❌ Orden: QC → Trimming → Alignment → Variant Calling → Anotación'; fb.className = 'feedback err'; }
+};
+
+window.checkGenEx1 = function() {
+  const input = document.getElementById('exGen1').value.toLowerCase().trim();
+  const fb = document.getElementById('genEx1Feedback');
+  const ok = input.includes('freebayes') || input.includes('gatk') || input.includes('variant calling');
+  fb.classList.remove('hidden');
+  if (ok) { fb.textContent = '✅ ¡Correcto!'; fb.className = 'feedback ok'; }
+  else { fb.textContent = '❌ Pista: FreeBayes o GATK'; fb.className = 'feedback err'; }
+};
+
+window.checkGenEx2 = function() {
+  const input = document.getElementById('exGen2').value.toLowerCase().trim();
+  const fb = document.getElementById('genEx2Feedback');
+  const ok = input.includes('sam') || input.includes('bam');
+  fb.classList.remove('hidden');
+  if (ok) { fb.textContent = '✅ ¡Correcto! SAM/BAM'; fb.className = 'feedback ok'; }
+  else { fb.textContent = '❌ Pista: SAM o BAM'; fb.className = 'feedback err'; }
+};
+
+// ---------- Handlers Módulo Phylo ----------
+window.checkPhyloEx1 = function() {
+  const input = document.getElementById('phyloEx1').value;
+  const fb = document.getElementById('phyloEx1Feedback');
+  const ok = input === 'ml';
+  fb.classList.remove('hidden');
+  if (ok) { fb.textContent = '✅ ¡Correcto! ML es popular para árboles grandes'; fb.className = 'feedback ok'; }
+  else { fb.textContent = '❌ Pista: Maximum Likelihood (ML)'; fb.className = 'feedback err'; }
+};
+
+window.checkPhyloEx2 = function() {
+  const input = document.getElementById('phyloEx2').value.toLowerCase();
+  const fb = document.getElementById('phyloEx2Feedback');
+  const ok = input.includes('alto') || input.includes('soporte') || input.includes('confiable') || input.includes('95');
+  fb.classList.remove('hidden');
+  if (ok) { fb.textContent = '✅ ¡Correcto! Bootstrap 95% = alto soporte estadístico'; fb.className = 'feedback ok'; }
+  else { fb.textContent = '❌ Pista: Alto soporte estadístico'; fb.className = 'feedback err'; }
+};
+
+window.checkPhyloLab = function() {
+  const input = document.getElementById('phyloLabInput').value.replace(/\s/g, '');
+  const fb = document.getElementById('phyloLabFeedback');
+  const ok = input === '1,2,3,4,5';
+  fb.classList.remove('hidden');
+  if (ok) { fb.textContent = '✅ ¡Correcto!'; fb.className = 'feedback ok'; }
+  else { fb.textContent = '❌ Orden: Obtener secuencias → MAFFT → Modelo → IQ-TREE → FigTree'; fb.className = 'feedback err'; }
+};
 
 function attachModuleHandlers(moduleKey) {
   if (moduleKey === "cli") {
