@@ -10,32 +10,273 @@ const state = {
 
 const STORAGE_KEY = "biointeractiva_progress_v1";
 
+const cliCommandCatalog = [
+  {
+    cmd: "pwd",
+    category: "Navegacion",
+    syntax: "pwd",
+    detail:
+      "Muestra la ruta absoluta del directorio actual. Es clave para evitar ejecutar comandos en la carpeta equivocada.",
+    bioExample: "pwd  # Verifica que estas en el proyecto de analisis"
+  },
+  {
+    cmd: "ls",
+    category: "Navegacion",
+    syntax: "ls -lah",
+    detail:
+      "Lista archivos y carpetas. Con -l muestra permisos y tamano; con -a incluye ocultos; con -h hace legible el tamano.",
+    bioExample: "ls -lah datos_fastq/"
+  },
+  {
+    cmd: "cd",
+    category: "Navegacion",
+    syntax: "cd ruta/directorio",
+    detail:
+      "Cambia de directorio. Usa rutas relativas o absolutas para moverte rapido entre carpetas de resultados.",
+    bioExample: "cd analisis/01_qc"
+  },
+  {
+    cmd: "mkdir",
+    category: "Archivos",
+    syntax: "mkdir -p resultados/{qc,alineamiento,variantes}",
+    detail:
+      "Crea carpetas. Con -p crea jerarquias completas; util para estandarizar pipelines reproducibles.",
+    bioExample: "mkdir -p proyecto/{raw,clean,results,logs}"
+  },
+  {
+    cmd: "cp",
+    category: "Archivos",
+    syntax: "cp origen destino",
+    detail:
+      "Copia archivos o carpetas. Con -r copia recursivamente directorios completos.",
+    bioExample: "cp -r referencia/hg38.fa respaldo/"
+  },
+  {
+    cmd: "mv",
+    category: "Archivos",
+    syntax: "mv archivo nuevo_nombre",
+    detail:
+      "Mueve o renombra archivos. Muy usado para normalizar nombres de muestras.",
+    bioExample: "mv muestra1.fastq.gz paciente_001_R1.fastq.gz"
+  },
+  {
+    cmd: "rm",
+    category: "Archivos",
+    syntax: "rm archivo; rm -r carpeta",
+    detail:
+      "Elimina archivos o carpetas. Es destructivo; recomienda revisar antes con ls.",
+    bioExample: "rm lecturas_tmp.fastq"
+  },
+  {
+    cmd: "cat",
+    category: "Inspeccion",
+    syntax: "cat archivo",
+    detail:
+      "Imprime contenido completo de un archivo en terminal. Mejor para archivos cortos.",
+    bioExample: "cat metadata.tsv"
+  },
+  {
+    cmd: "head",
+    category: "Inspeccion",
+    syntax: "head -n 20 archivo",
+    detail:
+      "Muestra primeras lineas. Util para inspeccionar rapidamente FASTA, FASTQ o tablas.",
+    bioExample: "head -n 8 muestra_R1.fastq"
+  },
+  {
+    cmd: "tail",
+    category: "Inspeccion",
+    syntax: "tail -n 20 archivo",
+    detail:
+      "Muestra ultimas lineas. Ideal para revisar logs al final de una ejecucion.",
+    bioExample: "tail -n 30 logs/alineamiento.log"
+  },
+  {
+    cmd: "less",
+    category: "Inspeccion",
+    syntax: "less archivo",
+    detail:
+      "Permite navegar archivo pagina por pagina sin cargarlo completo en pantalla.",
+    bioExample: "less anotacion.gff3"
+  },
+  {
+    cmd: "wc",
+    category: "Conteo",
+    syntax: "wc -l archivo",
+    detail:
+      "Cuenta lineas, palabras y bytes. Con -l se usa para conteos rapidos de registros.",
+    bioExample: "wc -l genes_diferenciales.tsv"
+  },
+  {
+    cmd: "grep",
+    category: "Busqueda",
+    syntax: "grep 'patron' archivo",
+    detail:
+      "Busca patrones por expresiones regulares. Fundamental para filtrar por IDs o motivos.",
+    bioExample: "grep '^>' secuencias.fasta | wc -l"
+  },
+  {
+    cmd: "cut",
+    category: "Tabulares",
+    syntax: "cut -f1,3 archivo.tsv",
+    detail:
+      "Extrae columnas por delimitador. Muy util en archivos TSV/CSV bioinformaticos.",
+    bioExample: "cut -f1,5 variantes.vcf"
+  },
+  {
+    cmd: "sort",
+    category: "Tabulares",
+    syntax: "sort -k2,2n archivo.tsv",
+    detail:
+      "Ordena lineas. Con claves numericas permite ordenar por cobertura, score o p-value.",
+    bioExample: "sort -k6,6gr blast_hits.tsv"
+  },
+  {
+    cmd: "uniq",
+    category: "Tabulares",
+    syntax: "sort archivo | uniq -c",
+    detail:
+      "Elimina duplicados consecutivos. Con -c cuenta ocurrencias de cada valor.",
+    bioExample: "cut -f1 taxonomia.tsv | sort | uniq -c"
+  },
+  {
+    cmd: "awk",
+    category: "Procesamiento",
+    syntax: "awk 'condicion {accion}' archivo",
+    detail:
+      "Lenguaje de procesamiento por columnas. Potente para filtros complejos sin abrir Excel.",
+    bioExample: "awk '$6 > 100 {print $1,$6}' blast.tsv"
+  },
+  {
+    cmd: "sed",
+    category: "Procesamiento",
+    syntax: "sed 's/viejo/nuevo/g' archivo",
+    detail:
+      "Editor por flujo para reemplazos masivos o limpieza de texto.",
+    bioExample: "sed 's/ /_/g' ids.txt > ids_limpios.txt"
+  },
+  {
+    cmd: "find",
+    category: "Busqueda",
+    syntax: "find ruta -name '*.fastq.gz'",
+    detail:
+      "Busca archivos por nombre, extension, fecha o tamano dentro de carpetas profundas.",
+    bioExample: "find . -name '*.bam' -size +1G"
+  },
+  {
+    cmd: "tar",
+    category: "Compresion",
+    syntax: "tar -czvf archivo.tar.gz carpeta",
+    detail:
+      "Empaqueta y comprime directorios para respaldo o transferencia de resultados.",
+    bioExample: "tar -czvf resultados_run1.tar.gz resultados_run1/"
+  },
+  {
+    cmd: "gzip",
+    category: "Compresion",
+    syntax: "gzip archivo",
+    detail:
+      "Comprime archivos individuales. FastQ y VCF suelen manejarse en formato .gz.",
+    bioExample: "gzip matriz_expresion.tsv"
+  },
+  {
+    cmd: "zcat",
+    category: "Compresion",
+    syntax: "zcat archivo.gz | head",
+    detail:
+      "Permite visualizar contenido de .gz sin descomprimir a disco.",
+    bioExample: "zcat lecturas.fastq.gz | head -n 12"
+  },
+  {
+    cmd: "chmod",
+    category: "Permisos",
+    syntax: "chmod +x script.sh",
+    detail:
+      "Cambia permisos de ejecucion/lectura/escritura. Necesario para scripts de pipeline.",
+    bioExample: "chmod +x ejecutar_pipeline.sh"
+  },
+  {
+    cmd: "history",
+    category: "Productividad",
+    syntax: "history | tail -n 30",
+    detail:
+      "Muestra comandos usados. Facilita reproducibilidad y documentacion del analisis.",
+    bioExample: "history > bitacora_comandos.txt"
+  }
+];
+
 const moduleData = {
   cli: {
     title: "Linea de comando para bioinformatica",
     description:
-      "La linea de comando permite reproducibilidad y velocidad en flujos de analisis. En bioinformatica es comun procesar miles de archivos con scripts o comandos encadenados.",
+      "Modulo extenso de linea de comando para bioinformatica: fundamentos, organizacion de proyectos, manipulacion de FASTA/FASTQ, filtrado de tablas, automatizacion y buenas practicas reproducibles.",
     lesson: `
 <div class="lesson">
-  <h3>Conceptos clave</h3>
+  <h3>Guia completa: linea de comando aplicada a bioinformatica</h3>
+  <p>Trabajar en terminal te permite ejecutar analisis reproducibles y escalables. Un analisis manual en interfaz grafica es dificil de repetir exactamente; en cambio, un flujo en comandos puede ejecutarse nuevamente sobre nuevas muestras con pocos cambios.</p>
+  <p><b>Estructura recomendada de proyecto:</b></p>
+  <div class="code">proyecto_bioinfo/
+  raw_data/            # datos originales (solo lectura)
+  metadata/            # metadatos de muestras
+  scripts/             # scripts .sh, .py, .R
+  reference/           # genoma/transcriptoma de referencia
+  results/
+    01_qc/
+    02_trimming/
+    03_alignment/
+    04_variants/
+  logs/</div>
+  <p><b>Conceptos indispensables:</b> rutas absolutas vs relativas, permisos, redireccion (<code>></code>, <code>> </code>), pipes (<code>|</code>), codigos de salida y logs.</p>
+  <p><b>Flujos tipicos con comandos:</b></p>
   <ul>
-    <li><b>Navegacion:</b> <code>pwd</code>, <code>ls</code>, <code>cd</code>.</li>
-    <li><b>Gestion de archivos:</b> <code>cp</code>, <code>mv</code>, <code>rm</code>, <code>mkdir</code>.</li>
-    <li><b>Exploracion de secuencias:</b> <code>head</code>, <code>wc -l</code>, <code>grep</code>.</li>
-    <li><b>Encadenamiento:</b> pipes <code>|</code> para combinar comandos.</li>
+    <li>Inspeccion inicial: <code>ls -lah</code>, <code>head</code>, <code>wc -l</code>.</li>
+    <li>Control de calidad de archivos: verificar extension, tamano y consistencia.</li>
+    <li>Filtrado de secuencias/tablas: <code>grep</code>, <code>awk</code>, <code>cut</code>, <code>sort</code>.</li>
+    <li>Automatizacion con bucles: ejecutar una herramienta para multiples muestras.</li>
   </ul>
-  <div class="code">Ejemplo practico:
-grep "^>" secuencias.fasta | wc -l
-Este comando cuenta cuantas secuencias hay en un archivo FASTA.</div>
+  <div class="code">Ejemplo integrado en FASTA:
+grep "^>" secuencias.fasta | wc -l            # cuenta secuencias
+grep -v "^>" secuencias.fasta | tr -d "\\n" | wc -c   # cuenta nucleotidos totales (aprox)</div>
+</div>
+
+<div class="lesson">
+  <h3>Catalogo detallado de comandos (explorador interactivo)</h3>
+  <p>Debajo podras seleccionar un comando para ver sintaxis, explicacion y ejemplo bioinformatico. Incluye comandos de navegacion, archivos, inspeccion, busqueda, procesamiento, tablas, compresion y permisos.</p>
+</div>
+
+<div class="lesson">
+  <h3>Buenas practicas profesionales</h3>
+  <ul>
+    <li>Nunca modifiques <code>raw_data</code>; trabaja en copias procesadas.</li>
+    <li>Guarda bitacoras de comandos y versiones de software.</li>
+    <li>Usa nombres consistentes de muestras (ej. <code>PAC001_R1.fastq.gz</code>).</li>
+    <li>Valida salidas intermedias antes de continuar pipeline.</li>
+    <li>Documenta cada etapa en README o cuaderno de laboratorio digital.</li>
+  </ul>
 </div>
 `,
     interactive: `
 <div class="interactive">
-  <h4>Simulador de comando</h4>
+  <h4>Explorador de comandos Unix/Linux para bioinformatica</h4>
+  <label for="cliCommandSelect">Selecciona un comando para ver explicacion detallada:</label>
+  <select id="cliCommandSelect"></select>
+  <div id="cliCommandDetails" class="code"></div>
+</div>
+
+<div class="interactive">
+  <h4>Simulador de reto 1</h4>
   <label for="cliInput">Escribe el comando para contar secuencias en FASTA:</label>
   <input id="cliInput" type="text" placeholder='Ejemplo: grep "^>" archivo.fasta | wc -l'>
   <button id="cliCheckBtn">Validar comando</button>
   <div id="cliFeedback" class="feedback" hidden></div>
+</div>
+
+<div class="interactive">
+  <h4>Simulador de reto 2</h4>
+  <label for="cliInput2">Escribe un comando para mostrar las primeras 12 lineas de un FASTQ comprimido:</label>
+  <input id="cliInput2" type="text" placeholder="Ejemplo: zcat muestra.fastq.gz | head -n 12">
+  <button id="cliCheckBtn2">Validar comando</button>
+  <div id="cliFeedback2" class="feedback" hidden></div>
 </div>
 `,
     quiz: {
@@ -245,6 +486,28 @@ function setFeedback(el, ok, msg) {
 
 function attachModuleHandlers(moduleKey) {
   if (moduleKey === "cli") {
+    const commandSelect = document.getElementById("cliCommandSelect");
+    const commandDetails = document.getElementById("cliCommandDetails");
+    commandSelect.innerHTML = cliCommandCatalog
+      .map((item) => `<option value="${item.cmd}">${item.cmd} (${item.category})</option>`)
+      .join("");
+
+    function renderCommandDetail(commandName) {
+      const item = cliCommandCatalog.find((x) => x.cmd === commandName);
+      if (!item) return;
+      commandDetails.textContent =
+        `Comando: ${item.cmd}\n` +
+        `Categoria: ${item.category}\n` +
+        `Sintaxis sugerida: ${item.syntax}\n\n` +
+        `${item.detail}\n\n` +
+        `Ejemplo en bioinformatica:\n${item.bioExample}`;
+    }
+
+    renderCommandDetail(cliCommandCatalog[0].cmd);
+    commandSelect.addEventListener("change", (event) => {
+      renderCommandDetail(event.target.value);
+    });
+
     const btn = document.getElementById("cliCheckBtn");
     btn.addEventListener("click", () => {
       const input = document.getElementById("cliInput").value.toLowerCase().trim();
@@ -261,6 +524,29 @@ function attachModuleHandlers(moduleKey) {
           fb,
           false,
           'Intenta incluir: grep "^>" archivo.fasta | wc -l'
+        );
+      }
+    });
+
+    const btn2 = document.getElementById("cliCheckBtn2");
+    btn2.addEventListener("click", () => {
+      const input2 = document.getElementById("cliInput2").value.toLowerCase().trim();
+      const fb2 = document.getElementById("cliFeedback2");
+      const ok2 =
+        (input2.includes("zcat") || input2.includes("gunzip -c")) &&
+        input2.includes("head") &&
+        (input2.includes("-n 12") || input2.includes("-12"));
+      if (ok2) {
+        setFeedback(
+          fb2,
+          true,
+          "Correcto. Tu comando permite inspeccionar un FASTQ comprimido sin descomprimir a disco."
+        );
+      } else {
+        setFeedback(
+          fb2,
+          false,
+          "Sugerencia: zcat muestra.fastq.gz | head -n 12"
         );
       }
     });
