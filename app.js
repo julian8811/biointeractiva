@@ -20,6 +20,45 @@ const state = {
 
 const STORAGE_KEY = "biointeractiva_progress_v2";
 
+// Mapeo de capturas de terminal por comando
+const cliCaptures = {
+  'pwd': 'captures/pwd.svg',
+  'ls': 'captures/ls.svg',
+  'cd': 'captures/ls.svg',
+  'mkdir': 'captures/mkdir.svg',
+  'cp': 'captures/cp.svg',
+  'mv': 'captures/mv.svg',
+  'rm': 'captures/rm.svg',
+  'cat': 'captures/cat.svg',
+  'head': 'captures/head.svg',
+  'tail': 'captures/tail.svg',
+  'less': 'captures/less.svg',
+  'wc': 'captures/wc.svg',
+  'grep': 'captures/grep.svg',
+  'find': 'captures/find.svg',
+  'awk': 'captures/awk.svg',
+  'sed': 'captures/sed.svg',
+  'cut': 'captures/cut.svg',
+  'sort': 'captures/sort.svg',
+  'uniq': 'captures/uniq.svg',
+  'gzip': 'captures/gzip.svg',
+  'zcat': 'captures/zcat.svg',
+  'tar': 'captures/tar.svg',
+  'df': 'captures/df.svg',
+  'du': 'captures/du.svg',
+  'ps': 'captures/ps.svg',
+  'top': 'captures/top.svg',
+  'free': 'captures/free.svg',
+  'kill': 'captures/kill.svg',
+  'wget': 'captures/wget.svg',
+  'curl': 'captures/curl.svg',
+  'chmod': 'captures/chmod.svg',
+  'chown': 'captures/chown.svg',
+  'samtools': 'captures/samtools-flagstat.svg',
+  'bcftools': 'captures/bcftools.svg',
+  'fastqc': 'captures/fastqc.svg'
+};
+
 const cliCommandCatalog = [
   {
     cmd: "pwd",
@@ -752,21 +791,32 @@ function renderCLIBiblioteca() {
   return `
     <div class="cli-categories-grid">
       ${Object.entries(categories).map(([cat, cmds]) => `
-        <details class="cli-category-card">
+        <details class="cli-category-card" open>
           <summary>
             <span class="cat-icon">${getCategoryIcon(cat)}</span>
             <span class="cat-name">${cat}</span>
             <span class="cat-count">${cmds.length}</span>
           </summary>
           <div class="cat-commands">
-            ${cmds.map(c => `
-              <div class="cli-cmd-item" data-cmd="${c.cmd}">
-                <code class="cmd-name">${c.cmd}</code>
-                <code class="cmd-syntax">${c.syntax}</code>
-                <p class="cmd-desc">${c.detail}</p>
-                <p class="cmd-bio"><strong>🐸 Bio:</strong> ${c.bioExample}</p>
-              </div>
-            `).join('')}
+            ${cmds.map(c => {
+              const captureFile = cliCaptures[c.cmd.toLowerCase().split(' ')[0]];
+              const hasCapture = captureFile !== undefined;
+              return `
+                <div class="cli-cmd-item" data-cmd="${c.cmd}">
+                  <div class="cmd-header-row">
+                    <code class="cmd-name">${c.cmd}</code>
+                    <code class="cmd-syntax">${c.syntax}</code>
+                  </div>
+                  <p class="cmd-desc">${c.detail}</p>
+                  <p class="cmd-bio"><strong>🐸 Bio:</strong> ${c.bioExample}</p>
+                  ${hasCapture ? `
+                    <div class="cmd-capture">
+                      <img src="assets/${captureFile}" alt="Terminal ${c.cmd}" loading="lazy">
+                    </div>
+                  ` : ''}
+                </div>
+              `;
+            }).join('')}
           </div>
         </details>
       `).join('')}

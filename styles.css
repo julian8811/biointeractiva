@@ -458,6 +458,36 @@ textarea {
   font-size: 0.9rem;
 }
 
+.cmd-header-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.5rem;
+}
+
+.cmd-bio {
+  margin: 0.5rem 0 0;
+  color: var(--text);
+  font-size: 0.85rem;
+}
+
+.cmd-capture {
+  margin-top: 0.8rem;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid #334155;
+}
+
+.cmd-capture img {
+  width: 100%;
+  height: auto;
+  display: block;
+  max-height: 200px;
+  object-fit: contain;
+  background: #0f172a;
+}
+
 .cmd-bio {
   margin: 0.5rem 0 0;
   color: var(--text);
