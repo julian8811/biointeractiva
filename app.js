@@ -354,6 +354,89 @@ const cliSimulatedOutput = {
   "tar -czvf resultados.tar.gz resultados/": "resultados/qc/\nresultados/variants/\nresultados/logs/"
 };
 
+const cliLineByLineExamples = {
+  "grep \"^>\" secuencias.fasta | wc -l": {
+    title: "Contar secuencias en FASTA",
+    lines: [
+      {
+        code: "grep \"^>\" secuencias.fasta",
+        explain: "Filtra las lineas que empiezan por >, que son las cabeceras de cada secuencia."
+      },
+      {
+        code: "| wc -l",
+        explain: "Cuenta cuantas cabeceras encontro grep; ese numero equivale al total de secuencias."
+      }
+    ],
+    output: "245"
+  },
+  "find . -name \"*.fastq.gz\"": {
+    title: "Buscar lecturas comprimidas",
+    lines: [
+      {
+        code: "find .",
+        explain: "Busca desde el directorio actual de forma recursiva."
+      },
+      {
+        code: "-name \"*.fastq.gz\"",
+        explain: "Filtra solo archivos con extension fastq.gz."
+      }
+    ],
+    output: "./raw_data/PAC001_R1.fastq.gz\n./raw_data/PAC001_R2.fastq.gz"
+  },
+  "zcat muestra.fastq.gz | head -n 8": {
+    title: "Ver FASTQ comprimido sin descomprimir",
+    lines: [
+      {
+        code: "zcat muestra.fastq.gz",
+        explain: "Descomprime en memoria y envia el contenido al siguiente comando."
+      },
+      {
+        code: "| head -n 8",
+        explain: "Muestra solo las primeras 8 lineas para inspeccion rapida."
+      }
+    ],
+    output: "@SEQ_ID\nACTG...\n+\nIIII..."
+  },
+  "awk '$6 > 100 {print $1,$6}' blast.tsv": {
+    title: "Filtrar hits con score alto",
+    lines: [
+      {
+        code: "awk '$6 > 100 {print $1,$6}' blast.tsv",
+        explain: "Selecciona filas donde la columna 6 sea mayor a 100 e imprime ID y score."
+      }
+    ],
+    output: "seq_001 478\nseq_014 301"
+  },
+  "df -h": {
+    title: "Revisar espacio de disco",
+    lines: [
+      {
+        code: "df",
+        explain: "Muestra informacion del sistema de archivos montado."
+      },
+      {
+        code: "-h",
+        explain: "Presenta tamanos en formato legible (GB, MB)."
+      }
+    ],
+    output: "/dev/sda2 250G 120G 118G 51%"
+  },
+  "du -sh resultados": {
+    title: "Medir peso de carpeta de resultados",
+    lines: [
+      {
+        code: "du",
+        explain: "Calcula uso de disco por directorio o archivo."
+      },
+      {
+        code: "-sh resultados",
+        explain: "S resume el total y h lo hace legible."
+      }
+    ],
+    output: "1.8G resultados"
+  }
+};
+
 const moduleData = {
   cli: {
     title: "Linea de comando para bioinformatica",
@@ -442,6 +525,8 @@ y documentar cada paso de analisis usando linea de comando.</div>
 <div class="lesson">
   <h3>Catalogo detallado de comandos (explorador interactivo)</h3>
   <p>Debajo podras seleccionar un comando para ver sintaxis, explicacion y ejemplo bioinformatico. La biblioteca se expandio usando categorias del repositorio de comandos Linux compartido (sistema, disco, procesos, red, permisos, compresion, etc.).</p>
+  <p><b>Meta del modulo:</b> cubrir comandos Ubuntu de uso real en bioinformatica (nucleares, administracion, red, disco, permisos y depuracion). En Linux/Ubuntu no existe una lista cerrada "finita" de todos los comandos, por eso este curso cubre los mas importantes y su uso practico.</p>
+  <div id="cliCoverageCount" class="code"></div>
 </div>
 
 <div class="lesson">
@@ -494,6 +579,22 @@ y documentar cada paso de analisis usando linea de comando.</div>
   </select>
   <button id="cliRunBtn">Ejecutar comando</button>
   <div id="cliRunOutput" class="code">$ _</div>
+</div>
+
+<div class="interactive">
+  <h4>Captura explicativa linea por linea</h4>
+  <label for="cliShotSelect">Selecciona un ejemplo para ver la captura guiada:</label>
+  <select id="cliShotSelect">
+    <option>grep "^>" secuencias.fasta | wc -l</option>
+    <option>find . -name "*.fastq.gz"</option>
+    <option>zcat muestra.fastq.gz | head -n 8</option>
+    <option>awk '$6 > 100 {print $1,$6}' blast.tsv</option>
+    <option>df -h</option>
+    <option>du -sh resultados</option>
+  </select>
+  <button id="cliShotBtn">Mostrar captura explicada</button>
+  <div id="cliShotTerminal" class="code">$ selecciona un ejemplo</div>
+  <div id="cliShotExplain" class="line-explain"></div>
 </div>
 
 <div class="interactive">
@@ -769,6 +870,11 @@ function attachModuleHandlers(moduleKey) {
       planOutput.textContent = plan;
     });
 
+    const coverageBox = document.getElementById("cliCoverageCount");
+    coverageBox.textContent =
+      `Comandos cubiertos en esta version: ${cliCommandCatalog.length}\n` +
+      "Categorias: navegacion, archivos, inspeccion, busqueda, tabulares, procesamiento, compresion, permisos, sistema, disco, procesos, red y productividad.";
+
     const commandSelect = document.getElementById("cliCommandSelect");
     const commandDetails = document.getElementById("cliCommandDetails");
     commandSelect.innerHTML = cliCommandCatalog
@@ -798,6 +904,26 @@ function attachModuleHandlers(moduleKey) {
       const cmd = runSelect.value;
       const output = cliSimulatedOutput[cmd] || "Comando no reconocido en el simulador.";
       runOutput.textContent = `$ ${cmd}\n${output}`;
+    });
+
+    const shotSelect = document.getElementById("cliShotSelect");
+    const shotBtn = document.getElementById("cliShotBtn");
+    const shotTerminal = document.getElementById("cliShotTerminal");
+    const shotExplain = document.getElementById("cliShotExplain");
+    shotBtn.addEventListener("click", () => {
+      const key = shotSelect.value;
+      const data = cliLineByLineExamples[key];
+      if (!data) return;
+      shotTerminal.textContent = `$ ${key}\n${data.output}`;
+      shotExplain.innerHTML = `
+        <p><b>${data.title}</b></p>
+        ${data.lines
+          .map(
+            (line, idx) =>
+              `<p><b>Paso ${idx + 1}:</b> <code>${line.code}</code><br>${line.explain}</p>`
+          )
+          .join("")}
+      `;
     });
 
     const btn = document.getElementById("cliCheckBtn");
