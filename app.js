@@ -2974,19 +2974,26 @@ function removeFavorite(cmd) {
 }
 
 function renderFavorites() {
+  if (favorites.length === 0) {
+    return `
+      <div class="favorites-section">
+        <h3>⭐ Comandos Favoritos</h3>
+        <p style="color:#94a3b8">No hay favoritos aún. ¡Guarda comandos desde la biblioteca!</p>
+      </div>
+    `;
+  }
+  
   return `
     <div class="favorites-section">
       <h3>⭐ Comandos Favoritos</h3>
-      ${favorites.length > 0 ? `
-        <div class="favorites-grid">
-          ${favorites.map(cmd => `
-            <div class="favorite-cmd">
-              <code>${cmd}</code>
-              <button class="favorite-remove" onclick="removeFavorite('${cmd}')">✕</button>
-            </div>
-          `).join('')}
-        </div>
-      ` : '<p style="color:#94a3b8">No hay favoritos aún. ¡Guarda comandos desde la biblioteca!'</p>}
+      <div class="favorites-grid">
+        ${favorites.map(cmd => `
+          <div class="favorite-cmd">
+            <code>${cmd}</code>
+            <button class="favorite-remove" onclick="removeFavorite('${cmd}')">✕</button>
+          </div>
+        `).join('')}
+      </div>
     </div>
   `;
 }
