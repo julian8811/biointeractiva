@@ -2686,6 +2686,7 @@ function renderModulesList() {
 }
 
 window.renderModulesList = renderModulesList;
+window.renderModule = renderModule;
 
 function init() {
   loadState();
