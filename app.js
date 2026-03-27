@@ -1402,8 +1402,9 @@ function renderGenomicsLesson() {
           <span class="step-num">1</span>
           <div class="step-content">
             <h5>📥 Recepción de datos</h5>
-            <p>Obtener lecturas crudas (FASTQ) del secuenciador o repositorio (SRA, ENA).</p>
+            <p>Obtener lecturas crudas (FASTQ) del secuenciador o repositorio (SRA, ENA, GEO).</p>
             <code>wget https://example.com/sample_R1.fastq.gz</code>
+            <div class="step-tools">SRA Toolkit, Aspera, FTP</div>
           </div>
         </div>
         <div class="pipeline-step">
@@ -1412,13 +1413,642 @@ function renderGenomicsLesson() {
             <h5>📊 QC (Control de Calidad)</h5>
             <p>Evaluar calidad con FastQC. Identificar adaptadores, baja calidad, contaminación.</p>
             <code>fastqc raw/*.fastq.gz -o qc_results/</code>
-            <div class="step-tools">Herramientas: FastQC, MultiQC</div>
+            <div class="step-tools">FastQC, MultiQC, NanoPlot</div>
           </div>
         </div>
         <div class="pipeline-step">
           <span class="step-num">3</span>
           <div class="step-content">
             <h5>✂️ Preprocesamiento</h5>
+            <p>Recortar adaptadores, eliminar низкое calidad, filtrar por longitud.</p>
+            <code>trimmomatic PE input_R1.fq input_R2.fq out_R1.fq out_R2.fq ILLUMINACLIP:adapters.fa:2:30:10</code>
+            <div class="step-tools">Trimmomatic, fastp, Cutadapt, fastp</div>
+          </div>
+        </div>
+        <div class="pipeline-step">
+          <span class="step-num">4</span>
+          <div class="step-content">
+            <h5>🗺️ Alineamiento</h5>
+            <p>Mapear lecturas contra genoma de referencia. Crear archivos SAM/BAM.</p>
+            <code>bwa mem -t 8 ref.fa sample_R1.fq sample_R2.fq | samtools sort -o aligned.bam</code>
+            <div class="step-tools">BWA, Bowtie2, HISAT2, minimap2</div>
+          </div>
+        </div>
+        <div class="pipeline-step">
+          <span class="step-num">5</span>
+          <div class="step-content">
+            <h5>🧪 Variant Calling</h5>
+            <p>Identificar SNPs, indels y variantes estructurales comparando con referencia.</p>
+            <code>bcftools call -v -o variants.vcf aligned.bam</code>
+            <div class="step-tools">GATK, FreeBayes, DeepVariant, bcftools</div>
+          </div>
+        </div>
+        <div class="pipeline-step">
+          <span class="step-num">6</span>
+          <div class="step-content">
+            <h5>🔍 Filtrado de variantes</h5>
+            <p>Aplicar umbrales de calidad, profundidad,QD,FS. VQSR o hard filtering.</p>
+            <code>bcftools view -i 'QUAL>30 && DP>10' variants.vcf > filtered.vcf</code>
+            <div class="step-tools">GATK VQSR, bcftools filter</div>
+          </div>
+        </div>
+        <div class="pipeline-step">
+          <span class="step-num">7</span>
+          <div class="step-content">
+            <h5>📝 Anotación</h5>
+            <p>Determinar efecto de variantes en genes (sinónimo, missense, nonsense).</p>
+            <code>snpEff ann -v hg38 filtered.vcf > annotated.vcf</code>
+            <div class="step-tools">SnpEff, ANNOVAR, VEP</div>
+          </div>
+        </div>
+        <div class="pipeline-step">
+          <span class="step-num">8</span>
+          <div class="step-content">
+            <h5>📈 Interpretación</h5>
+            <p>Análisis funcional, búsqueda en bases de datos, prioritize variants.</p>
+            <code># Anotación funcional, filtrado por impacto</code>
+            <div class="step-tools">PROVEAN, PolyPhen, CADD, dbNSFP</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tipos de Secuenciación -->
+    <div class="lesson">
+      <h3>🔬 Tipos de Secuenciación NGS</h3>
+      <div class="seq-types-grid">
+        <div class="seq-type-card">
+          <div class="seq-type-header wgs">🌐 WGS</div>
+          <h4>Whole Genome Sequencing</h4>
+          <p>Secuencia todo el genoma. Cobertura típica: 30x-60x.</p>
+          <ul>
+            <li><strong>Profundidad:</strong> 30-60x</li>
+            <li><strong>Costoso</strong></li>
+            <li><strong>Detecta variantes en todo el genoma</strong></li>
+            <li><strong>Variantes estructurales</strong></li>
+          </ul>
+          <code>WGS → Genoma completo → 3.2 Gb humano</code>
+        </div>
+        
+        <div class="seq-type-card">
+          <div class="seq-type-header wes">🎯 WES</div>
+          <h4>Whole Exome Sequencing</h4>
+          <p>Secuencia solo exones (~1% del genoma). Cobertura: 50x-100x.</p>
+          <ul>
+            <li><strong>Profundidad:</strong> 50-100x</li>
+            <li><strong>Más económico</strong></li>
+            <li><strong>Enfoque en regiones codificantes</strong></li>
+            <li><strong>Enfermedades mendelianas</strong></li>
+          </ul>
+          <code>WES → Exoma (~30 Mb) → Regiones codificantes</code>
+        </div>
+        
+        <div class="seq-type-card">
+          <div class="seq-type-header rnaseq">🧬 RNA-seq</div>
+          <h4>RNA Sequencing</h4>
+          <p>Secuencia transcripciones. Expresión génica y splicing.</p>
+          <ul>
+            <li><strong>Mide expresión</strong></li>
+            <li><strong>Detectaisoformas</strong></li>
+            <li><strong>Enfermedades complejas</strong></li>
+            <li><strong>Cancer transcriptoma</strong></li>
+          </ul>
+          <code>RNA-seq → Expresión → Diferencial</code>
+        </div>
+        
+        <div class="seq-type-card">
+          <div class="seq-type-header panel">📋 Panels</div>
+          <h4>Targeted Panels</h4>
+          <p>Secuencia regiones específicas. Alta cobertura.</p>
+          <ul>
+            <li><strong>Profundidad:</strong> 500-1000x</li>
+            <li><strong>Muy económico</strong></li>
+            <li><strong>Genes específicos</strong></li>
+            <li><strong>Diagnóstico clínico</strong></li>
+          </ul>
+          <code>Panels → Genes seleccionados → Clínico</code>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tipos de Variantes -->
+    <div class="lesson">
+      <h3>🧪 Tipos de Variantes Genéticas</h3>
+      <div class="variant-types">
+        <div class="variant-card snp">
+          <h4>🟢 SNP (Single Nucleotide Polymorphism)</h4>
+          <p>Cambio de una sola base. El tipo más común.</p>
+          <div class="variant-example">
+            <code>REF: A → ALT: G</code>
+            <span>Posición: chr1:12345</span>
+          </div>
+          <ul>
+            <li>Frecuencia: ~1 cada 1000 bases</li>
+            <li>~3-5 millones por genoma</li>
+          </ul>
+        </div>
+        
+        <div class="variant-card indel">
+          <h4>🟡 Indel (Insertion/Deletion)</h4>
+          <p>Inserciones o delecciones de pocas bases.</p>
+          <div class="variant-example">
+            <code>REF: AGT → ALT: A (deletion)</code>
+            <span>Posición: chr1:12346</span>
+          </div>
+          <ul>
+            <li>Inserciones: bases añadidas</li>
+            <li>Delecciones: bases eliminadas</li>
+          </ul>
+        </div>
+        
+        <div class="variant-card sv">
+          <h4>🔴 SV (Structural Variant)</h4>
+          <p>Cambios grandes >50bp. Incluye translocaciones, inversiones.</p>
+          <div class="variant-example">
+            <code>Tipo: DEL, DUP, INV, TRA</code>
+            <span>Tamaño: 1kb - varios Mb</span>
+          </div>
+          <ul>
+            <li>Duplicaciones</li>
+            <li>Delecciones</li>
+            <li>Inversiones</li>
+            <li>Translocaciones</li>
+          </ul>
+        </div>
+        
+        <div class="variant-card cnv">
+          <h4>🟣 CNV (Copy Number Variant)</h4>
+          <p>Cambios en el número de copias de secciones del genoma.</p>
+          <div class="variant-example">
+            <code>CN: 0 (nulo), 1 (hemicigoto), 2 (diploide), 3 (duplicado)</code>
+            <span>CNV delecionado o amplificado</span>
+          </div>
+          <ul>
+            <li>Amplificaciones</li>
+            <li>Delecciones</li>
+            <li>En enfermedades genéticas</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Clasificación de Impacto de Variantes -->
+    <div class="lesson">
+      <h3>⚠️ Clasificación de Impacto de Variantes</h3>
+      <div class="impact-table">
+        <table>
+          <thead>
+            <tr>
+              <th>Impacto</th>
+              <th>Descripción</th>
+              <th>Ejemplo</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="impact-high">
+              <td><strong>🔴 HIGH</strong></td>
+              <td>Produce proteína truncada o pérdida de función</td>
+              <td>Nonsense, frameshift, splice-site</td>
+            </tr>
+            <tr class="impact-moderate">
+              <td><strong>🟡 MODERATE</strong></td>
+              <td>Puede afectar función pero no sicher</td>
+              <td>Missense conservativo</td>
+            </tr>
+            <tr class="impact-low">
+              <td><strong>🟢 LOW</strong></td>
+              <td>Probablemente no afecta función</td>
+              <td>Sinónimo, intrónico-lejana</td>
+            </tr>
+            <tr class="impact-modifier">
+              <td><strong>⚪ MODIFIER</strong></td>
+              <td>Impacto difícil de evaluar</td>
+              <td>Upstream, intergénica</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- GATK Best Practices -->
+    <div class="lesson">
+      <h3>📋 GATK Best Practices</h3>
+      <p>El Gold Standard para análisis de variantes germline y somatic.</p>
+      
+      <div class="gatk-steps">
+        <div class="gatk-step">
+          <span class="gatk-num">1</span>
+          <div class="gatk-content">
+            <h4>Preprocesamiento de reads</h4>
+            <code>gatk MarkDuplicates -I input.bam -O marked.bam -M metrics.txt</code>
+            <code>gatk BaseRecalibrator -I marked.bam -R ref.fa -O recal.table</code>
+            <code>gatk ApplyBQSR -I marked.bam -R ref.fa --bqsr-recal-file recal.table -O recalibrated.bam</code>
+          </div>
+        </div>
+        
+        <div class="gatk-step">
+          <span class="gatk-num">2</span>
+          <div class="gatk-content">
+            <h4>HaplotypeCaller (GVCF mode)</h4>
+            <code>gatk HaplotypeCaller -R ref.fa -I sample.bam -O sample.g.vcf -ERC GVCF</code>
+          </div>
+        </div>
+        
+        <div class="gatk-step">
+          <span class="gatk-num">3</span>
+          <div class="gatk-content">
+            <h4>Joint Genotyping</h4>
+            <code>gatk CombineGVCFs -R ref.fa -V sample1.g.vcf -V sample2.g.vcf -O cohort.g.vcf</code>
+            <code>gatk GenotypeGVCFs -R ref.fa -V cohort.g.vcf -O raw_variants.vcf</code>
+          </div>
+        </div>
+        
+        <div class="gatk-step">
+          <span class="gatk-num">4</span>
+          <div class="gatk-content">
+            <h4>Variant Quality Score Recalibration (VQSR)</h4>
+            <code>gatk VariantRecalibrator -V raw.vcf -R ref.fa -resource:hapmap,known=false,training=true,truth=true,prior=15.0:hapmap_3.3.vcf -an QD -an MQ -an MQRankSum -an ReadPosRankSum -an FS -an SOR -mode SNP -O recalibrate_SNP.recal</code>
+            <code>gatk ApplyVQSR -V input.vcf --recal-file recalibrate_SNP.recal --tranches-file recalibrate_SNP.tranches -O output.vcf</code>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Filtrado: VQSR vs Hard Filtering -->
+    <div class="lesson">
+      <h3>🎯 Filtrado de Variantes: VQSR vs Hard Filtering</h3>
+      
+      <div class="filter-comparison">
+        <div class="filter-method vqsr">
+          <h4>📊 VQSR (Variant Quality Score Recalibration)</h4>
+          <p>Método статистический que usa machine learning.</p>
+          <ul>
+            <li>✅ Más preciso</li>
+            <li>✅ Aprende de datos de entrenamiento</li>
+            <li>✅ Mejor para WGS/WES grandes</li>
+            <li>❌ Requiere sitios de verdad conocidos</li>
+            <li>❌ Requiere suficientes variantes</li>
+          </ul>
+          <code>gatk VariantRecalibrator -resource:omni,known=false,training=true,truth=true,prior=12.0:1000G_omni2.5.vcf</code>
+        </div>
+        
+        <div class="filter-method hard">
+          <h4>🔧 Hard Filtering</h4>
+          <p>Método manual con umbrales fijos.</p>
+          <ul>
+            <li>✅ Simple y directo</li>
+            <li>✅ No requiere truth sites</li>
+            <li>✅ Funciona con pocas variantes</li>
+            <li>❌ Menos preciso</li>
+            <li>❌ Requiere conocimiento de parámetros</li>
+          </ul>
+          <code>bcftools view -i 'QUAL>30 && DP>10 && QD>15 && MQ>40 && FS<30'</code>
+        </div>
+      </div>
+    </div>
+
+    <!-- Guía de Formatos -->
+    <div class="lesson">
+      <h3>📋 Guía de Formatos de Archivos</h3>
+      
+      <div class="format-cards">
+        <div class="format-card">
+          <div class="format-header fastq">📄 FASTQ</div>
+          <p class="format-desc">Formato crudos de secuenciación. 4 líneas por read:</p>
+          <div class="format-example">
+            <code>@SEQ_ID</code>
+            <code>GATTTGGGGTTCAAAGCAGTATCGATCAAATAGTAAATCCATTTGTTCAACTCACAGTTT</code>
+            <code>+</code>
+            <code>!''*((((***+))%%%++)(%%%%).1***-+*''))**55CCF>>>>>>CCCCCCC65</code>
+          </div>
+          <ul class="format-info">
+            <li>Línea 1: ID del read (@)</li>
+            <li>Línea 2: Secuencia (ATCG)</li>
+            <li>Línea 3: Separador (+)</li>
+            <li>Línea 4: Scores de calidad (Phred)</li>
+          </ul>
+        </div>
+
+        <div class="format-card">
+          <div class="format-header sam">📄 SAM/BAM</div>
+          <p class="format-desc">Sequence Alignment Map. Texto (SAM) o binario (BAM):</p>
+          <div class="format-example">
+            <code>read001 99 chr1 1000 60 50M = 1200 250 GATACA... * NM:i:0 MD:Z:50</code>
+          </div>
+          <ul class="format-info">
+            <li>QNAME: Nombre del read</li>
+            <li>FLAG: Estado del mapeo</li>
+            <li>RNAME: Cromosoma</li>
+            <li>POS: Posición inicio</li>
+            <li>MAPQ: Calidad mapeo</li>
+            <li>CIGAR: Operadores alineamiento</li>
+          </ul>
+        </div>
+
+        <div class="format-card">
+          <div class="format-header vcf">📄 VCF</div>
+          <p class="format-desc">Variant Call Format. Información de variantes:</p>
+          <div class="format-example">
+            <code>#CHROM POS ID REF ALT QUAL FILTER INFO</code>
+            <code>chr1 12345 rs123 G A 50 PASS DP=25;QD=15;FS=2.5</code>
+            <code>chr1 23456 . C T 30 PASS DP=10;QD=8</code>
+          </div>
+          <ul class="format-info">
+            <li>CHROM: Cromosoma</li>
+            <li>POS: Posición</li>
+            <li>ID: Identificador (rsID)</li>
+            <li>REF/ALT: Nucleótidos</li>
+            <li>QUAL: Phred quality</li>
+            <li>INFO: Anotaciones (DP, QD, FS...)</li>
+          </ul>
+        </div>
+
+        <div class="format-card">
+          <div class="format-header bed">📄 BED</div>
+          <p class="format-desc">Browser Extensible Data. Regiones genómicas:</p>
+          <div class="format-example">
+            <code>chr1 1000 2000 GeneA 0 +</code>
+            <code>chr1 2500 3000 Exon1 0 +</code>
+          </div>
+          <ul class="format-info">
+            <li>Columna 1: Cromosoma</li>
+            <li>Columna 2: Inicio</li>
+            <li>Columna 3: Fin</li>
+            <li>Columna 4: Nombre</li>
+            <li>Columna 5: Score</li>
+            <li>Columna 6: Strand</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Herramientas por Categoría -->
+    <div class="lesson">
+      <h3>🛠️ Herramientas por Categoría</h3>
+      
+      <div class="tools-by-category">
+        <div class="tool-category">
+          <h4>📊 Control de Calidad</h4>
+          <div class="tool-list">
+            <div class="tool-item">
+              <strong>FastQC</strong>
+              <span>El estándar para QC de reads</span>
+              <code>fastqc sample.fastq.gz</code>
+            </div>
+            <div class="tool-item">
+              <strong>MultiQC</strong>
+              <span>Agregar múltiples reportes FastQC</span>
+              <code>multiqc .</code>
+            </div>
+            <div class="tool-item">
+              <strong>fastp</strong>
+              <span>QC + trimming todo-en-uno</span>
+              <code>fastp -i R1.fq -o R1_clean.fq</code>
+            </div>
+            <div class="tool-item">
+              <strong>NanoPlot</strong>
+              <span>QC para long reads (Nanopore)</span>
+              <code>NanoPlot --fastq reads.fastq</code>
+            </div>
+          </div>
+        </div>
+
+        <div class="tool-category">
+          <h4>✂️ Preprocesamiento</h4>
+          <div class="tool-list">
+            <div class="tool-item">
+              <strong>Trimmomatic</strong>
+              <span>Recorte de adaptadores y calidad</span>
+              <code>trimmomatic PE input.fq output.fq ILLUMINACLIP:adapters.fa</code>
+            </div>
+            <div class="tool-item">
+              <strong>Cutadapt</strong>
+              <span>Eliminar adaptadores específicos</span>
+              <code>cutadapt -a AGATCGGAAGAGC -o output.fq input.fq</code>
+            </div>
+            <div class="tool-item">
+              <strong>PRINSEQ</strong>
+              <span>Filtrado y recorte de reads</span>
+              <code>prinseq -fastq input.fq -good_out clean.fq</code>
+            </div>
+          </div>
+        </div>
+
+        <div class="tool-category">
+          <h4>🗺️ Alineamiento</h4>
+          <div class="tool-list">
+            <div class="tool-item">
+              <strong>BWA-MEM</strong>
+              <span>Short reads (Illumina)</span>
+              <code>bwa mem ref.fa reads.fq > align.sam</code>
+            </div>
+            <div class="tool-item">
+              <strong> Bowtie2</strong>
+              <span>Short reads, buen para SNPs</span>
+              <code>bowtie2 -x index -U reads.fq -S align.sam</code>
+            </div>
+            <div class="tool-item">
+              <strong>HISAT2</strong>
+              <span>RNA-seq, splice-aware</span>
+              <code>hisat2 -x index -U reads.fq -S align.sam</code>
+            </div>
+            <div class="tool-item">
+              <strong>minimap2</strong>
+              <span>Long reads (Nanopore, PacBio)</span>
+              <code>minimap2 -ax map-ont ref.fa reads.fq > align.sam</code>
+            </div>
+            <div class="tool-item">
+              <strong>STAR</strong>
+              <span>RNA-seq de alta precisión</span>
+              <code>STAR --genomeDir index --readFilesIn R1.fq --outFileNamePrefix sample_</code>
+            </div>
+          </div>
+        </div>
+
+        <div class="tool-category">
+          <h4>🧪 Variant Calling</h4>
+          <div class="tool-list">
+            <div class="tool-item">
+              <strong>GATK HaplotypeCaller</strong>
+              <span>Gold standard para SNPs/indels</span>
+              <code>gatk HaplotypeCaller -R ref.fa -I bam.bam -O variants.vcf</code>
+            </div>
+            <div class="tool-item">
+              <strong>FreeBayes</strong>
+              <span>Variantes bayesianas</span>
+              <code>freebayes -f ref.fa bam.bam > variants.vcf</code>
+            </div>
+            <div class="tool-item">
+              <strong>DeepVariant</strong>
+              <span>Variant calling con deep learning</span>
+              <code>deepvariant --model_type=WGS --ref=ref.fa --reads=bam.bam --output=variants.vcf</code>
+            </div>
+            <div class="tool-item">
+              <strong>Strelka</strong>
+              <span>Somatic variant calling</span>
+              <code>configureStrelkaGermlineWorkflow.py --bam sample.bam --ref ref.fa --runDir .</code>
+            </div>
+          </div>
+        </div>
+
+        <div class="tool-category">
+          <h4>📝 Anotación</h4>
+          <div class="tool-list">
+            <div class="tool-item">
+              <strong>SnpEff</strong>
+              <span>Anotación funcional de variantes</span>
+              <code>snpEff ann -v hg38 variants.vcf > annotated.vcf</code>
+            </div>
+            <div class="tool-item">
+              <strong>ANNOVAR</strong>
+              <span>Anotación comprehensiva</span>
+              <code>table_annovar.pl variants.pl --buildver hg38</code>
+            </div>
+            <div class="tool-item">
+              <strong>VEP</strong>
+              <span>Variant Effect Predictor</span>
+              <code>vep -i variants.vcf -o output.txt --species human</code>
+            </div>
+          </div>
+        </div>
+        
+        <div class="tool-category">
+          <h4>📊 RNA-seq Expresión</h4>
+          <div class="tool-list">
+            <div class="tool-item">
+              <strong>STAR</strong>
+              <span>Alineamiento RNA-seq</span>
+              <code>STAR --genomeDir index --readFilesIn R1.fq</code>
+            </div>
+            <div class="tool-item">
+              <strong>featureCounts</strong>
+              <span>Cuantificación de reads</span>
+              <code>featureCounts -a annotation.gtf -o counts.txt alignments.bam</code>
+            </div>
+            <div class="tool-item">
+              <strong>DESeq2</strong>
+              <span>Análisis de expresión diferencial</span>
+              <code>dds <- DESeqDataSetFromMatrix(countData, colData, design=~condition)</code>
+            </div>
+            <div class="tool-item">
+              <strong>edgeR</strong>
+              <span>Expresión diferencial</span>
+              <code>y <- DGEList(counts=counts); y <- calcNormFactors(y)</code>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Parámetros de Filtrado -->
+    <div class="lesson">
+      <h3>🎯 Parámetros Importantes de Filtrado</h3>
+      <div class="params-grid">
+        <div class="param-card">
+          <code>QUAL</code>
+          <p>Phred quality score. >30 = alta confianza.</p>
+          <span class="param-example">bcftools view -i 'QUAL>30'</span>
+        </div>
+        <div class="param-card">
+          <code>DP</code>
+          <p>Profundidad de lectura (Coverage). >10x mínimo recomendado.</p>
+          <span class="param-example">bcftools view -i 'DP>10'</span>
+        </div>
+        <div class="param-card">
+          <code>QD</code>
+          <p>Qualidad por profundidad. >15 sugiere variante real.</p>
+          <span class="param-example">bcftools view -i 'QD>15'</span>
+        </div>
+        <div class="param-card">
+          <code>FS</code>
+          <p>Fisher's exact test for strand bias. <30 para SNPs.</p>
+          <span class="param-example">bcftools view -i 'FS<30'</span>
+        </div>
+        <div class="param-card">
+          <code>MQ</code>
+          <p>Mapping Quality. >40 indica buen mapeo.</p>
+          <span class="param-example">bcftools view -i 'MQ>40'</span>
+        </div>
+        <div class="param-card">
+          <code>SOR</code>
+          <p>Symmetric Odds Ratio. <3 para SNPs.</p>
+          <span class="param-example">bcftools view -i 'SOR<3'</span>
+        </div>
+        <div class="param-card">
+          <code>MQRankSum</code>
+          <p>Mapping Quality Rank Sum Test. >-12.5.</p>
+          <span class="param-example">bcftools view -i 'MQRankSum>-12.5'</span>
+        </div>
+        <div class="param-card">
+          <code>ReadPosRankSum</code>
+          <p>Read Position Rank Sum Test. >-8.</p>
+          <span class="param-example">bcftools view -i 'ReadPosRankSum>-8'</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bases de Datos de Variantes -->
+    <div class="lesson">
+      <h3>🗄️ Bases de Datos de Variantes</h3>
+      <div class="db-list">
+        <div class="db-item">
+          <h4>📚 dbSNP</h4>
+          <p>Base de datos de polimorfismos de nucleótido único.</p>
+          <code>https://www.ncbi.nlm.nih.gov/snp/</code>
+        </div>
+        <div class="db-item">
+          <h4>🧬 ClinVar</h4>
+          <p>Variantes clínicas y su relación con enfermedades.</p>
+          <code>https://www.ncbi.nlm.nih.gov/clinvar/</code>
+        </div>
+        <div class="db-item">
+          <h4>🌍 gnomAD</h4>
+          <p>Frecuencias de variantes en poblaciones humanas.</p>
+          <code>https://gnomad.broadinstitute.org/</code>
+        </div>
+        <div class="db-item">
+          <h4>🔬 COSMIC</h4>
+          <p>Mutaciones somáticas en cáncer.</p>
+          <code>https://cancer.sanger.ac.uk/cosmic</code>
+        </div>
+        <div class="db-item">
+          <h4>🧪 1000 Genomes</h4>
+          <p>Variantes de 1KG poblaciones humanas.</p>
+          <code>https://www.internationalgenome.org/</code>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pipeline Completos -->
+    <div class="lesson">
+      <h3>🔄 Pipelines Completos (nf-core)</h3>
+      <p>nf-core ofrece pipelines optimizados y probados por la comunidad:</p>
+      
+      <div class="pipeline-list">
+        <div class="pipeline-item">
+          <h4>📦 nf-core/sarek</h4>
+          <p>Pipeline para germline y somatic variant calling. WGS/WES.</p>
+          <code>nextflow run nf-core/sarek -profile docker</code>
+        </div>
+        <div class="pipeline-item">
+          <h4>📦 nf-core/rnaseq</h4>
+          <p>RNA-seq desde reads hasta expresión diferencial.</p>
+          <code>nextflow run nf-core/rnaseq -profile docker</code>
+        </div>
+        <div class="pipeline-item">
+          <h4>📦 nf-core/epitopeprediction</h4>
+          <p>Predicción de epítopos de MHC.</p>
+          <code>nextflow run nf-core/epitopeprediction</code>
+        </div>
+        <div class="pipeline-item">
+          <h4>📦 nf-core/viralrecon</h4>
+          <p>Análisis de virus (incluyendo SARS-CoV-2).</p>
+          <code>nextflow run nf-core/viralrecon</code>
+        </div>
+      </div>
+    </div>
+  `;
+}
             <p>Recortar adaptadores, eliminar низкое calidad, filtrar por longitud.</p>
             <code>trimmomatic PE input_R1.fq input_R2.fq out_R1.fq out_R2.fq ILLUMINACLIP:adapters.fa:2:30:10</code>
             <div class="step-tools">Herramientas: Trimmomatic, fastp, Cutadapt</div>
@@ -1889,6 +2519,657 @@ chr2    56789   rs456     A       T       120     PASS    DP=89;AF=0.7;QD=25</di
   `;
 }
 
+// ---------- EMULADORES DE GENÓMICA ----------
+function renderGenomicsEmulators() {
+  return `
+    <div class="emulators-container">
+      <p class="emulators-intro">🎮 <strong>Emuladores interactivos</strong> - Experimenta con procesos bioinformáticos en tiempo real</p>
+      
+      <!-- Emulador 1: FASTQ Generator -->
+      <div class="emulator-card" id="emulator-fastq">
+        <div class="emulator-header">
+          <h4>🧬 FASTQ Generator Emulator</h4>
+          <span class="emulator-badge">Generador de reads</span>
+        </div>
+        <div class="emulator-body">
+          <div class="emulator-controls">
+            <label>Secuencia de referencia:</label>
+            <input type="text" id="fastq-ref" value="ATGCGATCGATCGATCGATCG" placeholder="Secuencia de referencia (20+ bp)">
+            <label>Número de reads:</label>
+            <select id="fastq-count">
+              <option value="5">5 reads</option>
+              <option value="10" selected>10 reads</option>
+              <option value="20">20 reads</option>
+            </select>
+            <label>Error rate (%):</label>
+            <input type="range" id="fastq-error" min="0" max="10" value="1">
+            <span id="fastq-error-val">1%</span>
+            <button class="emulator-run-btn" onclick="runFastqEmulator()">Generar FASTQ</button>
+          </div>
+          <div class="emulator-output" id="fastq-output">
+            <div class="output-label">📄 Salida FASTQ:</div>
+            <pre class="fastq-preview">Presiona "Generar FASTQ" para crear reads simulados...</pre>
+          </div>
+        </div>
+      </div>
+
+      <!-- Emulador 2: QC Emulator -->
+      <div class="emulator-card" id="emulator-qc">
+        <div class="emulator-header">
+          <h4>📊 QC Emulator (FastQC)</h4>
+          <span class="emulator-badge">Control de Calidad</span>
+        </div>
+        <div class="emulator-body">
+          <div class="emulator-controls">
+            <label>Tipo de datos:</label>
+            <select id="qc-type">
+              <option value="good">Datos de buena calidad</option>
+              <option value="medium">Datos de calidad media</option>
+              <option value="poor">Datos de baja calidad</option>
+              <option value="adapter">Con adaptadores</option>
+            </select>
+            <label>Contenido GC (%):</label>
+            <input type="range" id="qc-gc" min="20" max="80" value="45">
+            <span id="qc-gc-val">45%</span>
+            <button class="emulator-run-btn" onclick="runQcEmulator()">Ejecutar FastQC</button>
+          </div>
+          <div class="emulator-output qc-results" id="qc-output">
+            <div class="qc-summary">
+              <div class="qc-module pass">✅ Basic Statistics</div>
+              <div class="qc-module pass">✅ Per Base Sequence Quality</div>
+              <div class="qc-module pass">✅ Per Tile Sequence Quality</div>
+              <div class="qc-module pass">✅ Per Sequence Quality Scores</div>
+              <div class="qc-module pass">✅ Per Base N Content</div>
+              <div class="qc-module pass">✅ Sequence Length Distribution</div>
+              <div class="qc-module pass">✅ Duplicate Sequences</div>
+              <div class="qc-module pass">✅ Overrepresented Sequences</div>
+              <div class="qc-module pass">✅ Adapter Content</div>
+            </div>
+            <div class="qc-charts">
+              <div class="qc-chart" id="qc-per-base">
+                <div class="chart-title">Per Base Sequence Quality</div>
+                <div class="fake-chart quality-chart"></div>
+              </div>
+              <div class="qc-chart" id="qc-gc-content">
+                <div class="chart-title">GC Content</div>
+                <div class="fake-chart gc-chart"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Emulador 3: Alignment Emulator -->
+      <div class="emulator-card" id="emulator-align">
+        <div class="emulator-header">
+          <h4>🗺️ Alignment Emulator</h4>
+          <span class="emulator-badge">Visualizador de Alineamiento</span>
+        </div>
+        <div class="emulator-body">
+          <div class="emulator-controls">
+            <label>Genoma de referencia:</label>
+            <input type="text" id="align-ref" value="ATGCGATCGATCGATCGATCGTAGCTAGCTAG" readonly>
+            <label>Read a alinear:</label>
+            <input type="text" id="align-read" value="ATGCGATCGATCGATCGATCGTAGCT">
+            <button class="emulator-run-btn" onclick="runAlignEmulator()">Alinear Read</button>
+          </div>
+          <div class="emulator-output alignment-viewer" id="align-output">
+            <div class="alignment-label">🧬 Visualizador de alineamiento:</div>
+            <pre class="alignment-display">Presiona "Alinear Read" para ver el resultado...</pre>
+          </div>
+          <div class="alignment-legend">
+            <span class="legend-item match">| = Match</span>
+            <span class="legend-item mismatch">✗ = Mismatch</span>
+            <span class="legend-item indel">- = Indel</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Emulador 4: Variant Calling Emulator -->
+      <div class="emulator-card" id="emulator-vc">
+        <div class="emulator-header">
+          <h4>🧪 Variant Calling Emulator</h4>
+          <span class="emulator-badge">Detección de Variantes</span>
+        </div>
+        <div class="emulator-body">
+          <div class="emulator-controls">
+            <label>Archivo BAM (simulado):</label>
+            <select id="vc-bam">
+              <option value="normal">Muestra Normal</option>
+              <option value="tumor">Muestra Tumor</option>
+              <option value="family">Familia (Trio)</option>
+            </select>
+            <label>Herramienta:</label>
+            <select id="vc-tool">
+              <option value="gatk">GATK HaplotypeCaller</option>
+              <option value="freebayes">FreeBayes</option>
+              <option value="deepvariant">DeepVariant</option>
+            </select>
+            <button class="emulator-run-btn" onclick="runVariantCallerEmulator()">Ejecutar Variant Calling</button>
+          </div>
+          <div class="emulator-output vc-results" id="vc-output">
+            <div class="vc-stats">
+              <div class="vc-stat">
+                <span class="stat-label">Total variants:</span>
+                <span class="stat-value" id="vc-total">-</span>
+              </div>
+              <div class="vc-stat">
+                <span class="stat-label">SNPs:</span>
+                <span class="stat-value snp" id="vc-snp">-</span>
+              </div>
+              <div class="vc-stat">
+                <span class="stat-label">Indels:</span>
+                <span class="stat-value indel" id="vc-indel">-</span>
+              </div>
+            </div>
+            <div class="vc-variants" id="vc-variants-list">
+              <div class="vcf-header">#CHROM  POS     ID       REF  ALT  QUAL  FILTER  INFO</div>
+              <div class="vcf-placeholder">Ejecuta el variant calling para ver variantes...</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Emulador 5: Filter Emulator -->
+      <div class="emulator-card" id="emulator-filter">
+        <div class="emulator-header">
+          <h4>🔍 Filter Emulator</h4>
+          <span class="emulator-badge">Filtrado de Variantes</span>
+        </div>
+        <div class="emulator-body">
+          <div class="emulator-controls filter-controls">
+            <div class="filter-param">
+              <label>QUAL ></label>
+              <input type="number" id="filter-qual" value="30" min="0" max="100">
+            </div>
+            <div class="filter-param">
+              <label>DP ></label>
+              <input type="number" id="filter-dp" value="10" min="0" max="1000">
+            </div>
+            <div class="filter-param">
+              <label>QD ></label>
+              <input type="number" id="filter-qd" value="15" min="0" max="100">
+            </div>
+            <div class="filter-param">
+              <label>MQ ></label>
+              <input type="number" id="filter-mq" value="40" min="0" max="100">
+            </div>
+            <div class="filter-param">
+              <label>FS <</label>
+              <input type="number" id="filter-fs" value="30" min="0" max="100">
+            </div>
+            <button class="emulator-run-btn" onclick="runFilterEmulator()">Aplicar Filtros</button>
+          </div>
+          <div class="emulator-output filter-results" id="filter-output">
+            <div class="filter-summary">
+              <span class="filter-total">Variantes iniciales: <strong id="filter-initial">0</strong></span>
+              <span class="filter-passed">Pasaron filtros: <strong id="filter-passed">0</strong></span>
+              <span class="filter-removed">Eliminadas: <strong id="filter-removed">0</strong></span>
+            </div>
+            <div class="filter-variants" id="filter-variants-list">
+              <!-- Variantes se muestran aquí -->
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Emulador 6: Annotation Emulator -->
+      <div class="emulator-card" id="emulator-annot">
+        <div class="emulator-header">
+          <h4>📝 Annotation Emulator</h4>
+          <span class="emulator-badge">Anotación de Variantes</span>
+        </div>
+        <div class="emulator-body">
+          <div class="emulator-controls">
+            <label>Variante a anotar:</label>
+            <input type="text" id="annot-variant" value="chr1:12345:G>A" placeholder="chr:pos:ref>alt">
+            <label>Anotador:</label>
+            <select id="annot-tool">
+              <option value="snpeff">SnpEff</option>
+              <option value="vep">VEP</option>
+              <option value="annovar">ANNOVAR</option>
+            </select>
+            <button class="emulator-run-btn" onclick="runAnnotationEmulator()">Anotar Variante</button>
+          </div>
+          <div class="emulator-output annot-results" id="annot-output">
+            <div class="annot-gene">
+              <span class="annot-label">Gen:</span>
+              <span class="annot-value gene-name" id="annot-gene">BRCA1</span>
+            </div>
+            <div class="annot-impact">
+              <span class="annot-label">Impacto:</span>
+              <span class="annot-value impact-badge high" id="annot-impact">HIGH</span>
+            </div>
+            <div class="annot-consequence">
+              <span class="annot-label">Consecuencia:</span>
+              <span class="annot-value consequence" id="annot-consequence">missense_variant</span>
+            </div>
+            <div class="annot-details" id="annot-details">
+              <div class="detail-row">
+                <span>Codón:</span>
+                <span>c.5242G>A</span>
+              </div>
+              <div class="detail-row">
+                <span>Proteína:</span>
+                <span>p.Gly1748Arg</span>
+              </div>
+              <div class="detail-row">
+                <span>Exón:</span>
+                <span>11/24</span>
+              </div>
+              <div class="detail-row">
+                <span>ClinVar:</span>
+                <span class="clinvar pathogenic">Pathogenic</span>
+              </div>
+              <div class="detail-row">
+                <span>gnomAD:</span>
+                <span>0.0001 (raro)</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Emulador 7: Pipeline Runner Emulator -->
+      <div class="emulator-card" id="emulator-pipeline">
+        <div class="emulator-header">
+          <h4>⚙️ Pipeline Runner Emulator</h4>
+          <span class="emulator-badge">Ejecutor de Pipeline Completo</span>
+        </div>
+        <div class="emulator-body">
+          <div class="emulator-controls pipeline-controls">
+            <label>Selecciona pasos del pipeline:</label>
+            <div class="pipeline-checkboxes">
+              <label><input type="checkbox" id="pipe-qc" checked> QC (FastQC)</label>
+              <label><input type="checkbox" id="pipe-trim" checked> Trimming (fastp)</label>
+              <label><input type="checkbox" id="pipe-align" checked> Alineamiento (BWA)</label>
+              <label><input type="checkbox" id="pipe-dedup" checked> Deduplicación</label>
+              <label><input type="checkbox" id="pipe-vc" checked> Variant Calling (GATK)</label>
+              <label><input type="checkbox" id="pipe-filter" checked> Filtrado</label>
+              <label><input type="checkbox" id="pipe-annot" checked> Anotación (SnpEff)</label>
+            </div>
+            <label>Perfil:</label>
+            <select id="pipe-profile">
+              <option value="test">Test (datos pequeños)</option>
+              <option value="normal">Normal</option>
+              <option value="hpc">High Performance</option>
+            </select>
+            <button class="emulator-run-btn pipeline-run" onclick="runPipelineEmulator()">▶️ Ejecutar Pipeline</button>
+          </div>
+          <div class="emulator-output pipeline-terminal" id="pipe-output">
+            <div class="terminal-header">
+              <span class="terminal-title">🖥️ Terminal - nf-core/sarek</span>
+              <span class="terminal-status" id="pipe-status">Listo</span>
+            </div>
+            <pre class="terminal-content" id="pipe-terminal">Selecciona los pasos y ejecuta el pipeline...</pre>
+          </div>
+          <div class="pipeline-progress" id="pipe-progress">
+            <div class="progress-bar"><div class="progress-fill" id="pipe-progress-fill"></div></div>
+            <span class="progress-text" id="pipe-progress-text">0%</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+// Funciones de los emuladores
+function runFastqEmulator() {
+  const ref = document.getElementById('fastq-ref').value.toUpperCase();
+  const count = parseInt(document.getElementById('fastq-count').value);
+  const errorRate = parseInt(document.getElementById('fastq-error').value);
+  const bases = ['A', 'T', 'G', 'C'];
+  
+  let output = '';
+  const readLength = Math.min(ref.length, 100);
+  
+  for (let i = 0; i < count; i++) {
+    const startPos = Math.floor(Math.random() * (ref.length - readLength));
+    let readSeq = '';
+    let qualScores = '';
+    
+    for (let j = 0; j < readLength; j++) {
+      const refBase = ref[startPos + j];
+      // Simular error
+      if (Math.random() * 100 < errorRate) {
+        const errorBases = bases.filter(b => b !== refBase);
+        readSeq += errorBases[Math.floor(Math.random() * errorBases.length)];
+        // Baja calidad para errores
+        qualScores += String.fromCharCode(20 + Math.floor(Math.random() * 15));
+      } else {
+        readSeq += refBase;
+        // Buena calidad para matches
+        qualScores += String.fromCharCode(30 + Math.floor(Math.random() * 10));
+      }
+    }
+    
+    output += `@READ_${String(i+1).padStart(4, '0')} length=${readLength}\n`;
+    output += `${readSeq}\n`;
+    output += `+\n`;
+    output += `${qualScores}\n`;
+  }
+  
+  document.querySelector('#fastq-output pre').textContent = output;
+  document.getElementById('fastq-output').classList.add('active');
+}
+
+function runQcEmulator() {
+  const type = document.getElementById('qc-type').value;
+  const gc = document.getElementById('qc-gc').value;
+  
+  document.getElementById('qc-gc-val').textContent = gc + '%';
+  
+  const modules = document.querySelectorAll('.qc-module');
+  const charts = document.querySelectorAll('.qc-chart');
+  
+  modules.forEach(m => {
+    m.className = 'qc-module';
+    if (type === 'good') {
+      m.classList.add('pass');
+    } else if (type === 'medium') {
+      m.classList.add('warn');
+    } else {
+      m.classList.add('fail');
+    }
+  });
+  
+  // Actualizar gráficos simulados
+  charts.forEach(chart => {
+    chart.querySelector('.fake-chart').style.setProperty('--quality', type === 'good' ? '90%' : type === 'medium' ? '60%' : '30%');
+  });
+  
+  const qcOutput = document.getElementById('qc-output');
+  qcOutput.classList.add('active');
+}
+
+function runAlignEmulator() {
+  const ref = document.getElementById('align-ref').value;
+  const read = document.getElementById('align-read').value.toUpperCase();
+  
+  // Encontrar mejor posición
+  let bestPos = -1;
+  let bestMatches = 0;
+  
+  for (let i = 0; i <= ref.length - read.length; i++) {
+    let matches = 0;
+    for (let j = 0; j < read.length; j++) {
+      if (read[j] === ref[i + j]) matches++;
+    }
+    if (matches > bestMatches) {
+      bestMatches = matches;
+      bestPos = i;
+    }
+  }
+  
+  let display = '';
+  // Línea de referencia
+  display += 'REF: ';
+  for (let i = 0; i < ref.length; i++) {
+    if (i >= bestPos && i < bestPos + read.length) {
+      display += ref[i];
+    } else {
+      display += ' ';
+    }
+  }
+  display += '\n';
+  
+  // Línea de matches
+  display += '     ';
+  for (let i = 0; i < ref.length; i++) {
+    if (i >= bestPos && i < bestPos + read.length) {
+      if (read[i - bestPos] === ref[i]) {
+        display += '|';
+      } else {
+        display += '✗';
+      }
+    } else {
+      display += ' ';
+    }
+  }
+  display += '\n';
+  
+  // Línea de read
+  display += 'READ:';
+  display += ' '.repeat(bestPos) + read;
+  display += '\n\n';
+  
+  // Stats
+  const mismatches = read.length - bestMatches;
+  const identity = ((bestMatches / read.length) * 100).toFixed(1);
+  display += `📊 Estadísticas:\n`;
+  display += `   Posición: ${bestPos + 1}\n`;
+  display += `   Matches: ${bestMatches}/${read.length}\n`;
+  display += `   Mismatches: ${mismatches}\n`;
+  display += `   Identidad: ${identity}%`;
+  
+  document.querySelector('#align-output pre').textContent = display;
+  document.getElementById('align-output').classList.add('active');
+}
+
+function runVariantCallerEmulator() {
+  const bamType = document.getElementById('vc-bam').value;
+  const tool = document.getElementById('vc-tool').value;
+  
+  // Generar variantes simuladas
+  const variants = [];
+  const chroms = ['chr1', 'chr2', 'chr3', 'chr4', 'chr5', 'chr6', 'chr7', 'chr8', 'chr9', 'chr10', 'chr11', 'chr12', 'chr17'];
+  const genes = ['BRCA1', 'BRCA2', 'TP53', 'EGFR', 'KRAS', 'PIK3CA', 'APC', 'MYC', 'PTEN', 'RB1', 'VHL', 'CDH1', 'CDKN2A'];
+  const refAlt = [['A','G'], ['C','T'], ['G','A'], ['T','C'], ['CTGT','C'], ['C','CT'], ['A','AT'], ['G','GT']];
+  
+  let numVariants = bamType === 'normal' ? 15 : bamType === 'tumor' ? 25 : 20;
+  
+  for (let i = 0; i < numVariants; i++) {
+    const chrom = chroms[Math.floor(Math.random() * chroms.length)];
+    const pos = Math.floor(Math.random() * 10000000) + 100000;
+    const ra = refAlt[Math.floor(Math.random() * refAlt.length)];
+    const qual = Math.floor(Math.random() * 80) + 20;
+    const dp = Math.floor(Math.random() * 100) + 5;
+    const qd = (qual / (dp / 10)).toFixed(1);
+    const isSnp = ra[0].length === 1 && ra[1].length === 1;
+    
+    variants.push({
+      chrom,
+      pos,
+      id: Math.random() > 0.7 ? `rs${Math.floor(Math.random() * 10000000)}` : '.',
+      ref: ra[0],
+      alt: ra[1],
+      qual,
+      dp,
+      qd,
+      isSnp
+    });
+  }
+  
+  // Ordenar por posición
+  variants.sort((a, b) => {
+    if (a.chrom !== b.chrom) return a.chrom.localeCompare(b.chrom);
+    return a.pos - b.pos;
+  });
+  
+  const snpCount = variants.filter(v => v.isSnp).length;
+  const indelCount = variants.filter(v => !v.isSnp).length;
+  
+  document.getElementById('vc-total').textContent = variants.length;
+  document.getElementById('vc-snp').textContent = snpCount;
+  document.getElementById('vc-indel').textContent = indelCount;
+  
+  let vcfOutput = '<div class="vcf-header">#CHROM  POS       ID          REF   ALT   QUAL  FILTER  INFO</div>';
+  variants.forEach(v => {
+    vcfOutput += `<div class="vcf-line ${v.isSnp ? 'snp' : 'indel'}">`;
+    vcfOutput += `${v.chrom.padEnd(7)}  ${String(v.pos).padStart(9)}  ${String(v.id).padEnd(11)}  ${v.ref.padEnd(5)}  ${v.alt.padEnd(5)}  ${String(v.qual).padEnd(5)}  PASS    DP=${v.dp};QD=${v.qd}`;
+    vcfOutput += '</div>';
+  });
+  
+  document.getElementById('vc-variants-list').innerHTML = vcfOutput;
+  document.getElementById('vc-output').classList.add('active');
+}
+
+function runFilterEmulator() {
+  // Generar variantes de prueba
+  const variants = [];
+  const chroms = ['chr1', 'chr2', 'chr3', 'chr17'];
+  
+  for (let i = 0; i < 50; i++) {
+    variants.push({
+      chrom: chroms[Math.floor(Math.random() * chroms.length)],
+      pos: Math.floor(Math.random() * 1000000) + 100000,
+      qual: Math.floor(Math.random() * 100),
+      dp: Math.floor(Math.random() * 50) + 2,
+      qd: Math.floor(Math.random() * 30) + 2,
+      mq: Math.floor(Math.random() * 60) + 10,
+      fs: Math.floor(Math.random() * 60),
+      isSnp: Math.random() > 0.2
+    });
+  }
+  
+  const qualThresh = parseInt(document.getElementById('filter-qual').value);
+  const dpThresh = parseInt(document.getElementById('filter-dp').value);
+  const qdThresh = parseInt(document.getElementById('filter-qd').value);
+  const mqThresh = parseInt(document.getElementById('filter-mq').value);
+  const fsThresh = parseInt(document.getElementById('filter-fs').value);
+  
+  const filtered = variants.filter(v => 
+    v.qual >= qualThresh &&
+    v.dp >= dpThresh &&
+    v.qd >= qdThresh &&
+    v.mq >= mqThresh &&
+    v.fs <= fsThresh
+  );
+  
+  document.getElementById('filter-initial').textContent = variants.length;
+  document.getElementById('filter-passed').textContent = filtered.length;
+  document.getElementById('filter-removed').textContent = variants.length - filtered.length;
+  
+  let filterOutput = '';
+  filtered.forEach(v => {
+    filterOutput += `<div class="filter-variant ${v.isSnp ? 'snp' : 'indel'}">`;
+    filterOutput += `<span class="f-chrom">${v.chrom}</span>`;
+    filterOutput += `<span class="f-pos">${v.pos}</span>`;
+    filterOutput += `<span class="f-qual">Q=${v.qual}</span>`;
+    filterOutput += `<span class="f-dp">DP=${v.dp}</span>`;
+    filterOutput += `<span class="f-qd">QD=${v.qd}</span>`;
+    filterOutput += `<span class="f-mq">MQ=${v.mq}</span>`;
+    filterOutput += `<span class="f-fs">FS=${v.fs}</span>`;
+    filterOutput += '</div>';
+  });
+  
+  document.getElementById('filter-variants-list').innerHTML = filterOutput || '<div class="no-variants">Ninguna variante pasó los filtros</div>';
+  document.getElementById('filter-output').classList.add('active');
+}
+
+function runAnnotationEmulator() {
+  const gene = ['BRCA1', 'BRCA2', 'TP53', 'EGFR', 'KRAS', 'PTEN', 'VHL', 'CDH1'][Math.floor(Math.random() * 8)];
+  const impacts = ['HIGH', 'MODERATE', 'LOW', 'MODIFIER'];
+  const impactWeights = [0.1, 0.25, 0.35, 0.3];
+  const rand = Math.random();
+  let impact = 'MODIFIER';
+  let cumulative = 0;
+  for (let i = 0; i < impacts.length; i++) {
+    cumulative += impactWeights[i];
+    if (rand < cumulative) {
+      impact = impacts[i];
+      break;
+    }
+  }
+  
+  const consequences = {
+    'HIGH': ['stop_gained', 'frameshift_variant', 'splice_donor_variant', 'stop_lost'],
+    'MODERATE': ['missense_variant', 'inframe_deletion', 'inframe_insertion'],
+    'LOW': ['synonymous_variant', '5_prime_UTR_variant', '3_prime_UTR_variant'],
+    'MODIFIER': ['intron_variant', 'upstream_gene_variant', 'intergenic_region']
+  };
+  
+  const consequence = consequences[impact][Math.floor(Math.random() * consequences[impact].length)];
+  
+  document.getElementById('annot-gene').textContent = gene;
+  
+  const impactEl = document.getElementById('annot-impact');
+  impactEl.textContent = impact;
+  impactEl.className = 'annot-value impact-badge ' + impact.toLowerCase();
+  
+  document.getElementById('annot-consequence').textContent = consequence.replace('_', ' ');
+  
+  // Actualizar detalles
+  const details = document.getElementById('annot-details');
+  details.innerHTML = `
+    <div class="detail-row"><span>Codón:</span><span>c.${Math.floor(Math.random() * 5000) + 1000}${['G>A', 'C>T', 'A>G', 'T>C'][Math.floor(Math.random() * 4)]}</span></div>
+    <div class="detail-row"><span>Proteína:</span><span>p.${['Arg', 'His', 'Leu', 'Pro', 'Gln'][Math.floor(Math.random() * 5)]}${Math.floor(Math.random() * 2000) + 100}${['', 'Val', 'Ile', 'Met', 'Thr'][Math.floor(Math.random() * 5)]}</span></div>
+    <div class="detail-row"><span>Exón:</span><span>${Math.floor(Math.random() * 20) + 1}/24</span></div>
+    <div class="detail-row"><span>ClinVar:</span><span class="clinvar ${['pathogenic', 'likely_pathogenic', 'benign', 'uncertain'][Math.floor(Math.random() * 4)]}">${['Pathogenic', 'Likely Pathogenic', 'Benign', 'Uncertain'][Math.floor(Math.random() * 4)]}</span></div>
+    <div class="detail-row"><span>gnomAD:</span><span>${(Math.random() * 0.05).toFixed(4)} (${Math.random() > 0.5 ? 'raro' : 'común'})</span></div>
+    <div class="detail-row"><span>CADD:</span><span>${(Math.random() * 20 + 10).toFixed(1)}</span></div>
+    <div class="detail-row"><span>PolyPhen:</span><span>${['probably_damaging', 'possibly_damaging', 'benign'][Math.floor(Math.random() * 3)]}</span></div>
+  `;
+  
+  document.getElementById('annot-output').classList.add('active');
+}
+
+function runPipelineEmulator() {
+  const terminal = document.getElementById('pipe-terminal');
+  const status = document.getElementById('pipe-status');
+  const progressFill = document.getElementById('pipe-progress-fill');
+  const progressText = document.getElementById('pipe-progress-text');
+  
+  const steps = [];
+  if (document.getElementById('pipe-qc').checked) steps.push({name: 'FastQC', cmd: 'fastqc *.fastq.gz'});
+  if (document.getElementById('pipe-trim').checked) steps.push({name: 'fastp', cmd: 'fastp -i R1.fq -o clean_R1.fq'});
+  if (document.getElementById('pipe-align').checked) steps.push({name: 'BWA', cmd: 'bwa mem ref.fa R1.fq R2.fq'});
+  if (document.getElementById('pipe-dedup').checked) steps.push({name: 'MarkDuplicates', cmd: 'gatk MarkDuplicates'});
+  if (document.getElementById('pipe-vc').checked) steps.push({name: 'HaplotypeCaller', cmd: 'gatk HaplotypeCaller'});
+  if (document.getElementById('pipe-filter').checked) steps.push({name: 'VariantFiltration', cmd: 'gatk VariantFiltration'});
+  if (document.getElementById('pipe-annot').checked) steps.push({name: 'SnpEff', cmd: 'snpEff ann hg38 variants.vcf'});
+  
+  if (steps.length === 0) {
+    terminal.textContent = '❌ Selecciona al menos un paso del pipeline';
+    return;
+  }
+  
+  status.textContent = 'Ejecutando...';
+  terminal.textContent = '';
+  
+  let currentStep = 0;
+  const totalSteps = steps.length;
+  
+  function runStep() {
+    if (currentStep >= totalSteps) {
+      status.textContent = '✅ Completado';
+      terminal.textContent += '\n\n🎉 Pipeline completado exitosamente!';
+      return;
+    }
+    
+    const step = steps[currentStep];
+    terminal.textContent += `$ ${step.cmd}\n`;
+    terminal.textContent += `[${currentStep + 1}/${totalSteps}] Executing ${step.name}...\n`;
+    
+    // Simular output
+    const outputs = {
+      'FastQC': '✓ 12,345,678 reads - Quality: Pass\n',
+      'fastp': '✓ Reads after filtering: 11,890,123 (96.3%)\n✓ Adapter trimmed: 1.2%\n',
+      'BWA': '✓ Mapped: 98.5% | Properly paired: 96.2%\n',
+      'MarkDuplicates': '✓ Duplicates marked: 4.2%\n',
+      'HaplotypeCaller': '✓ SNPs: 15,234 | Indels: 2,567\n',
+      'VariantFiltration': '✓ Variants filtered: 8,456 high-quality\n',
+      'SnpEff': '✓ HIGH: 234 | MODERATE: 1,234 | LOW: 3,456\n'
+    };
+    
+    terminal.textContent += outputs[step.name] || '';
+    
+    currentStep++;
+    const progress = Math.round((currentStep / totalSteps) * 100);
+    progressFill.style.width = progress + '%';
+    progressText.textContent = progress + '%';
+    
+    if (terminal.scrollTop) {
+      terminal.scrollTop = terminal.scrollHeight;
+    }
+    
+    setTimeout(runStep, 800);
+  }
+  
+  runStep();
+}
+
+// Quiz de Genomics
 function renderGenomicsQuiz() {
   const questions = [
     { q: "¿Qué herramienta realiza control de calidad?", options: ["FastQC", "BWA", "SnpEff"], correct: 0 },
@@ -1931,6 +3212,7 @@ function renderGenomicsModule() {
       
       <div class="cli-tabs">
         <button class="cli-tab active" data-tab="pipeline">🔄 Pipeline</button>
+        <button class="cli-tab" data-tab="emuladores">🧪 Emuladores</button>
         <button class="cli-tab" data-tab="herramientas">🛠️ Herramientas</button>
         <button class="cli-tab" data-tab="ejercicios">✏️ Ejercicios</button>
         <button class="cli-tab" data-tab="quiz">❓ Quiz</button>
@@ -1938,6 +3220,10 @@ function renderGenomicsModule() {
       
       <div class="cli-tab-content" id="genTabPipeline">
         ${renderGenomicsLesson()}
+      </div>
+      
+      <div class="cli-tab-content hidden" id="genTabEmuladores">
+        ${renderGenomicsEmulators()}
       </div>
       
       <div class="cli-tab-content hidden" id="genTabHerramientas">
