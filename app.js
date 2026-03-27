@@ -44,6 +44,7 @@ const cliCaptures = {
   'head -n': 'captures/head.svg',
   'tail': 'captures/tail.svg',
   'less': 'captures/less.svg',
+  'less archivo': 'captures/less-archivo.svg',
   'wc': 'captures/wc.svg',
   'wc -l': 'captures/wc.svg',
   'file': 'captures/cat.svg',
@@ -111,6 +112,7 @@ const cliCaptures = {
   'samtools flagstat': 'captures/samtools-flagstat.svg',
   'bcftools': 'captures/bcftools.svg',
   'bcftools view': 'captures/bcftools.svg',
+  "bcftools view -i 'QUAL>=30 && DP>=10' variants.vcf.gz | head": 'captures/bcftools-view-i-head.svg',
   'fastqc': 'captures/fastqc.svg'
 };
 
