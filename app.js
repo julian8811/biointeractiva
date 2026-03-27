@@ -96,6 +96,7 @@ const cliCaptures = {
   'chmod': 'captures/chmod.svg',
   'chmod +x': 'captures/chmod.svg',
   'chown': 'captures/chown.svg',
+  'chgrp': 'captures/chgrp.svg',
   
   // Utilidades del sistema
   'history': 'captures/history.svg',
