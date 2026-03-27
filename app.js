@@ -1397,66 +1397,306 @@ function renderGenomicsLesson() {
       <h3>🧬 El flujo de análisis genómico</h3>
       <p>El análisis genómico moderno sigue un pipeline estructurado donde cada etapa transforma los datos para obtener información biológica significativa.</p>
       
-      <div class="pipeline-flow">
+      <div class="pipeline-flow enhanced">
         <div class="pipeline-step">
           <span class="step-num">1</span>
-          <h5>📊 QC (Control de Calidad)</h5>
-          <p>Evaluar calidad de lecturas crudas con FastQC. Identificar adaptadores, низкое quality.</p>
-          <code>fastqc raw/*.fastq.gz</code>
+          <div class="step-content">
+            <h5>📥 Recepción de datos</h5>
+            <p>Obtener lecturas crudas (FASTQ) del secuenciador o repositorio (SRA, ENA).</p>
+            <code>wget https://example.com/sample_R1.fastq.gz</code>
+          </div>
         </div>
         <div class="pipeline-step">
           <span class="step-num">2</span>
-          <h5>✂️ Trimming</h5>
-          <p>Recortar adaptadores y colas de baja calidad.</p>
-          <code>trimmomatic PE input.fq output.fq</code>
+          <div class="step-content">
+            <h5>📊 QC (Control de Calidad)</h5>
+            <p>Evaluar calidad con FastQC. Identificar adaptadores, baja calidad, contaminación.</p>
+            <code>fastqc raw/*.fastq.gz -o qc_results/</code>
+            <div class="step-tools">Herramientas: FastQC, MultiQC</div>
+          </div>
         </div>
         <div class="pipeline-step">
           <span class="step-num">3</span>
-          <h5>🗺️ Alineamiento</h5>
-          <p>Mapear lecturas contra genoma de referencia.</p>
-          <code>bwa mem ref.fa reads.fq > aligned.sam</code>
+          <div class="step-content">
+            <h5>✂️ Preprocesamiento</h5>
+            <p>Recortar adaptadores, eliminar низкое calidad, filtrar por longitud.</p>
+            <code>trimmomatic PE input_R1.fq input_R2.fq out_R1.fq out_R2.fq ILLUMINACLIP:adapters.fa:2:30:10</code>
+            <div class="step-tools">Herramientas: Trimmomatic, fastp, Cutadapt</div>
+          </div>
         </div>
         <div class="pipeline-step">
           <span class="step-num">4</span>
-          <h5>🧪 Variant Calling</h5>
-          <p>Identificar SNPs e indels comparando con referencia.</p>
-          <code>freebayes -f ref.fa aligned.bam > variants.vcf</code>
+          <div class="step-content">
+            <h5>🗺️ Alineamiento</h5>
+            <p>Mapear lecturas contra genoma de referencia. Crear archivos SAM/BAM.</p>
+            <code>bwa mem -t 8 ref.fa sample_R1.fq sample_R2.fq | samtools sort -o aligned.bam</code>
+            <div class="step-tools">Herramientas: BWA, Bowtie2, HISAT2, minimap2</div>
+          </div>
         </div>
         <div class="pipeline-step">
           <span class="step-num">5</span>
-          <h5>📝 Anotación</h5>
-          <p>Determinar efecto de variantes en genes.</p>
-          <code>snpEff ann -v hg38 variants.vcf</code>
+          <div class="step-content">
+            <h5>🧪 Variant Calling</h5>
+            <p>Identificar SNPs, indels y variantes estructurales comparando con referencia.</p>
+            <code>bcftools call -v -o variants.vcf aligned.bam</code>
+            <div class="step-tools">Herramientas: GATK, FreeBayes, DeepVariant, bcftools</div>
+          </div>
+        </div>
+        <div class="pipeline-step">
+          <span class="step-num">6</span>
+          <div class="step-content">
+            <h5>🔍 Filtrado de variantes</h5>
+            <p>Aplicar umbrales de calidad, profundidad,QD, FS.</p>
+            <code>bcftools view -i 'QUAL>30 && DP>10' variants.vcf > filtered.vcf</code>
+            <div class="step-tools">Parámetros: QUAL, DP, QD, FS, SOR, MQ, MQRankSum</div>
+          </div>
+        </div>
+        <div class="pipeline-step">
+          <span class="step-num">7</span>
+          <div class="step-content">
+            <h5>📝 Anotación</h5>
+            <p>Determinar efecto de variantes en genes (sinónimo, missense, nonsense).</p>
+            <code>snpEff ann -v hg38 filtered.vcf > annotated.vcf</code>
+            <div class="step-tools">Herramientas: SnpEff, ANNOVAR, VEP</div>
+          </div>
+        </div>
+        <div class="pipeline-step">
+          <span class="step-num">8</span>
+          <div class="step-content">
+            <h5>📈 Interpretación</h5>
+            <p>Análisis funcional, búsqueda en bases de datos, prioritize variants.</p>
+            <code># Anotación funcional</code>
+            <div class="step-tools">Herramientas: PROVEAN, PolyPhen, CADD, dbNSFP</div>
+          </div>
         </div>
       </div>
     </div>
 
+    <!-- Guía de Formatos -->
     <div class="lesson">
-      <h3>🛠️ Herramientas principales</h3>
-      <div class="tools-grid">
-        <div class="tool-card">
-          <h5>FastQC</h5>
-          <p>Control de calidad de lecturas</p>
+      <h3>📋 Guía de Formatos de Archivos</h3>
+      
+      <div class="format-cards">
+        <div class="format-card">
+          <div class="format-header fastq">📄 FASTQ</div>
+          <p class="format-desc">Formato crudos de secuenciación. 4 líneas por read:</p>
+          <div class="format-example">
+            <code>@SEQ_ID</code>
+            <code>GATTTGGGGTTCAAAGCAGTATCGATCAAATAGTAAATCCATTTGTTCAACTCACAGTTT</code>
+            <code>+</code>
+            <code>!''*((((***+))%%%++)(%%%%).1***-+*''))**55CCF>>>>>>CCCCCCC65</code>
+          </div>
+          <ul class="format-info">
+            <li>Línea 1: ID del read (@)</li>
+            <li>Línea 2: Secuencia (ATCG)</li>
+            <li>Línea 3: Separador (+)</li>
+            <li>Línea 4: Scores de calidad (Phred)</li>
+          </ul>
         </div>
-        <div class="tool-card">
-          <h5>Trimmomatic</h5>
-          <p>Recorte de adaptadores y quality</p>
+
+        <div class="format-card">
+          <div class="format-header sam">📄 SAM/BAM</div>
+          <p class="format-desc">Sequence Alignment Map. Texto (SAM) o binario (BAM):</p>
+          <div class="format-example">
+            <code>read001 99 chr1 1000 60 50M = 1200 250 GATACA... * NM:i:0 MD:Z:50</code>
+          </div>
+          <ul class="format-info">
+            <li>QNAME: Nombre del read</li>
+            <li>FLAG: Estado del mapeo</li>
+            <li>RNAME: Cromosoma</li>
+            <li>POS: Posición inicio</li>
+            <li>MAPQ: Calidad mapeo</li>
+            <li>CIGAR: Operadores alineamiento</li>
+          </ul>
         </div>
-        <div class="tool-card">
-          <h5>BWA</h5>
-          <p>Alineamiento short reads</p>
+
+        <div class="format-card">
+          <div class="format-header vcf">📄 VCF</div>
+          <p class="format-desc">Variant Call Format. Información de variantes:</p>
+          <div class="format-example">
+            <code>#CHROM POS ID REF ALT QUAL FILTER INFO</code>
+            <code>chr1 12345 rs123 G A 50 PASS DP=25;QD=15;FS=2.5</code>
+            <code>chr1 23456 . C T 30 PASS DP=10;QD=8</code>
+          </div>
+          <ul class="format-info">
+            <li>CHROM: Cromosoma</li>
+            <li>POS: Posición</li>
+            <li>ID: Identificador (rsID)</li>
+            <li>REF/ALT: Nucleótidos</li>
+            <li>QUAL: Phred quality</li>
+            <li>INFO: Anotaciones (DP, QD, FS...)</li>
+          </ul>
         </div>
-        <div class="tool-card">
-          <h5>FreeBayes</h5>
-          <p>Variant calling</p>
+
+        <div class="format-card">
+          <div class="format-header bed">📄 BED</div>
+          <p class="format-desc">Browser Extensible Data. Regiones genómicas:</p>
+          <div class="format-example">
+            <code>chr1 1000 2000 GeneA 0 +</code>
+            <code>chr1 2500 3000 Exon1 0 +</code>
+          </div>
+          <ul class="format-info">
+            <li>Columna 1: Cromosoma</li>
+            <li>Columna 2: Inicio</li>
+            <li>Columna 3: Fin</li>
+            <li>Columna 4: Nombre</li>
+            <li>Columna 5: Score</li>
+            <li>Columna 6: Strand</li>
+          </ul>
         </div>
-        <div class="tool-card">
-          <h5>IGV</h5>
-          <p>Visualización de resultados</p>
+      </div>
+    </div>
+
+    <!-- Herramientas por Categoría -->
+    <div class="lesson">
+      <h3>🛠️ Herramientas por Categoría</h3>
+      
+      <div class="tools-by-category">
+        <div class="tool-category">
+          <h4>📊 Control de Calidad</h4>
+          <div class="tool-list">
+            <div class="tool-item">
+              <strong>FastQC</strong>
+              <span>El estándar para QC de reads</span>
+              <code>fastqc sample.fastq.gz</code>
+            </div>
+            <div class="tool-item">
+              <strong>MultiQC</strong>
+              <span>Agregar múltiples reportes FastQC</span>
+              <code>multiqc .</code>
+            </div>
+            <div class="tool-item">
+              <strong>fastp</strong>
+              <span>QC + trimming todo-en-uno</span>
+              <code>fastp -i R1.fq -o R1_clean.fq</code>
+            </div>
+          </div>
         </div>
-        <div class="tool-card">
-          <h5>SnpEff</h5>
-          <p>Anotación de variantes</p>
+
+        <div class="tool-category">
+          <h4>✂️ Preprocesamiento</h4>
+          <div class="tool-list">
+            <div class="tool-item">
+              <strong>Trimmomatic</strong>
+              <span>Recorte de adaptadores y calidad</span>
+              <code>trimmomatic PE input.fq output.fq ILLUMINACLIP:adapters.fa</code>
+            </div>
+            <div class="tool-item">
+              <strong>Cutadapt</strong>
+              <span>Eliminar adaptadores específicos</span>
+              <code>cutadapt -a AGATCGGAAGAGC -o output.fq input.fq</code>
+            </div>
+            <div class="tool-item">
+              <strong>PRINSEQ</strong>
+              <span>Filtrado y recorte de reads</span>
+              <code>prinseq -fastq input.fq -good_out clean.fq</code>
+            </div>
+          </div>
+        </div>
+
+        <div class="tool-category">
+          <h4>🗺️ Alineamiento</h4>
+          <div class="tool-list">
+            <div class="tool-item">
+              <strong>BWA-MEM</strong>
+              <span>Short reads (Illumina)</span>
+              <code>bwa mem ref.fa reads.fq > align.sam</code>
+            </div>
+            <div class="tool-item">
+              <strong> Bowtie2</strong>
+              <span>Short reads, buen para SNPs</span>
+              <code>bowtie2 -x index -U reads.fq -S align.sam</code>
+            </div>
+            <div class="tool-item">
+              <strong>HISAT2</strong>
+              <span>RNA-seq, splice-aware</span>
+              <code>hisat2 -x index -U reads.fq -S align.sam</code>
+            </div>
+            <div class="tool-item">
+              <strong>minimap2</strong>
+              <span>Long reads (Nanopore, PacBio)</span>
+              <code>minimap2 -ax map-ont ref.fa reads.fq > align.sam</code>
+            </div>
+          </div>
+        </div>
+
+        <div class="tool-category">
+          <h4>🧪 Variant Calling</h4>
+          <div class="tool-list">
+            <div class="tool-item">
+              <strong>GATK HaplotypeCaller</strong>
+              <span>Gold standard para SNPs/indels</span>
+              <code>gatk HaplotypeCaller -R ref.fa -I bam.bam -O variants.vcf</code>
+            </div>
+            <div class="tool-item">
+              <strong>FreeBayes</strong>
+              <span>Variantes bayesianas</span>
+              <code>freebayes -f ref.fa bam.bam > variants.vcf</code>
+            </div>
+            <div class="tool-item">
+              <strong>DeepVariant</strong>
+              <span>Variant calling con deep learning</span>
+              <code>deepvariant --model_type=WGS --ref=ref.fa --reads=bam.bam --output=variants.vcf</code>
+            </div>
+          </div>
+        </div>
+
+        <div class="tool-category">
+          <h4>📝 Anotación</h4>
+          <div class="tool-list">
+            <div class="tool-item">
+              <strong>SnpEff</strong>
+              <span>Anotación funcional de variantes</span>
+              <code>snpEff ann -v hg38 variants.vcf > annotated.vcf</code>
+            </div>
+            <div class="tool-item">
+              <strong>ANNOVAR</strong>
+              <span>Anotación comprehensiva</span>
+              <code>table_annovar.pl variants.pl --buildver hg38</code>
+            </div>
+            <div class="tool-item">
+              <strong>VEP</strong>
+              <span>Variant Effect Predictor</span>
+              <code>vep -i variants.vcf -o output.txt --species human</code>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Parámetros de Filtrado -->
+    <div class="lesson">
+      <h3>🎯 Parámetros Importantes de Filtrado</h3>
+      <div class="params-grid">
+        <div class="param-card">
+          <code>QUAL</code>
+          <p>Phred quality score. >30 = alta confianza.</p>
+          <span class="param-example">bcftools view -i 'QUAL>30'</span>
+        </div>
+        <div class="param-card">
+          <code>DP</code>
+          <p>Profundidad de lectura (Coverage). >10x mínimo recomendado.</p>
+          <span class="param-example">bcftools view -i 'DP>10'</span>
+        </div>
+        <div class="param-card">
+          <code>QD</code>
+          <p>Qualidad por profundidad. >15 sugiere variante real.</p>
+          <span class="param-example">bcftools view -i 'QD>15'</span>
+        </div>
+        <div class="param-card">
+          <code>FS</code>
+          <p>Fisher's exact test for strand bias. <30 para SNPs.</p>
+          <span class="param-example">bcftools view -i 'FS<30'</span>
+        </div>
+        <div class="param-card">
+          <code>MQ</code>
+          <p>Mapping Quality. >40 indica buen mapeo.</p>
+          <span class="param-example">bcftools view -i 'MQ>40'</span>
+        </div>
+        <div class="param-card">
+          <code>SOR</code>
+          <p>Symmetric Odds Ratio. <3 para SNPs.</p>
+          <span class="param-example">bcftools view -i 'SOR<3'</span>
         </div>
       </div>
     </div>
@@ -1465,57 +1705,203 @@ function renderGenomicsLesson() {
 
 function renderGenomicsInteractive() {
   return `
+    <!-- Ejercicio 1: Ordenar Pipeline -->
     <div class="interactive">
       <h4>🧩 Ordena el pipeline genómico</h4>
-      <p>Arrastra los pasos en el orden correcto:</p>
-      <div class="pipeline-sortable" id="pipelineSortable">
-        <div class="sort-item" draggable="true" data-order="3">3. Alineamiento (BWA)</div>
-        <div class="sort-item" draggable="true" data-order="1">1. QC (FastQC)</div>
-        <div class="sort-item" draggable="true" data-order="5">5. Anotación (SnpEff)</div>
-        <div class="sort-item" draggable="true" data-order="4">4. Variant Calling</div>
-        <div class="sort-item" draggable="true" data-order="2">2. Trimming</div>
+      <p>Ordena los pasos del 1 al 8 (escribe los números separados por coma):</p>
+      <div class="lab-commands">
+        <div class="lab-cmd"><span class="num">_</span> QC (FastQC) - Evaluar calidad</div>
+        <div class="lab-cmd"><span class="num">_</span> Preprocesamiento (Trimming)</div>
+        <div class="lab-cmd"><span class="num">_</span> Alineamiento (BWA)</div>
+        <div class="lab-cmd"><span class="num">_</span> Variant Calling (GATK)</div>
+        <div class="lab-cmd"><span class="num">_</span> Filtrado de variantes</div>
+        <div class="lab-cmd"><span class="num">_</span> Anotación (SnpEff)</div>
+        <div class="lab-cmd"><span class="num">_</span> Interpretación funcional</div>
+        <div class="lab-cmd"><span class="num">_</span> Recepción de datos</div>
       </div>
-      <button onclick="checkPipelineOrder()">Verificar orden</button>
+      <input type="text" id="pipelineOrderInput" placeholder="Orden: 8,1,2,3,4,5,6,7">
+      <button onclick="checkPipelineOrder()">Verificar</button>
       <div id="genPipelineFeedback" class="feedback hidden"></div>
     </div>
 
-    <div class="interactive">
-      <h4>🎯 Identifica las herramientas</h4>
+    <!-- Ejercicios de Comandos -->
+    <div class="lesson">
+      <h4>✏️ Ejercicios de Comandos</h4>
+      
       <div class="exercise-card">
-        <p>¿Qué herramienta usarías para identificar SNPs?</p>
-        <input type="text" id="exGen1" placeholder="Ej: freebayes">
+        <h5>✏️ Ejercicio 1: QC de lecturas</h5>
+        <p>Escribe el comando para hacer QC de archivos FASTQ:</p>
+        <input type="text" id="exGen1" placeholder="fastqc archivos.fastq.gz">
         <button onclick="checkGenEx1()">Verificar</button>
         <div id="genEx1Feedback" class="feedback hidden"></div>
       </div>
-      
+
       <div class="exercise-card">
-        <p>¿Qué formato se genera después del alineamiento?</p>
-        <input type="text" id="exGen2" placeholder="Ej: SAM/BAM">
+        <h5>✏️ Ejercicio 2: Alineamiento</h5>
+        <p>Escribe el comando para alinear con BWA:</p>
+        <input type="text" id="exGen2" placeholder="bwa mem ref.fa reads.fq > aligned.sam">
         <button onclick="checkGenEx2()">Verificar</button>
         <div id="genEx2Feedback" class="feedback hidden"></div>
       </div>
+
+      <div class="exercise-card">
+        <h5>✏️ Ejercicio 3: Variant Calling</h5>
+        <p>Usa bcftools para identificar variantes:</p>
+        <input type="text" id="exGen3" placeholder="bcftools call -v -o variants.vcf aligned.bam">
+        <button onclick="checkGenEx3()">Verificar</button>
+        <div id="genEx3Feedback" class="feedback hidden"></div>
+      </div>
+
+      <div class="exercise-card">
+        <h5>✏️ Ejercicio 4: Filtrado por calidad</h5>
+        <p>Filtra variantes con QUAL > 30 y DP > 10:</p>
+        <input type="text" id="exGen4" placeholder="bcftools view -i 'QUAL>30 && DP>10' variants.vcf">
+        <button onclick="checkGenEx4()">Verificar</button>
+        <div id="genEx4Feedback" class="feedback hidden"></div>
+      </div>
+
+      <div class="exercise-card">
+        <h5>✏️ Ejercicio 5: Anotación</h5>
+        <p>Usa SnpEff para anotar variantes:</p>
+        <input type="text" id="exGen5" placeholder="snpEff ann hg38 variants.vcf">
+        <button onclick="checkGenEx5()">Verificar</button>
+        <div id="genEx5Feedback" class="feedback hidden"></div>
+      </div>
+
+      <div class="exercise-card">
+        <h5>✏️ Ejercicio 6: Formato FASTQ</h5>
+        <p>¿Cuántas líneas tiene cada read en FASTQ?</p>
+        <input type="text" id="exGen6" placeholder="4">
+        <button onclick="checkGenEx6()">Verificar</button>
+        <div id="genEx6Feedback" class="feedback hidden"></div>
+      </div>
+
+      <div class="exercise-card">
+        <h5>✏️ Ejercicio 7: SAM vs BAM</h5>
+        <p>¿Cuál es la versión comprimida de SAM?</p>
+        <input type="text" id="exGen7" placeholder="BAM">
+        <button onclick="checkGenEx7()">Verificar</button>
+        <div id="genEx7Feedback" class="feedback hidden"></div>
+      </div>
+
+      <div class="exercise-card">
+        <h5>✏️ Ejercicio 8: Parámetro QD</h5>
+        <p>¿Qué significa QD en el filtrado de variantes?</p>
+        <input type="text" id="exGen8" placeholder="Quality by depth">
+        <button onclick="checkGenEx8()">Verificar</button>
+        <div id="genEx8Feedback" class="feedback hidden"></div>
+      </div>
     </div>
 
-    <div class="interactive">
-      <h4>📊 Simulador de formato VCF</h4>
-      <p>Ejemplo de archivo VCF con variantes:</p>
-      <div class="code">#CHROM  POS     ID       REF     ALT     QUAL    FILTER  INFO
-chr1    10403   .       G       A       63      PASS    DP=45;AF=0.5
-chr1    234567  rs123    T       C       120     PASS    DP=89;AF=0.3
-chr2    567890  .       A       AG     45      LowQual DP=23</div>
+    <!-- Simulador de Análisis -->
+    <div class="lesson simulator-section">
+      <h4>🧬 Simulador de Análisis Genómico</h4>
+      <p>Sigue los pasos del pipeline:</p>
+      
+      <div class="sim-pipeline">
+        <div class="sim-step-item" data-step="1">
+          <span class="sim-num">1</span>
+          <div class="sim-step-content">
+            <strong>📥 Datos crudos</strong>
+            <code>wget https://example.com/sample.fastq.gz</code>
+            <button class="sim-btn" onclick="runGenSim(1)">Completar</button>
+            <div class="sim-output hidden" id="genSim1">✓ 12,345,678 reads descargados</div>
+          </div>
+        </div>
+        
+        <div class="sim-step-item" data-step="2">
+          <span class="sim-num">2</span>
+          <div class="sim-step-content">
+            <strong>📊 FastQC</strong>
+            <code>fastqc sample.fastq.gz</code>
+            <button class="sim-btn" onclick="runGenSim(2)">Completar</button>
+            <div class="sim-output hidden" id="genSim2">✓ QC: Pass 95% | GC: 42% | Adapters: 1.2%</div>
+          </div>
+        </div>
+        
+        <div class="sim-step-item" data-step="3">
+          <span class="sim-num">3</span>
+          <div class="sim-step-content">
+            <strong>✂️ Trimming</strong>
+            <code>trimmomatic PE input.fq -o clean.fq</code>
+            <button class="sim-btn" onclick="runGenSim(3)">Completar</button>
+            <div class="sim-output hidden" id="genSim3">✓ Reads retain: 11,890,123 (96.3%)</div>
+          </div>
+        </div>
+        
+        <div class="sim-step-item" data-step="4">
+          <span class="sim-num">4</span>
+          <div class="sim-step-content">
+            <strong>🗺️ Alineamiento</strong>
+            <code>bwa mem ref.fa clean.fq | samtools sort -o aligned.bam</code>
+            <button class="sim-btn" onclick="runGenSim(4)">Completar</button>
+            <div class="sim-output hidden" id="genSim4">✓ Mapeo: 98.5% | Duplicados: 4.2%</div>
+          </div>
+        </div>
+        
+        <div class="sim-step-item" data-step="5">
+          <span class="sim-num">5</span>
+          <div class="sim-step-content">
+            <strong>🧪 Variant Calling</strong>
+            <code>bcftools call -v aligned.bam > variants.vcf</code>
+            <button class="sim-btn" onclick="runGenSim(5)">Completar</button>
+            <div class="sim-output hidden" id="genSim5">✓ SNPs: 15,234 | Indels: 2,567</div>
+          </div>
+        </div>
+        
+        <div class="sim-step-item" data-step="6">
+          <span class="sim-num">6</span>
+          <div class="sim-step-content">
+            <strong>🔍 Filtrado</strong>
+            <code>bcftools view -i 'QUAL>30 && DP>10' variants.vcf</code>
+            <button class="sim-btn" onclick="runGenSim(6)">Completar</button>
+            <div class="sim-output hidden" id="genSim6">✓ Variantes de alta calidad: 8,456</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Explorador de Formatos -->
+    <div class="lesson">
+      <h4>📋 Ejemplos de Formatos</h4>
+      
+      <div class="format-example-box">
+        <h5>📄 FASTQ</h5>
+        <div class="code">@READ001
+GATTTGGGGTTCAAAGCAGTATCGATCAAATAGTAAATCCATTTGTTCAACTCACAGTTT
++
+!''*((((***+))%%%++)(%%%%).1***-+*''))**55CCF>>>>>>CCCCCCC65
+        
+@READ002
+CGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGA
++
+IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII</div>
+      </div>
+      
+      <div class="format-example-box">
+        <h5>📄 VCF</h5>
+        <div class="code">#CHROM  POS     ID        REF     ALT     QUAL    FILTER  INFO
+chr1    12345   rs123     G       A       63      PASS    DP=45;AF=0.5;QD=15
+chr1    23456   .         CTGT     C       45      PASS    DP=23;AF=0.3;QD=10
+chr2    56789   rs456     A       T       120     PASS    DP=89;AF=0.7;QD=25</div>
+      </div>
     </div>
   `;
 }
 
 function renderGenomicsQuiz() {
   const questions = [
-    { q: "¿Qué herramienta realiza control de calidad?", options: ["FastQC", "BWA", "SnpEff"] },
-    { q: "¿Qué formato se usa para almacenar lecturas alineadas?", options: ["FASTA", "BAM", "VCF"] },
-    { q: "¿Qué etapa identifica SNPs e indels?", options: ["QC", "Variant Calling", "Trimming"] },
-    { q: "¿Qué herramienta anotación el efecto de variantes?", options: ["IGV", "SnpEff", "FreeBayes"] },
-    { q: "¿Qué significa QC en el contexto de bioinformática?", options: ["Quantum Computing", "Quality Control", "Query Complex"] }
+    { q: "¿Qué herramienta realiza control de calidad?", options: ["FastQC", "BWA", "SnpEff"], correct: 0 },
+    { q: "¿Qué formato se usa para almacenar lecturas alineadas?", options: ["FASTA", "BAM", "VCF"], correct: 1 },
+    { q: "¿Qué etapa identifica SNPs e indels?", options: ["QC", "Variant Calling", "Trimming"], correct: 1 },
+    { q: "¿Qué herramienta anota el efecto de variantes?", options: ["IGV", "SnpEff", "FreeBayes"], correct: 1 },
+    { q: "¿Qué significa QC en bioinformática?", options: ["Quantum Computing", "Quality Control", "Query Complex"], correct: 1 },
+    { q: "¿Cuántas líneas tiene cada read en formato FASTQ?", options: ["2", "4", "8"], correct: 1 },
+    { q: "¿Qué herramienta es mejor para long reads (Nanopore)?", options: ["BWA", "minimap2", "Bowtie2"], correct: 1 },
+    { q: "¿Qué formato es la versión comprimida de SAM?", options: ["BAM", "VCF", "FASTA"], correct: 0 },
+    { q: "¿Qué parámetro indica profundidad de lectura?", options: ["QUAL", "DP", "FS"], correct: 1 },
+    { q: "¿Qué herramienta usa deep learning para variant calling?", options: ["GATK", "FreeBayes", "DeepVariant"], correct: 2 }
   ];
-  const answers = [0, 1, 1, 1, 1];
   
   return `
     <div class="cli-quiz">
@@ -1524,7 +1910,7 @@ function renderGenomicsQuiz() {
           <p><strong>Pregunta ${i+1}:</strong> ${q.q}</p>
           <div class="quiz-opts">
             ${q.options.map((opt, j) => `
-              <button class="quiz-opt" data-q="${i}" data-correct="${j === answers[i]}">${opt}</button>
+              <button class="quiz-opt" data-q="${i}" data-correct="${j === q.correct}">${opt}</button>
             `).join('')}
           </div>
           <div id="genQuizFb-${i}" class="quiz-feedback hidden"></div>
@@ -2556,6 +2942,91 @@ window.checkGenEx2 = function() {
   fb.classList.remove('hidden');
   if (ok) { fb.textContent = '✅ ¡Correcto! SAM/BAM'; fb.className = 'feedback ok'; }
   else { fb.textContent = '❌ Pista: SAM o BAM'; fb.className = 'feedback err'; }
+};
+
+window.checkGenEx3 = function() {
+  const input = document.getElementById('exGen3').value.toLowerCase();
+  const fb = document.getElementById('genEx3Feedback');
+  const ok = input.includes('bcftools') || input.includes('freebayes') || input.includes('gatk');
+  fb.classList.remove('hidden');
+  if (ok) { fb.textContent = '✅ ¡Correcto!'; fb.className = 'feedback ok'; }
+  else { fb.textContent = '❌ Pista: bcftools call, freebayes, o gatk'; fb.className = 'feedback err'; }
+};
+
+window.checkGenEx4 = function() {
+  const input = document.getElementById('exGen4').value.toLowerCase();
+  const fb = document.getElementById('genEx4Feedback');
+  const ok = (input.includes('qual') || input.includes('>30')) && (input.includes('dp') || input.includes('>10'));
+  fb.classList.remove('hidden');
+  if (ok) { fb.textContent = '✅ ¡Correcto! Filtro: QUAL>30 Y DP>10'; fb.className = 'feedback ok'; }
+  else { fb.textContent = '❌ Pista: bcftools view -i \'QUAL>30 && DP>10\''; fb.className = 'feedback err'; }
+};
+
+window.checkGenEx5 = function() {
+  const input = document.getElementById('exGen5').value.toLowerCase();
+  const fb = document.getElementById('genEx5Feedback');
+  const ok = input.includes('snpeff') || input.includes('snpEff');
+  fb.classList.remove('hidden');
+  if (ok) { fb.textContent = '✅ ¡Correcto! SnpEff anota variantes'; fb.className = 'feedback ok'; }
+  else { fb.textContent = '❌ Pista: snpEff ann hg38 variants.vcf'; fb.className = 'feedback err'; }
+};
+
+window.checkGenEx6 = function() {
+  const input = document.getElementById('exGen6').value.trim();
+  const fb = document.getElementById('genEx6Feedback');
+  const ok = input === '4';
+  fb.classList.remove('hidden');
+  if (ok) { fb.textContent = '✅ ¡Correcto! FASTQ tiene 4 líneas: ID, secuencia, +, calidad'; fb.className = 'feedback ok'; }
+  else { fb.textContent = '❌ Pista: 4 líneas'; fb.className = 'feedback err'; }
+};
+
+window.checkGenEx7 = function() {
+  const input = document.getElementById('exGen7').value.toLowerCase().trim();
+  const fb = document.getElementById('genEx7Feedback');
+  const ok = input === 'bam';
+  fb.classList.remove('hidden');
+  if (ok) { fb.textContent = '✅ ¡Correcto! BAM es la versión comprimida de SAM'; fb.className = 'feedback ok'; }
+  else { fb.className = 'feedback err'; fb.textContent = '❌ Pista: BAM'; }
+};
+
+window.checkGenEx8 = function() {
+  const input = document.getElementById('exGen8').value.toLowerCase();
+  const fb = document.getElementById('genEx8Feedback');
+  const ok = input.includes('quality') && input.includes('depth');
+  fb.classList.remove('hidden');
+  if (ok) { fb.textContent = '✅ ¡Correcto! QD = Quality por Depth'; fb.className = 'feedback ok'; }
+  else { fb.textContent = '❌ Pista: Quality by Depth'; fb.className = 'feedback err'; }
+};
+
+window.checkPipelineOrder = function() {
+  const input = document.getElementById('pipelineOrderInput').value.replace(/\s/g, '');
+  const fb = document.getElementById('genPipelineFeedback');
+  const correct = '8,1,2,3,4,5,6,7';
+  fb.classList.remove('hidden');
+  if (input === correct) { 
+    fb.textContent = '✅ ¡Correcto! Pipeline: Datos → QC → Trim → Alineamiento → Variant Calling → Filtrado → Anotación → Interpretación'; 
+    fb.className = 'feedback ok'; 
+  }
+  else { fb.textContent = '❌ Orden: 8,1,2,3,4,5,6,7 (Datos→QC→Trim→Alineamiento→VariantCalling→Filtrado→Anotación→Interpretación)'; fb.className = 'feedback err'; }
+};
+
+// Simulador de Genómica
+window.runGenSim = function(step) {
+  const output = document.getElementById('genSim' + step);
+  if (output) {
+    output.classList.remove('hidden');
+    const stepEl = output.closest('.sim-step-item');
+    stepEl.classList.add('completed');
+    
+    // Verificar si todos completados
+    const allSteps = document.querySelectorAll('.sim-step-item');
+    const completed = document.querySelectorAll('.sim-step-item.completed');
+    if (allSteps.length === completed.length) {
+      setTimeout(() => {
+        alert('🎊 ¡Análisis genómico completado! Has practicado todo el pipeline');
+      }, 500);
+    }
+  }
 };
 
 // ---------- Handlers Módulo Phylo ----------

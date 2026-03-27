@@ -2502,3 +2502,321 @@ textarea {
   font-size: 0.9rem;
   margin: 0;
 }
+
+/* ========================================
+   MÓDULO 3: GENÓMICA MEJORADO
+   ======================================== */
+
+/* Pipeline mejorado */
+.pipeline-flow.enhanced {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.pipeline-flow.enhanced .pipeline-step {
+  display: flex;
+  gap: 1rem;
+  padding: 1.2rem;
+  background: var(--soft);
+  border-radius: 12px;
+  border: 1px solid #334155;
+}
+
+.pipeline-flow.enhanced .step-num {
+  background: linear-gradient(135deg, #22d3ee, #06b6d4);
+  color: #06222b;
+  width: 40px;
+  height: 40px;
+  min-width: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+
+.pipeline-flow.enhanced .step-content {
+  flex: 1;
+}
+
+.pipeline-flow.enhanced h5 {
+  color: #22d3ee;
+  margin: 0 0 0.5rem;
+}
+
+.pipeline-flow.enhanced p {
+  color: #94a3b8;
+  font-size: 0.9rem;
+  margin: 0 0 0.5rem;
+}
+
+.pipeline-flow.enhanced code {
+  display: block;
+  background: #020617;
+  padding: 0.5rem 0.8rem;
+  border-radius: 6px;
+  color: #a78bfa;
+  font-size: 0.85rem;
+  font-family: Consolas, monospace;
+}
+
+.pipeline-flow.enhanced .step-tools {
+  margin-top: 0.5rem;
+  font-size: 0.75rem;
+  color: #64748b;
+}
+
+/* Formatos */
+.format-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1rem;
+}
+
+.format-card {
+  background: var(--soft);
+  border: 1px solid #334155;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.format-header {
+  padding: 0.8rem 1rem;
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+
+.format-header.fastq { background: linear-gradient(135deg, #10b981, #059669); }
+.format-header.sam { background: linear-gradient(135deg, #3b82f6, #2563eb); }
+.format-header.vcf { background: linear-gradient(135deg, #8b5cf6, #7c3aed); }
+.format-header.bed { background: linear-gradient(135deg, #f59e0b, #d97706); }
+
+.format-card .format-desc {
+  padding: 0.8rem 1rem 0;
+  color: #cbd5e1;
+  font-size: 0.85rem;
+}
+
+.format-example {
+  background: #020617;
+  padding: 0.8rem;
+  margin: 0.5rem 1rem 1rem;
+  border-radius: 6px;
+  font-family: Consolas, monospace;
+  font-size: 0.75rem;
+  color: #22d3ee;
+  white-space: pre-wrap;
+}
+
+.format-example code {
+  display: block;
+}
+
+.format-info {
+  padding: 0 1rem 1rem;
+  margin: 0;
+  color: #94a3b8;
+  font-size: 0.75rem;
+}
+
+.format-info li {
+  margin-bottom: 0.2rem;
+}
+
+/* Herramientas por categoría */
+.tools-by-category {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.tool-category h4 {
+  color: #f472b6;
+  margin: 0 0 0.8rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid #f472b6;
+}
+
+.tool-list {
+  display: grid;
+  gap: 0.8rem;
+}
+
+.tool-item {
+  background: var(--soft);
+  border: 1px solid #334155;
+  border-radius: 10px;
+  padding: 1rem;
+}
+
+.tool-item strong {
+  color: #22d3ee;
+}
+
+.tool-item span {
+  display: block;
+  color: #94a3b8;
+  font-size: 0.85rem;
+  margin: 0.3rem 0;
+}
+
+.tool-item code {
+  display: block;
+  background: #020617;
+  padding: 0.4rem 0.6rem;
+  border-radius: 4px;
+  color: #a78bfa;
+  font-size: 0.8rem;
+  font-family: Consolas, monospace;
+}
+
+/* Parámetros */
+.params-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 1rem;
+}
+
+.param-card {
+  background: var(--soft);
+  border: 1px solid #334155;
+  border-radius: 10px;
+  padding: 1rem;
+  text-align: center;
+}
+
+.param-card code {
+  display: block;
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+  color: #fff;
+  padding: 0.4rem 0.8rem;
+  border-radius: 6px;
+  font-family: Consolas, monospace;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.param-card p {
+  color: #94a3b8;
+  font-size: 0.85rem;
+  margin: 0 0 0.5rem;
+}
+
+.param-example {
+  display: block;
+  background: #020617;
+  padding: 0.3rem 0.5rem;
+  border-radius: 4px;
+  color: #22d3ee;
+  font-size: 0.75rem;
+  font-family: Consolas, monospace;
+}
+
+/* Simulador de Genómica */
+.sim-pipeline {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.sim-step-item {
+  display: flex;
+  gap: 1rem;
+  padding: 1rem;
+  background: var(--soft);
+  border-radius: 12px;
+  border: 1px solid #334155;
+  transition: all 0.3s;
+}
+
+.sim-step-item.completed {
+  border-color: #22c55e;
+  background: rgba(34, 197, 94, 0.1);
+}
+
+.sim-step-item .sim-num {
+  background: #22d3ee;
+  color: #06222b;
+  width: 36px;
+  height: 36px;
+  min-width: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+}
+
+.sim-step-item.completed .sim-num {
+  background: #22c55e;
+}
+
+.sim-step-item .sim-step-content {
+  flex: 1;
+}
+
+.sim-step-item strong {
+  color: #22d3ee;
+}
+
+.sim-step-item code {
+  display: block;
+  background: #020617;
+  padding: 0.4rem 0.6rem;
+  border-radius: 4px;
+  color: #a78bfa;
+  font-size: 0.85rem;
+  margin: 0.5rem 0;
+}
+
+.sim-step-item .sim-btn {
+  background: #f59e0b;
+  color: #000;
+  border: none;
+  padding: 0.4rem 0.8rem;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 0.85rem;
+}
+
+.sim-step-item .sim-btn:hover {
+  background: #fbbf24;
+}
+
+.sim-step-item .sim-output {
+  background: rgba(34, 197, 94, 0.15);
+  border: 1px solid #22c55e;
+  color: #22c55e;
+  padding: 0.5rem;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  margin-top: 0.5rem;
+}
+
+/* Formato example box */
+.format-example-box {
+  background: var(--soft);
+  border: 1px solid #334155;
+  border-radius: 12px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+.format-example-box h5 {
+  color: #22d3ee;
+  margin: 0 0 0.8rem;
+}
+
+.format-example-box .code {
+  background: #020617;
+  padding: 1rem;
+  border-radius: 8px;
+  font-family: Consolas, monospace;
+  font-size: 0.8rem;
+  color: #22d3ee;
+  white-space: pre-wrap;
+}
