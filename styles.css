@@ -752,3 +752,266 @@ textarea {
     grid-template-columns: 1fr;
   }
 }
+
+/* ============================================
+   SECCIÓN DE INSTALACIÓN WSL UBUNTU
+   ============================================ */
+
+.wsl-setup-section {
+  background: linear-gradient(135deg, #1e3a8a 0%, #0f172a 100%);
+  border: 1px solid #3b82f6;
+}
+
+.wsl-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+}
+
+.wsl-step {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+  background: rgba(15, 23, 42, 0.6);
+  padding: 1rem;
+  border-radius: 12px;
+  border: 1px solid #334155;
+}
+
+.wsl-step-number {
+  background: var(--accent);
+  color: #06222b;
+  width: 36px;
+  height: 36px;
+  min-width: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+
+.wsl-step-content {
+  flex: 1;
+}
+
+.wsl-step-content h4 {
+  margin: 0 0 0.5rem;
+  color: var(--accent);
+}
+
+.wsl-step-content p {
+  margin: 0 0 1rem;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.wsl-capture {
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid #334155;
+  margin-bottom: 0.8rem;
+}
+
+.wsl-capture img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.wsl-command {
+  background: #020617;
+  border: 1px solid #334155;
+  border-radius: 6px;
+  padding: 0.6rem 1rem;
+}
+
+.wsl-command code {
+  color: var(--accent);
+  font-family: Consolas, monospace;
+  font-size: 0.95rem;
+}
+
+.wsl-note {
+  background: rgba(251, 191, 36, 0.15);
+  border: 1px solid #fbbf24;
+  border-radius: 6px;
+  padding: 0.6rem;
+  color: #fbbf24;
+  font-size: 0.9rem;
+}
+
+.wsl-alternatives {
+  margin-top: 1.5rem;
+  padding: 1rem;
+  background: rgba(15, 23, 42, 0.6);
+  border-radius: 8px;
+  border: 1px solid #334155;
+}
+
+.wsl-alternatives h4 {
+  margin: 0 0 0.8rem;
+  color: var(--accent-2);
+}
+
+.wsl-alternatives ul {
+  margin: 0;
+  padding-left: 1.2rem;
+}
+
+.wsl-alternatives li {
+  margin-bottom: 0.5rem;
+  color: var(--muted);
+}
+
+.wsl-alternatives code {
+  background: #1e293b;
+  color: var(--accent);
+  padding: 0.2rem 0.4rem;
+  border-radius: 4px;
+  font-size: 0.85rem;
+}
+
+/* ============================================
+   TERMINAL VIRTUAL INTERACTIVO
+   ============================================ */
+
+.interactive-terminal-section {
+  margin-top: 2rem;
+  padding: 1.5rem;
+  background: var(--panel);
+  border: 1px solid #334155;
+  border-radius: 12px;
+}
+
+.interactive-terminal-section h3 {
+  margin: 0 0 0.5rem;
+  color: var(--accent);
+}
+
+.interactive-terminal-section > p {
+  color: var(--muted);
+  margin-bottom: 1rem;
+}
+
+.terminal模拟 {
+  background: #020617;
+  border: 1px solid #334155;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.terminal-header {
+  background: #1e293b;
+  padding: 0.6rem 1rem;
+  border-bottom: 1px solid #334155;
+}
+
+.terminal-title {
+  color: #94a3b8;
+  font-family: Consolas, monospace;
+  font-size: 0.85rem;
+}
+
+.terminal-body {
+  padding: 1rem;
+  min-height: 150px;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.terminal-output {
+  font-family: Consolas, monospace;
+  color: #e2e8f0;
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+.terminal-output .prompt {
+  color: #22d3ee;
+}
+
+.terminal-output .cursor {
+  color: #22d3ee;
+  animation: blink 1s infinite;
+}
+
+@keyframes blink {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0; }
+}
+
+.terminal-history {
+  margin-bottom: 0.8rem;
+  padding-bottom: 0.8rem;
+  border-bottom: 1px solid #1e293b;
+}
+
+.terminal-cmd {
+  color: #22d3ee;
+  margin-bottom: 0.3rem;
+}
+
+.terminal-result {
+  color: #34d399;
+  white-space: pre-wrap;
+  font-size: 0.85rem;
+}
+
+.terminal-input-area {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.8rem 1rem;
+  background: #0f172a;
+  border-top: 1px solid #334155;
+}
+
+.terminal-input-area .prompt {
+  color: #22d3ee;
+  font-family: Consolas, monospace;
+}
+
+.terminal-input-area input {
+  flex: 1;
+  background: #1e293b;
+  border: 1px solid #475569;
+  color: #e2e8f0;
+  padding: 0.5rem 0.8rem;
+  border-radius: 6px;
+  font-family: Consolas, monospace;
+  font-size: 0.9rem;
+}
+
+.terminal-input-area input:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.terminal-input-area button {
+  background: var(--accent);
+  color: #06222b;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.terminal-input-area button:hover {
+  filter: brightness(1.1);
+}
+
+.terminal-hint {
+  padding: 0.8rem 1rem;
+  background: #0f172a;
+  border-top: 1px solid #334155;
+}
+
+.terminal-hint p {
+  margin: 0;
+  color: #64748b;
+  font-size: 0.8rem;
+}

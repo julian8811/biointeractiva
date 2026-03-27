@@ -549,6 +549,63 @@ const moduleData = {
 // Renderizar lesson del CLI
 function renderCLILesson() {
   return `
+    <!-- Sección de Instalación de WSL Ubuntu -->
+    <div class="lesson wsl-setup-section">
+      <h3>🪟 Instalar Ubuntu en Windows con WSL</h3>
+      <p>Antes de comenzar a usar la línea de comando, necesitas tener Ubuntu instalado en tu Windows. Sigue estos pasos:</p>
+      
+      <div class="wsl-steps">
+        <div class="wsl-step">
+          <div class="wsl-step-number">1</div>
+          <div class="wsl-step-content">
+            <h4>Abre PowerShell como Administrador</h4>
+            <p>Haz clic derecho en el menú Inicio y selecciona "Windows PowerShell (Administrador)"</p>
+            <div class="wsl-capture">
+              <img src="assets/captures/wsl-install-1.svg" alt="Paso 1: PowerShell">
+            </div>
+            <div class="wsl-command">
+              <code>wsl --install</code>
+            </div>
+          </div>
+        </div>
+        
+        <div class="wsl-step">
+          <div class="wsl-step-number">2</div>
+          <div class="wsl-step-content">
+            <h4>Reinicia tu computadora</h4>
+            <p>El instalador te pedirá reiniciar. Después del reinicio, Ubuntu se configurará automáticamente.</p>
+            <div class="wsl-capture">
+              <img src="assets/captures/wsl-install-2.svg" alt="Paso 2: Configuración">
+            </div>
+            <p class="wsl-note">📝 Crea tu nombre de usuario y contraseña cuando se te indique.</p>
+          </div>
+        </div>
+        
+        <div class="wsl-step">
+          <div class="wsl-step-number">3</div>
+          <div class="wsl-step-content">
+            <h4>¡Listo! Verifica la instalación</h4>
+            <p>Desde PowerShell o Ubuntu, verifica que todo esté correcto:</p>
+            <div class="wsl-capture">
+              <img src="assets/captures/wsl-install-3.svg" alt="Paso 3: Verificación">
+            </div>
+            <div class="wsl-command">
+              <code>wsl -l -v</code>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="wsl-alternatives">
+        <h4>💡 Alternativas de instalación</h4>
+        <ul>
+          <li><strong>Microsoft Store:</strong> Busca "Ubuntu" en la Microsoft Store y haz clic en "Instalar"</li>
+          <li><strong>Desde CMD:</strong> Ejecuta <code>wsl --install -d Ubuntu</code></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Introducción a la línea de comando -->
     <div class="lesson cli-intro">
       <h3>🚀 ¿Por qué la línea de comando es esencial en bioinformática?</h3>
       <p>El trabajo bioinformático moderno se ejecuta mayoritariamente desde línea de comando porque permite <b>reproducibilidad</b>, <b>escalabilidad</b> y <b>automatización</b>. Ubuntu y distribuciones Linux son estándar en laboratorios y servidores HPC.</p>
@@ -576,7 +633,7 @@ function renderCLILesson() {
         <li>Descripción y sintaxis</li>
         <li>Relevancia específica para bioinformática</li>
         <li>Ejemplo práctico con datos biológicos</li>
-        <li>Salida simulada</li>
+        <li>Salida simulada con captura de terminal</li>
       </ul>
       
       <div class="command-catalog-preview">
@@ -878,6 +935,47 @@ function renderCLIExercises() {
         <input type="text" id="ex4-input" placeholder="awk '$6 > 100 {print}' archivo">
         <button onclick="checkEx4()">Verificar</button>
         <div id="ex4-feedback" class="feedback hidden"></div>
+      </div>
+
+      <div class="exercise-card">
+        <h4>✏️ Ejercicio 5: Ver espacio en disco</h4>
+        <p>Escribe el comando para ver el espacio en disco en formato legible:</p>
+        <input type="text" id="ex5-input" placeholder="df -h">
+        <button onclick="checkEx5()">Verificar</button>
+        <div id="ex5-feedback" class="feedback hidden"></div>
+      </div>
+
+      <div class="exercise-card">
+        <h4>✏️ Ejercicio 6: Contar líneas FASTQ</h4>
+        <p>Un archivo FASTQ tiene 4 líneas por read. Si <code>wc -l</code> da 4800000, ¿cuántos reads hay?</p>
+        <input type="text" id="ex6-input" placeholder="4800000 / 4">
+        <button onclick="checkEx6()">Verificar</button>
+        <div id="ex6-feedback" class="feedback hidden"></div>
+      </div>
+    </div>
+
+    <!-- Terminal Virtual Interactivo -->
+    <div class="interactive-terminal-section">
+      <h3>🖥️ Terminal Virtual Interactivo</h3>
+      <p>Practica con un terminal simulado. Escribe el comando y observa la salida:</p>
+      
+      <div class="terminal模拟">
+        <div class="terminal-header">
+          <span class="terminal-title">biointeractiva:~/proyecto_bioinfo$</span>
+        </div>
+        <div class="terminal-body">
+          <div class="terminal-output" id="terminalOutput">
+            <span class="prompt">$</span> <span class="cursor">_</span>
+          </div>
+        </div>
+        <div class="terminal-input-area">
+          <span class="prompt">$</span>
+          <input type="text" id="terminalInput" placeholder="Escribe un comando..." autocomplete="off">
+          <button onclick="runTerminalCommand()">Ejecutar</button>
+        </div>
+        <div class="terminal-hint">
+          <p>💡 Comandos disponibles: pwd, ls, ls -lah, head, tail, grep, find, wc, df -h, free -m</p>
+        </div>
       </div>
     </div>
   `;
@@ -1181,6 +1279,74 @@ window.checkFix2 = function() {
   if (input === 'gunzip archivo.fastq.gz') { fb.textContent = '✅ Correcto!'; fb.className = 'feedback ok'; }
   else { fb.textContent = '❌ El comando correcto es gunzip'; fb.className = 'feedback err'; }
 };
+
+// Nuevos ejercicios
+window.checkEx5 = function() {
+  const input = document.getElementById('ex5-input').value.toLowerCase().trim();
+  const fb = document.getElementById('ex5-feedback');
+  const ok = input === 'df -h';
+  fb.classList.remove('hidden');
+  if (ok) { fb.textContent = '✅ ¡Correcto! df -h muestra espacio en formato legible'; fb.className = 'feedback ok'; }
+  else { fb.textContent = '❌ Pista: df -h'; fb.className = 'feedback err'; }
+};
+
+window.checkEx6 = function() {
+  const input = document.getElementById('ex6-input').value.replace(/\s/g, '').replace(/,/g, '');
+  const fb = document.getElementById('ex6-feedback');
+  const ok = input === '1200000' || input === '1200000reads' || input === '1200000reads';
+  fb.classList.remove('hidden');
+  if (ok) { fb.textContent = '✅ ¡Correcto! 4800000 / 4 = 1,200,000 reads'; fb.className = 'feedback ok'; }
+  else { fb.textContent = '❌ Divide entre 4: 4800000 ÷ 4 = ?'; fb.className = 'feedback err'; }
+};
+
+// Terminal virtual
+const terminalCommands = {
+  'pwd': '/home/bioinfo/proyectos/microbioma_2026',
+  'ls': 'raw_data\nresults\nmetadata.tsv\nREADME.md',
+  'ls -lah': 'drwxr-xr-x  5 bioinfo bioinfo  128 Jan 15 10:30 .\ndrwxr-xr-x  1 bioinfo bioinfo   64 Jan 15 10:30 ..\n-rw-r--r--  1 bioinfo bioinfo  2.1G Jan 15 10:25 PAC001_R1.fastq.gz\n-rw-r--r--  1 bioinfo bioinfo  156K Jan 15 10:26 metadata.tsv',
+  'head': '@SEQ001\nGATCGATCGATCGATCGATCG+\n+\nIIIIIIIIIIIIIIIIIIIII\n@SEQ002\nGCTAGCTAGCTAGCTAGCTA+\n+\nJJJJJJJJJJJJJJJJJJJJ',
+  'head -n 4': '@SEQ001\nGATCGATCGATCGATCGATCG+\n+\nIIIIIIIIIIIIIIIIIIIII',
+  'tail': 'last line of file\nmetadata here\nresult data',
+  'grep': 'usage: grep [OPTIONS] PATTERN [FILE]',
+  'find': './raw_data/PAC001_R1.fastq.gz\n./raw_data/PAC001_R2.fastq.gz\n./results/aligned.bam',
+  'wc': '4800000 secuencias.fastq',
+  'wc -l': '4800000 secuencias.fastq',
+  'df -h': 'Filesystem      Size  Used Avail Use% Mounted on\n/dev/sda2       500G  320G  180G  64% /home/bioinfo',
+  'free -m': '              total    used    free  shared  buff/cache   available\nMem:           32000   18000    8000     512       6000      12000'
+};
+
+window.runTerminalCommand = function() {
+  const input = document.getElementById('terminalInput').value.trim();
+  const output = document.getElementById('terminalOutput');
+  
+  if (!input) return;
+  
+  let result = terminalCommands[input.toLowerCase()] || `bash: ${input}: command not found`;
+  
+  output.innerHTML = `
+    <div class="terminal-history">
+      <div class="terminal-cmd">$ ${input}</div>
+      <div class="terminal-result">${result}</div>
+    </div>
+    <div class="terminal-current">
+      <span class="prompt">$</span> <span class="cursor">_</span>
+    </div>
+  `;
+  
+  document.getElementById('terminalInput').value = '';
+};
+
+// Permitir ENTER en terminal
+document.addEventListener('DOMContentLoaded', function() {
+  const termInput = document.getElementById('terminalInput');
+  if (termInput) {
+    termInput.addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        window.runTerminalCommand();
+      }
+    });
+  }
+});
 
 // ============================================
 // INICIALIZACIÓN

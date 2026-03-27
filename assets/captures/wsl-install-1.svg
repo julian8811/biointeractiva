@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 350">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#0f172a"/>
+      <stop offset="100%" style="stop-color:#020617"/>
+    </linearGradient>
+  </defs>
+  <rect width="600" height="350" fill="url(#bg)"/>
+  
+  <!-- Header bar -->
+  <rect x="0" y="0" width="600" height="40" fill="#1e293b"/>
+  <text x="20" y="25" fill="#fff" font-family="Arial" font-size="14" font-weight="bold">Instalar WSL Ubuntu en Windows</text>
+  
+  <!-- Step 1 -->
+  <rect x="20" y="60" width="30" height="30" rx="15" fill="#22c55e"/>
+  <text x="35" y="80" fill="#fff" font-family="Arial" font-size="16" font-weight="bold">1</text>
+  <text x="60" y="78" fill="#e2e8f0" font-family="Arial" font-size="14">Abre PowerShell como Administrador</text>
+  
+  <!-- Terminal window -->
+  <rect x="40" y="100" width="520" height="180" rx="8" fill="#0f172a" stroke="#334155" stroke-width="2"/>
+  <rect x="40" y="100" width="520" height="25" rx="8" fill="#1e293b"/>
+  <circle cx="60" cy="112" r="6" fill="#ef4444"/>
+  <circle cx="80" cy="112" r="6" fill="#f59e0b"/>
+  <circle cx="100" cy="112" r="6" fill="#22c55e"/>
+  <text x="130" y="118" fill="#94a3b8" font-family="Consolas" font-size="12">Windows PowerShell</text>
+  
+  <text x="60" y="160" fill="#22d3ee" font-family="Consolas" font-size="14">PS C:\Users\TuUsuario&gt; wsl --install</text>
+  <text x="60" y="190" fill="#34d399" font-family="Consolas" font-size="12">Instalando componentes...</text>
+  <text x="60" y="215" fill="#34d399" font-family="Consolas" font-size="12">Descargando Ubuntu...</text>
+  <text x="60" y="240" fill="#fbbf24" font-family="Consolas" font-size="12">Se requerirá reiniciar el equipo</text>
+  
+  <!-- Arrow -->
+  <path d="M 300 300 L 300 320 L 320 320" stroke="#22d3ee" stroke-width="3" fill="none"/>
+  <polygon points="320,310 330,325 310,325" fill="#22d3ee"/>
+</svg>
