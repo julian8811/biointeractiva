@@ -22,39 +22,83 @@ const STORAGE_KEY = "biointeractiva_progress_v2";
 
 // Mapeo de capturas de terminal por comando
 const cliCaptures = {
+  // Navegación
   'pwd': 'captures/pwd.svg',
   'ls': 'captures/ls.svg',
+  'ls -lah': 'captures/ls.svg',
+  'ls -l': 'captures/ls.svg',
   'cd': 'captures/ls.svg',
+  'tree': 'captures/ls.svg',
+  
+  // Archivos
   'mkdir': 'captures/mkdir.svg',
   'cp': 'captures/cp.svg',
   'mv': 'captures/mv.svg',
   'rm': 'captures/rm.svg',
+  'ln': 'captures/ls.svg',
+  'touch': 'captures/mkdir.svg',
+  
+  // Inspección
   'cat': 'captures/cat.svg',
   'head': 'captures/head.svg',
+  'head -n': 'captures/head.svg',
   'tail': 'captures/tail.svg',
   'less': 'captures/less.svg',
   'wc': 'captures/wc.svg',
+  'wc -l': 'captures/wc.svg',
+  'file': 'captures/cat.svg',
+  
+  // Búsqueda
   'grep': 'captures/grep.svg',
+  'grep ^>': 'captures/grep.svg',
   'find': 'captures/find.svg',
+  'find . -name': 'captures/find.svg',
+  
+  // Procesamiento
   'awk': 'captures/awk.svg',
+  'awk \'$6': 'captures/awk.svg',
   'sed': 'captures/sed.svg',
+  
+  // Tabulares
   'cut': 'captures/cut.svg',
+  'cut -f': 'captures/cut.svg',
   'sort': 'captures/sort.svg',
+  'sort -k': 'captures/sort.svg',
   'uniq': 'captures/uniq.svg',
+  
+  // Compresión
   'gzip': 'captures/gzip.svg',
+  'gunzip': 'captures/gzip.svg',
   'zcat': 'captures/zcat.svg',
   'tar': 'captures/tar.svg',
+  'zip': 'captures/tar.svg',
+  'unzip': 'captures/tar.svg',
+  
+  // Sistema/Disco
   'df': 'captures/df.svg',
+  'df -h': 'captures/df.svg',
   'du': 'captures/du.svg',
+  'du -sh': 'captures/du.svg',
+  
+  // Procesos
   'ps': 'captures/ps.svg',
+  'ps -eaf': 'captures/ps.svg',
   'top': 'captures/top.svg',
   'free': 'captures/free.svg',
+  'free -m': 'captures/free.svg',
   'kill': 'captures/kill.svg',
+  
+  // Red
   'wget': 'captures/wget.svg',
   'curl': 'captures/curl.svg',
+  
+  // Permisos
   'chmod': 'captures/chmod.svg',
   'chown': 'captures/chown.svg',
+  
+  // Genómica
   'samtools': 'captures/samtools-flagstat.svg',
+  'samtools flagstat': 'captures/samtools-flagstat.svg',
   'bcftools': 'captures/bcftools.svg',
   'fastqc': 'captures/fastqc.svg'
 };
@@ -1299,20 +1343,90 @@ window.checkEx6 = function() {
   else { fb.textContent = '❌ Divide entre 4: 4800000 ÷ 4 = ?'; fb.className = 'feedback err'; }
 };
 
-// Terminal virtual
+// Terminal virtual interactivo con más comandos
 const terminalCommands = {
+  // Navegación
   'pwd': '/home/bioinfo/proyectos/microbioma_2026',
   'ls': 'raw_data\nresults\nmetadata.tsv\nREADME.md',
   'ls -lah': 'drwxr-xr-x  5 bioinfo bioinfo  128 Jan 15 10:30 .\ndrwxr-xr-x  1 bioinfo bioinfo   64 Jan 15 10:30 ..\n-rw-r--r--  1 bioinfo bioinfo  2.1G Jan 15 10:25 PAC001_R1.fastq.gz\n-rw-r--r--  1 bioinfo bioinfo  156K Jan 15 10:26 metadata.tsv',
+  'ls -l': 'total 128\n-rw-r--r-- 1 bioinfo bioinfo  2.1G Jan 15 10:25 PAC001_R1.fastq.gz\n-rw-r--r-- 1 bioinfo bioinfo  156K Jan 15 10:26 metadata.tsv',
+  'cd': '(cambia al directorio especificado)',
+  'cd results': '(sin salida - cambia de directorio)',
+  'mkdir': '(crea el directorio)',
+  'mkdir -p': '(crea directorios anidados)',
+  
+  // Archivos
+  'cat': 'sample_id\tpatient\tcondition\nPAC001\ttumor\tcontrol\nPAC002\twildtype\ttreatment',
   'head': '@SEQ001\nGATCGATCGATCGATCGATCG+\n+\nIIIIIIIIIIIIIIIIIIIII\n@SEQ002\nGCTAGCTAGCTAGCTAGCTA+\n+\nJJJJJJJJJJJJJJJJJJJJ',
   'head -n 4': '@SEQ001\nGATCGATCGATCGATCGATCG+\n+\nIIIIIIIIIIIIIIIIIIIII',
+  'head -n 8': '@SEQ001\nGATCGATCGATCGATCGATCG+\n+\nIIIIIIIIIIIIIIIIIIIII\n@SEQ002\nGCTAGCTAGCTAGCTAGCTA+\n+\nJJJJJJJJJJJJJJJJJJJJ',
   'tail': 'last line of file\nmetadata here\nresult data',
-  'grep': 'usage: grep [OPTIONS] PATTERN [FILE]',
-  'find': './raw_data/PAC001_R1.fastq.gz\n./raw_data/PAC001_R2.fastq.gz\n./results/aligned.bam',
+  'tail -n 5': '...result data\nlast line',
+  'less': '(abre el visor interactivo - usa flechas para navegar, q para salir)',
   'wc': '4800000 secuencias.fastq',
   'wc -l': '4800000 secuencias.fastq',
+  'wc -w': '9600000 secuencias.fastq',
+  
+  // Búsqueda
+  'grep': 'usage: grep [OPTIONS] PATTERN [FILE]',
+  'grep ^> secuencias.fasta': '>seq_001\n>seq_002\n>seq_003\n... (245 secuencias)',
+  'find': './raw_data/PAC001_R1.fastq.gz\n./raw_data/PAC001_R2.fastq.gz\n./results/aligned.bam',
+  'find . -name "*.fastq.gz"': './raw_data/PAC001_R1.fastq.gz\n./raw_data/PAC001_R2.fastq.gz',
+  'find . -name "*.bam"': './results/alignment/sample.bam',
+  
+  // Procesamiento
+  'awk': '(requiere condición y acción)',
+  'awk \'$6 > 100\'': 'seq_001 478\nseq_014 301\nseq_099 210',
+  'cut': 'column1\tcolumn2\tcolumn3\ndata1\tdata2\tdata3',
+  'cut -f1,6': 'CHROM\tQUAL\nchr1\t120\nchr1\t95',
+  'sort': 'data1\ndata2\ndata3',
+  'sort -k2,2n': 'sorted output',
+  'uniq': '(requiere sort previo)',
+  'sed': '(editor de flujo)',
+  
+  // Compresión
+  'zcat': '@SEQ001\nGATCGATCGATCGATCGATCG+\n+\nIIIIIIIIIIIIIIIIIIIII',
+  'gzip': '(comprime archivo)',
+  'gunzip': '(descomprime archivo)',
+  'tar': 'resultados/\nresultados/qc/\nresultados/variants/',
+  
+  // Sistema
   'df -h': 'Filesystem      Size  Used Avail Use% Mounted on\n/dev/sda2       500G  320G  180G  64% /home/bioinfo',
-  'free -m': '              total    used    free  shared  buff/cache   available\nMem:           32000   18000    8000     512       6000      12000'
+  'df': 'Filesystem     1K-blocks    Used Available Use% Mounted on\n/dev/sda2      524288000  335544000  188743680  64% /home/bioinfo',
+  'du -sh': '4.2G\tresultados',
+  'du -sh *': '780M\tqc\n4.2G\talignment\n120M\tvariants',
+  'free -m': '              total    used    free  shared  buff/cache   available\nMem:           32000   18000    8000     512       6000      12000',
+  'free': '              total    used    free  shared  buff/cache   available\nMem:        32768000 18432000  8192000   524288    6144000   12288000',
+  'ps': '  PID TTY          TIME CMD\n18230 ?        00:00:00 bash\n18231 ?        00:05:12 bwa',
+  'ps -eaf': 'UID        PID  PPID  C STIME TTY          TIME CMD\nbioinfo   18230     1  0 14:25 ?        00:00:00 /bin/bash\nbioinfo   18231 18230 35 14:25 ?        00:05:12 bwa mem',
+  'top': 'top - 14:30:25 up 45 days,  3:22,  2 users,  load average: 1.23, 1.45, 1.67\nTasks: 245 total,   1 running, 244 sleeping\n%Cpu(s): 12.5 us,  2.3 sy,  0.0 ni, 85.2 id,  0.0 wa\nMiB Mem :  32000.0 total,   8000.0 free,  18000.0 used,   6000.0 buff/cache',
+  
+  // Red
+  'wget': '--2024-01-15 14:30:00--  https://example.org/genome.fa.gz\nResolving... connected.\nHTTP request sent, awaiting response... 200 OK\nSaving to: genome.fa.gz',
+  'curl': 'download progress or API response',
+  
+  // Genómica
+  'samtools': 'Usage: samtools <command> [options]',
+  'samtools flagstat': '2450000 + 0 in total\n2300000 + 0 mapped (93.88%)\n120000 + 0 duplicate (4.90%)',
+  'samtools view': '(convierte/filtrar BAM/SAM)',
+  'bcftools': 'Usage: bcftools <command> [options]',
+  'fastqc': 'Started analysis of PAC001_R1.fastq.gz\nApproximate read length: 150bp\nTotal Sequences: 12345678\nGC: 42%',
+  
+  // Utilidades
+  'man': 'manual pages',
+  'man ls': '(muestra el manual del comando ls)',
+  'whoami': 'bioinfo',
+  'date': 'Fri Jan 15 14:30:00 UTC 2024',
+  'history': '  184  grep "^>" secuencias.fasta | wc -l\n  185  zcat PAC001_R1.fastq.gz | head',
+  'which': '/usr/bin/ls',
+  'hostname': 'bioinfo-server',
+  
+  // Comandos de bioinformática específicos
+  'fastq': '(formato de secuenciación: 4 líneas por read)',
+  'fasta': '>seq_001 descripcion\nATCGATCGATCGATCG...',
+  'bwa': 'Usage: bwa mem [options] <reference.fa> <reads.fq> [reads2.fq]',
+  'bowtie2': 'Usage: bowtie2 [options]* -x <bt2-idx> -U <reads> -S <output>',
+  'hisat2': 'Usage: hisat2 [options]* -x <ht2-idx> -U <reads> -S <output>'
 };
 
 window.runTerminalCommand = function() {
