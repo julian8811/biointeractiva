@@ -923,39 +923,223 @@ function renderDBLesson() {
           <h5>🧬 NCBI (National Center for Biotechnology Information)</h5>
           <p>Incluye GenBank, RefSeq, PubMed, BLAST. La base más completa.</p>
           <code>https://www.ncbi.nlm.nih.gov/</code>
+          <div class="db-tags">
+            <span class="tag">Secuencias</span>
+            <span class="tag">Literatura</span>
+            <span class="tag">BLAST</span>
+          </div>
         </div>
         <div class="db-card">
           <h5>🧪 UniProt</h5>
           <p>Proteínas curadas manualmente. Anotaciones funcionales de alta calidad.</p>
           <code>https://www.uniprot.org/</code>
+          <div class="db-tags">
+            <span class="tag">Proteínas</span>
+            <span class="tag">Anotación</span>
+            <span class="tag">GO Terms</span>
+          </div>
         </div>
         <div class="db-card">
           <h5>🧬 ENA (European Nucleotide Archive)</h5>
           <p>Secuencias de nucleótidos de Europa. SRA para reads crudos.</p>
           <code>https://www.ebi.ac.uk/ena/</code>
+          <div class="db-tags">
+            <span class="tag">Nucleótidos</span>
+            <span class="tag">SRA</span>
+            <span class="tag">Reads</span>
+          </div>
         </div>
         <div class="db-card">
           <h5>🧬 PDB (Protein Data Bank)</h5>
           <p>Estructuras 3D de proteínas y ácidos nucleicos.</p>
           <code>https://www.rcsb.org/</code>
+          <div class="db-tags">
+            <span class="tag">Estructura 3D</span>
+            <span class="tag">Cristalografía</span>
+            <span class="tag">Cryo-EM</span>
+          </div>
+        </div>
+        <div class="db-card">
+          <h5>🧬 Ensembl</h5>
+          <p>Genomas de eukaryotas. Anotaciones de genes, variantes, expresión.</p>
+          <code>https://www.ensembl.org/</code>
+          <div class="db-tags">
+            <span class="tag">Genomas</span>
+            <span class="tag">Variantes</span>
+            <span class="tag">Expresión</span>
+          </div>
+        </div>
+        <div class="db-card">
+          <h5>🧬 UCSC Genome Browser</h5>
+          <p>Genomas de referencia con track de anotaciones visuales.</p>
+          <code>https://genome.ucsc.edu/</code>
+          <div class="db-tags">
+            <span class="tag">Visualización</span>
+            <span class="tag">Tracks</span>
+            <span class="tag">IGV</span>
+          </div>
+        </div>
+        <div class="db-card">
+          <h5>📊 GTEx</h5>
+          <p>Base de datos de expresión génica por tejido.</p>
+          <code>https://gtexportal.org/</code>
+          <div class="db-tags">
+            <span class="tag">Expresión</span>
+            <span class="tag">RNA-seq</span>
+            <span class="tag">Tejidos</span>
+          </div>
+        </div>
+        <div class="db-card">
+          <h5>🧬 GEO (Gene Expression Omnibus)</h5>
+          <p>Repositorio público de datos de expresión y microarrays.</p>
+          <code>https://www.ncbi.nlm.nih.gov/geo/</code>
+          <div class="db-tags">
+            <span class="tag">Microarrays</span>
+            <span class="tag">RNA-seq</span>
+            <span class="tag">Series</span>
+          </div>
         </div>
       </div>
     </div>
 
+    <!-- Guía de Operadores -->
     <div class="lesson">
-      <h3>🔍 Operadores de búsqueda avanzados</h3>
-      <div class="code">Ejemplos de consultas:
-# Buscar gen específico en organismo
+      <h3>🔍 Guía de Operadores de Búsqueda</h3>
+      <p>Domina los operadores para hacer búsquedas precisas:</p>
+      
+      <div class="operators-grid">
+        <div class="operator-card">
+          <code class="op-code">AND</code>
+          <p>Ambas condiciones</p>
+          <code>BRCA1 AND cancer</code>
+          <span class="op-result">→ Solo resultados con ambas palabras</span>
+        </div>
+        <div class="operator-card">
+          <code class="op-code">OR</code>
+          <p>Cualquiera de las condiciones</p>
+          <code>BRCA1 OR BRCA2</code>
+          <span class="op-result">→ Resultados con cualquiera</span>
+        </div>
+        <div class="operator-card">
+          <code class="op-code">NOT</code>
+          <p>Excluir término</p>
+          <code>cancer NOT melanoma</code>
+          <span class="op-result">→ Cancer sin melanoma</span>
+        </div>
+        <div class="operator-card">
+          <code class="op-code">[Field]</code>
+          <p>Buscar en campo específico</p>
+          <code>BRCA1[Gene]</code>
+          <span class="op-result">→ Solo en campo Gen</span>
+        </div>
+        <div class="operator-card">
+          <code class="op-code">"phrase"</code>
+          <p>Buscar frase exacta</p>
+          <code>"breast cancer"</code>
+          <span class="op-result">→ Frase exacta</span>
+        </div>
+        <div class="operator-card">
+          <code class="op-code">:</code>
+          <p>Rango o taxonomía</p>
+          <code>txid9606[Organism]</code>
+          <span class="op-result">→ Humano (TaxID 9606)</span>
+        </div>
+        <div class="operator-card">
+          <code class="op-code">[tiab]</code>
+          <p>Título y abstract</p>
+          <code>COVID[tit] OR COVID[abs]</code>
+          <span class="op-result">→ En título o abstract</span>
+        </div>
+        <div class="operator-card">
+          <code class="op-code">*</code>
+          <p>Comodín para sufijos</p>
+          <code>genom*</code>
+          <span class="op-result">→ genome, genomic, genomics</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Comparador de Bases de Datos -->
+    <div class="lesson">
+      <h3>📊 Comparador de Bases de Datos</h3>
+      <div class="db-compare-table">
+        <table>
+          <thead>
+            <tr>
+              <th>Base de Datos</th>
+              <th>Tipo de Datos</th>
+              <th>Cobertura</th>
+              <th>API</th>
+              <th>Mejor Para</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>NCBI GenBank</strong></td>
+              <td>Secuencias DNA/RNA</td>
+              <td>Millones</td>
+              <td>✓ E-utilities</td>
+              <td>Búsqueda general</td>
+            </tr>
+            <tr>
+              <td><strong>UniProt</strong></td>
+              <td>Proteínas</td>
+              <td>200M+</td>
+              <td>✓ REST API</td>
+              <td>Proteínas y función</td>
+            </tr>
+            <tr>
+              <td><strong>ENA</strong></td>
+              <td>Reads crudos</td>
+              <td>Exabytes</td>
+              <td>✓ ENA API</td>
+              <td>Datos crudos NGS</td>
+            </tr>
+            <tr>
+              <td><strong>PDB</strong></td>
+              <td>Estructuras 3D</td>
+              <td>200K+</td>
+              <td>✓ RCSB API</td>
+              <td>Estructura proteica</td>
+            </tr>
+            <tr>
+              <td><strong>Ensembl</strong></td>
+              <td>Genomas eukariotas</td>
+              <td>200+ especies</td>
+              <td>✓ REST API</td>
+              <td>Anotación génica</td>
+            </tr>
+            <tr>
+              <td><strong>GTEx</strong></td>
+              <td>Expresión génica</td>
+              <td>50K+ muestras</td>
+              <td>✓ API</td>
+              <td>Expresión por tejido</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="lesson">
+      <h3>📚 Ejemplos de Consultas Avanzadas</h3>
+      <div class="code"># NCBI - Gen específico en organismo
 "BRCA1[Gene] AND Homo sapiens[Organism]"
 
-# Secuencias de un organismo
-txid9606[Organism:exp]
+# NCBI - Secuencias de un taxón
+txid9606[Organism:exp] AND mRNA[Properties]
 
-# Por rango de fechas
-2020/01/01:2023/12/31[PDAT]
+# NCBI - Artículos de los últimos 5 años
+COVID-19[Title/Abstract] AND ("2020/01/01"[PDAT] : "2025"[PDAT])
 
-# En UniProt
-organism:"Homo sapiens" AND keyword:"DNA repair"</div>
+# UniProt - Proteínas de humano con GO específico
+organism:"Homo sapiens" AND keyword:"DNA repair" AND reviewed:true
+
+# ENA - Reads de secuenciación
+taxon:(Homo sapiens) AND instrument_model:"Illumina"
+
+# Ensembl - Variantes en un gen
+POST /variant_recoder/human?rs_ids=rs699</div>
     </div>
 
     <div class="lesson">
@@ -964,6 +1148,7 @@ organism:"Homo sapiens" AND keyword:"DNA repair"</div>
         <li><a href="https://www.ncbi.nlm.nih.gov/books/NBK25497/" target="_blank">Tutorial NCBI E-utilities</a></li>
         <li><a href="https://www.uniprot.org/help/api" target="_blank">UniProt API</a></li>
         <li><a href="https://www.ebi.ac.uk/ena/browser/api" target="_blank">ENA API</a></li>
+        <li><a href="https://www.ensembl.org/info/data/api.html" target="_blank">Ensembl API</a></li>
       </ul>
     </div>
   `;
@@ -971,33 +1156,62 @@ organism:"Homo sapiens" AND keyword:"DNA repair"</div>
 
 function renderDBInteractive() {
   return `
-    <div class="interactive">
-      <h4>🛠️ Constructor de consultas NCBI</h4>
-      <div class="db-query-builder">
-        <label>Buscar por:</label>
-        <input type="text" id="dbGene" placeholder="Ej: cytochrome c oxidase">
+    <!-- Constructor de Consultas Avanzado -->
+    <div class="interactive db-query-builder-enhanced">
+      <h4>🛠️ Constructor de Consultas NCBI</h4>
+      <p>Construye tu consulta paso a paso:</p>
+      
+      <div class="query-builder-steps">
+        <div class="query-step">
+          <label>🎯 Término de búsqueda:</label>
+          <input type="text" id="dbGene" placeholder="Ej: BRCA1, cytochrome c oxidase">
+          <span class="query-help">Palabra clave o nombre del gen/proteína</span>
+        </div>
         
-        <label>En organismo:</label>
-        <input type="text" id="dbOrganism" placeholder="Ej: Theobroma grandiflorum">
+        <div class="query-step">
+          <label>🔬 Organismo:</label>
+          <input type="text" id="dbOrganism" placeholder="Ej: Homo sapiens, yeast">
+          <span class="query-help">Nombre común o taxid (ej: 9606)</span>
+        </div>
         
-        <label>Base de datos:</label>
-        <select id="dbSelect">
-          <option value="nucleotide">Nucleotide (GenBank)</option>
-          <option value="protein">Protein (UniProt)</option>
-          <option value="pubmed">PubMed</option>
-          <option value="structure">Structure (PDB)</option>
-        </select>
+        <div class="query-step">
+          <label>📂 Base de datos:</label>
+          <select id="dbSelect">
+            <option value="nucleotide">🧬 Nucleotide (GenBank)</option>
+            <option value="protein">🧪 Protein (UniProt)</option>
+            <option value="pubmed">📚 PubMed</option>
+            <option value="structure">🧬 Structure (PDB)</option>
+            <option value="gene">🧬 Gene</option>
+            <option value="geo">📊 GEO (Expression)</option>
+          </select>
+        </div>
         
-        <button onclick="buildDBQuery()">Generar consulta</button>
+        <div class="query-step">
+          <label>⚙️ Filtros adicionales:</label>
+          <div class="filter-checks">
+            <label><input type="checkbox" id="filterReviewed"> Solo revisados</label>
+            <label><input type="checkbox" id="filterProtein"> Solo proteínas</label>
+            <label><input type="checkbox" id="filterGenome"> Genoma completo</label>
+          </div>
+        </div>
         
-        <div id="dbQueryResult" class="code"></div>
+        <button class="query-build-btn" onclick="buildDBQuery()">🔨 Generar Consulta</button>
+        
+        <div id="dbQueryResult" class="query-result code"></div>
+        
+        <div class="query-preview">
+          <h5>📋 Consulta generada:</h5>
+          <code id="queryPreviewText">Aún no hay consulta</code>
+        </div>
       </div>
     </div>
 
-    <div class="interactive">
-      <h4>🎯 Ejercicios de consulta</h4>
+    <!-- Ejercicios de Consulta -->
+    <div class="lesson">
+      <h4>✏️ Ejercicios de Consulta</h4>
+      
       <div class="exercise-card">
-        <h5>Ejercicio 1: Consulta simple</h5>
+        <h5>✏️ Ejercicio 1: Consulta básica</h5>
         <p>Escribe una consulta para buscar el gen "cytochrome c" en humanos:</p>
         <input type="text" id="exDB1" placeholder='"cytochrome c"[Gene] AND Homo sapiens[Organism]'>
         <button onclick="checkDBEx1()">Verificar</button>
@@ -1005,33 +1219,123 @@ function renderDBInteractive() {
       </div>
       
       <div class="exercise-card">
-        <h5>Ejercicio 2: Consulta con operador</h5>
-        <p>Busca proteínas relacionadas con "DNA repair" en yeast:</p>
-        <input type="text" id="exDB2" placeholder='"DNA repair"[Keyword] AND yeast[Organism]'>
+        <h5>✏️ Ejercicio 2: Operador AND</h5>
+        <p>Busca proteínas relacionadas con "DNA repair" en yeast (Saccharomyces cerevisiae):</p>
+        <input type="text" id="exDB2" placeholder='"DNA repair"[Keyword] AND "Saccharomyces cerevisiae"[Organism]'>
         <button onclick="checkDBEx2()">Verificar</button>
         <div id="dbEx2Feedback" class="feedback hidden"></div>
       </div>
+
+      <div class="exercise-card">
+        <h5>✏️ Ejercicio 3: Operador OR</h5>
+        <p>Busca secuencias de BRCA1 o BRCA2 en humano:</p>
+        <input type="text" id="exDB3" placeholder='(BRCA1 OR BRCA2) AND Homo sapiens[Organism]'>
+        <button onclick="checkDBEx3()">Verificar</button>
+        <div id="dbEx3Feedback" class="feedback hidden"></div>
+      </div>
+
+      <div class="exercise-card">
+        <h5>✏️ Ejercicio 4: Campo específico</h5>
+        <p>Busca artículos sobre COVID-19 en el título:</p>
+        <input type="text" id="exDB4" placeholder='COVID-19[Title]'>
+        <button onclick="checkDBEx4()">Verificar</button>
+        <div id="dbEx4Feedback" class="feedback hidden"></div>
+      </div>
+
+      <div class="exercise-card">
+        <h5>✏️ Ejercicio 5: Rango de fechas</h5>
+        <p>Busca artículos de 2020 a 2023 sobre SARS-CoV-2:</p>
+        <input type="text" id="exDB5" placeholder='SARS-CoV-2[Title/Abstract] AND ("2020/01/01"[PDAT] : "2023/12/31"[PDAT])'>
+        <button onclick="checkDBEx5()">Verificar</button>
+        <div id="dbEx5Feedback" class="feedback hidden"></div>
+      </div>
+
+      <div class="exercise-card">
+        <h5>✏️ Ejercicio 6: TaxID</h5>
+        <p>Usa el TaxID (9606) para buscar secuencias en humano:</p>
+        <input type="text" id="exDB6" placeholder='txid9606[Organism:exp]'>
+        <button onclick="checkDBEx6()">Verificar</button>
+        <div id="dbEx6Feedback" class="feedback hidden"></div>
+      </div>
+
+      <div class="exercise-card">
+        <h5>✏️ Ejercicio 7: UniProt</h5>
+        <p>Busca proteínas de Arabidopsis con GO "photosynthesis":</p>
+        <input type="text" id="exDB7" placeholder='organism:"Arabidopsis thaliana" AND photosynthesis'>
+        <button onclick="checkDBEx7()">Verificar</button>
+        <div id="dbEx7Feedback" class="feedback hidden"></div>
+      </div>
+
+      <div class="exercise-card">
+        <h5>✏️ Ejercicio 8: PDB</h5>
+        <p>Busca estructuras de hemoglobina:</p>
+        <input type="text" id="exDB8" placeholder='hemoglobin[Title]'>
+        <button onclick="checkDBEx8()">Verificar</button>
+        <div id="dbEx8Feedback" class="feedback hidden"></div>
+      </div>
     </div>
 
-    <div class="interactive">
-      <h4>🌐 Práctica: Simulador de búsqueda</h4>
-      <p>Introduce un término de búsqueda y veamos qué resultados simulados obtener:</p>
-      <input type="text" id="dbSimInput" placeholder="Ej: BRCA1">
-      <button onclick="simulateDBSearch()">Buscar</button>
-      <div id="dbSimResult" class="code"></div>
+    <!-- Simulador de Búsqueda -->
+    <div class="lesson simulator-section">
+      <h4>🌐 Simulador de Búsqueda</h4>
+      <p>Practica con búsquedas simuladas en diferentes bases de datos:</p>
+      
+      <div class="sim-search-box">
+        <input type="text" id="dbSimInput" placeholder="Escribe tu búsqueda...">
+        <select id="dbSimSelect">
+          <option value="ncbi">NCBI GenBank</option>
+          <option value="uniprot">UniProt</option>
+          <option value="pdb">PDB</option>
+          <option value="pubmed">PubMed</option>
+        </select>
+        <button onclick="simulateDBSearch()">🔍 Buscar</button>
+      </div>
+      
+      <div id="dbSimResult" class="sim-result code"></div>
+    </div>
+
+    <!-- Explorador de Resultados -->
+    <div class="lesson">
+      <h4>📊 Explorador de Resultados Simulado</h4>
+      <div class="results-explorer">
+        <div class="result-item">
+          <span class="result-type">🧬 GenBank</span>
+          <code>NM_001007.1</code>
+          <p>Cytochrome c oxidase subunit I - Homo sapiens</p>
+        </div>
+        <div class="result-item">
+          <span class="result-type">🧪 UniProt</span>
+          <code>P99999</code>
+          <p>Cytochrome c - Arabidopsis thaliana</p>
+        </div>
+        <div class="result-item">
+          <span class="result-type">📚 PubMed</span>
+          <code>PMID: 12345678</code>
+          <p>Role of cytochrome c in apoptosis</p>
+        </div>
+        <div class="result-item">
+          <span class="result-type">🧬 PDB</span>
+          <code>7XYZ</code>
+          <p>Crystal structure of cytochrome c oxidase</p>
+        </div>
+      </div>
     </div>
   `;
 }
 
 function renderDBQuiz() {
   const questions = [
-    { q: "¿Qué base de datos contiene secuencias de nucleótidos?", options: ["UniProt", "NCBI GenBank", "PDB"] },
-    { q: "¿Qué operador une términos en NCBI?", options: ["AND", "PLUS", "JOIN"] },
-    { q: "¿Cuál es la base de datos de estructuras proteicas?", options: ["UniProt", "PDB", "ENA"] },
-    { q: "¿Qué significa el filtro [Organism]?", options: ["Filtrar por organismo", "Filtrar por fecha", "Filtrar por tamaño"] },
-    { q: "¿Cuál API permite acceso programático a UniProt?", options: ["BLAST", "REST API", "FTP"] }
+    { q: "¿Qué base de datos contiene secuencias de nucleótidos?", options: ["UniProt", "NCBI GenBank", "PDB"], correct: 1 },
+    { q: "¿Qué operador une términos en NCBI?", options: ["AND", "PLUS", "JOIN"], correct: 0 },
+    { q: "¿Cuál es la base de datos de estructuras proteicas?", options: ["UniProt", "PDB", "ENA"], correct: 1 },
+    { q: "¿Qué significa el filtro [Organism]?", options: ["Filtrar por organismo", "Filtrar por fecha", "Filtrar por tamaño"], correct: 0 },
+    { q: "¿Cuál API permite acceso programático a UniProt?", options: ["BLAST", "REST API", "FTP"], correct: 1 },
+    { q: "¿Qué base de datos contiene datos de expresión génica?", options: ["PDB", "GEO", "ENA"], correct: 1 },
+    { q: "¿Qué significa el operador NOT en una búsqueda?", options: ["Incluir ambos términos", "Excluir un término", "Buscar cualquiera"], correct: 1 },
+    { q: "¿Cuál es el TaxID para Homo sapiens?", options: ["9606", "9605", "9700"], correct: 0 },
+    { q: "¿Qué base de datos es mejor para buscar genomas de referencia?", options: ["PDB", "UCSC Genome Browser", "PubMed"], correct: 1 },
+    { q: "¿Qué operador buscas para buscar una frase exacta?", options: ["OR", "\"\" (comillas)", "AND"], correct: 1 }
   ];
-  const answers = [1, 0, 1, 0, 1];
   
   return `
     <div class="cli-quiz">
@@ -1040,7 +1344,7 @@ function renderDBQuiz() {
           <p><strong>Pregunta ${i+1}:</strong> ${q.q}</p>
           <div class="quiz-opts">
             ${q.options.map((opt, j) => `
-              <button class="quiz-opt" data-q="${i}" data-correct="${j === answers[i]}">${opt}</button>
+              <button class="quiz-opt" data-q="${i}" data-correct="${j === q.correct}">${opt}</button>
             `).join('')}
           </div>
           <div id="dbQuizFb-${i}" class="quiz-feedback hidden"></div>
@@ -2104,6 +2408,105 @@ window.checkDBEx2 = function() {
   fb.classList.remove('hidden');
   if (ok) { fb.textContent = '✅ ¡Correcto!'; fb.className = 'feedback ok'; }
   else { fb.textContent = '❌ Pista: "DNA repair"[Keyword] AND yeast[Organism]'; fb.className = 'feedback err'; }
+};
+
+window.checkDBEx3 = function() {
+  const input = document.getElementById('exDB3').value.toLowerCase();
+  const fb = document.getElementById('dbEx3Feedback');
+  const ok = (input.includes('brca1') || input.includes('brca2')) && input.includes('homo sapiens');
+  fb.classList.remove('hidden');
+  if (ok) { fb.textContent = '✅ ¡Correcto!'; fb.className = 'feedback ok'; }
+  else { fb.textContent = '❌ Pista: (BRCA1 OR BRCA2) AND Homo sapiens[Organism]'; fb.className = 'feedback err'; }
+};
+
+window.checkDBEx4 = function() {
+  const input = document.getElementById('exDB4').value.toLowerCase();
+  const fb = document.getElementById('dbEx4Feedback');
+  const ok = input.includes('covid') && input.includes('title');
+  fb.classList.remove('hidden');
+  if (ok) { fb.textContent = '✅ ¡Correcto!'; fb.className = 'feedback ok'; }
+  else { fb.textContent = '❌ Pista: COVID-19[Title]'; fb.className = 'feedback err'; }
+};
+
+window.checkDBEx5 = function() {
+  const input = document.getElementById('exDB5').value.toLowerCase();
+  const fb = document.getElementById('dbEx5Feedback');
+  const ok = input.includes('sars-cov-2') && input.includes('2020') && input.includes('2023');
+  fb.classList.remove('hidden');
+  if (ok) { fb.textContent = '✅ ¡Correcto!'; fb.className = 'feedback ok'; }
+  else { fb.textContent = '❌ Pista: SARS-CoV-2[Title/Abstract] AND ("2020/01/01"[PDAT] : "2023/12/31"[PDAT])'; fb.className = 'feedback err'; }
+};
+
+window.checkDBEx6 = function() {
+  const input = document.getElementById('exDB6').value.toLowerCase();
+  const fb = document.getElementById('dbEx6Feedback');
+  const ok = input.includes('txid9606') || (input.includes('9606') && input.includes('organism'));
+  fb.classList.remove('hidden');
+  if (ok) { fb.textContent = '✅ ¡Correcto! TaxID 9606 = Homo sapiens'; fb.className = 'feedback ok'; }
+  else { fb.textContent = '❌ Pista: txid9606[Organism:exp]'; fb.className = 'feedback err'; }
+};
+
+window.checkDBEx7 = function() {
+  const input = document.getElementById('exDB7').value.toLowerCase();
+  const fb = document.getElementById('dbEx7Feedback');
+  const ok = input.includes('arabidopsis') && input.includes('photosynthesis');
+  fb.classList.remove('hidden');
+  if (ok) { fb.textContent = '✅ ¡Correcto!'; fb.className = 'feedback ok'; }
+  else { fb.textContent = '❌ Pista: organism:"Arabidopsis thaliana" AND photosynthesis'; fb.className = 'feedback err'; }
+};
+
+window.checkDBEx8 = function() {
+  const input = document.getElementById('exDB8').value.toLowerCase();
+  const fb = document.getElementById('dbEx8Feedback');
+  const ok = input.includes('hemoglobin') || input.includes('haemoglobin');
+  fb.classList.remove('hidden');
+  if (ok) { fb.textContent = '✅ ¡Correcto!'; fb.className = 'feedback ok'; }
+  else { fb.textContent = '❌ Pista: hemoglobin[Title]'; fb.className = 'feedback err'; }
+};
+
+window.buildDBQuery = function() {
+  const gene = document.getElementById('dbGene').value.trim();
+  const organism = document.getElementById('dbOrganism').value.trim();
+  const db = document.getElementById('dbSelect').value;
+  const reviewed = document.getElementById('filterReviewed').checked;
+  const result = document.getElementById('dbQueryResult');
+  const preview = document.getElementById('queryPreviewText');
+  
+  let query = '';
+  
+  if (gene && organism) {
+    query = `"${gene}"[All Fields] AND ${organism}[Organism]`;
+  } else if (gene) {
+    query = `"${gene}"[All Fields]`;
+  } else if (organism) {
+    query = `${organism}[Organism]`;
+  } else {
+    result.textContent = '⚠️ Ingresa al menos un término de búsqueda';
+    return;
+  }
+  
+  if (reviewed) {
+    query += ' AND reviewed[Properties]';
+  }
+  
+  const urls = {
+    nucleotide: `https://www.ncbi.nlm.nih.gov/nuccore/?term=${encodeURIComponent(query)}`,
+    protein: `https://www.ncbi.nlm.nih.gov/protein/?term=${encodeURIComponent(query)}`,
+    pubmed: `https://pubmed.ncbi.nlm.nih.gov/?term=${encodeURIComponent(query)}`,
+    structure: `https://www.ncbi.nlm.nih.gov/structure/?term=${encodeURIComponent(query)}`,
+    gene: `https://www.ncbi.nlm.nih.gov/gene/?term=${encodeURIComponent(query)}`,
+    geo: `https://www.ncbi.nlm.nih.gov/geo/browse/?term=${encodeURIComponent(query)}`
+  };
+  
+  preview.textContent = query;
+  result.innerHTML = `
+🔗 Enlace a ${db}:
+<a href="${urls[db]}" target="_blank">${urls[db]}</a>
+
+📝 Consulta generada: ${query}
+
+💡 Copia esta consulta y úsala en la base de datos seleccionada
+  `;
 };
 
 window.simulateDBSearch = function() {

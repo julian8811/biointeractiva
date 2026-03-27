@@ -2218,3 +2218,287 @@ textarea {
   .fab-game { background: #f59e0b; }
   .fab-favorites { background: #a78bfa; }
 }
+
+/* ========================================
+   MÓDULO 2: BASES DE DATOS MEJORADO
+   ======================================== */
+
+/* Tags en tarjetas de DB */
+.db-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+  margin-top: 0.5rem;
+}
+
+.db-tags .tag {
+  background: rgba(34, 211, 238, 0.2);
+  color: #22d3ee;
+  padding: 0.2rem 0.5rem;
+  border-radius: 12px;
+  font-size: 0.7rem;
+}
+
+/* Operadores Grid */
+.operators-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.operator-card {
+  background: var(--soft);
+  border: 1px solid #334155;
+  border-radius: 10px;
+  padding: 1rem;
+  text-align: center;
+}
+
+.operator-card .op-code {
+  display: block;
+  background: linear-gradient(135deg, #7c3aed, #4f46e5);
+  color: #fff;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-family: Consolas, monospace;
+  font-size: 1.1rem;
+  margin-bottom: 0.5rem;
+}
+
+.operator-card p {
+  color: #94a3b8;
+  font-size: 0.85rem;
+  margin: 0.3rem 0;
+}
+
+.operator-card .op-result {
+  display: block;
+  color: #34d399;
+  font-size: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+/* Tabla comparadora de DB */
+.db-compare-table {
+  overflow-x: auto;
+  margin-top: 1rem;
+}
+
+.db-compare-table table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--soft);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.db-compare-table th,
+.db-compare-table td {
+  padding: 0.8rem;
+  text-align: left;
+  border-bottom: 1px solid #334155;
+}
+
+.db-compare-table th {
+  background: linear-gradient(135deg, #1e3a8a, #0f172a);
+  color: #22d3ee;
+  font-weight: 600;
+}
+
+.db-compare-table tr:hover {
+  background: rgba(34, 211, 238, 0.1);
+}
+
+/* Constructor de consultas mejorado */
+.db-query-builder-enhanced {
+  background: linear-gradient(135deg, #1e3a8a 0%, #0f172a 100%);
+  border: 1px solid #3b82f6;
+  border-radius: 16px;
+  padding: 1.5rem;
+}
+
+.query-builder-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.query-step {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.query-step label {
+  color: #22d3ee;
+  font-weight: 600;
+}
+
+.query-step input,
+.query-step select {
+  padding: 0.7rem;
+  border-radius: 8px;
+  border: 1px solid #475569;
+  background: #0f172a;
+  color: #fff;
+  font-size: 0.95rem;
+}
+
+.query-help {
+  color: #94a3b8;
+  font-size: 0.8rem;
+}
+
+.filter-checks {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.filter-checks label {
+  color: #cbd5e1;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  cursor: pointer;
+}
+
+.filter-checks input[type="checkbox"] {
+  width: auto;
+}
+
+.query-build-btn {
+  background: linear-gradient(135deg, #22c55e, #34d399);
+  color: #000;
+  border: none;
+  padding: 1rem 2rem;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.query-build-btn:hover {
+  transform: scale(1.02);
+}
+
+.query-result {
+  background: #020617;
+  border: 1px solid #334155;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-top: 1rem;
+  font-family: Consolas, monospace;
+  color: #22d3ee;
+  white-space: pre-wrap;
+}
+
+.query-result a {
+  color: #a78bfa;
+}
+
+.query-preview {
+  margin-top: 1rem;
+  padding: 0.8rem;
+  background: rgba(34, 211, 238, 0.1);
+  border-radius: 8px;
+}
+
+.query-preview h5 {
+  margin: 0 0 0.5rem;
+  color: #22d3ee;
+}
+
+.query-preview code {
+  color: #a78bfa;
+  font-family: Consolas, monospace;
+}
+
+/* Simulador de búsqueda */
+.simulator-section {
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+  border: 1px solid #475569;
+  border-radius: 16px;
+  padding: 1.5rem;
+  margin: 2rem 0;
+}
+
+.sim-search-box {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.sim-search-box input {
+  flex: 1;
+  min-width: 200px;
+  padding: 0.8rem;
+  border-radius: 8px;
+  border: 1px solid #475569;
+  background: #0f172a;
+  color: #fff;
+}
+
+.sim-search-box select {
+  padding: 0.8rem;
+  border-radius: 8px;
+  border: 1px solid #475569;
+  background: #1e293b;
+  color: #fff;
+}
+
+.sim-search-box button {
+  background: linear-gradient(135deg, #22d3ee, #06b6d4);
+  color: #000;
+  border: none;
+  padding: 0.8rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.sim-result {
+  margin-top: 1rem;
+  background: #020617;
+  border: 1px solid #334155;
+  border-radius: 8px;
+  padding: 1rem;
+  font-family: Consolas, monospace;
+  white-space: pre-wrap;
+}
+
+/* Explorador de resultados */
+.results-explorer {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.result-item {
+  background: var(--soft);
+  border: 1px solid #334155;
+  border-radius: 10px;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.result-type {
+  font-size: 0.75rem;
+  color: #22d3ee;
+  text-transform: uppercase;
+}
+
+.result-item code {
+  color: #a78bfa;
+  font-family: Consolas, monospace;
+}
+
+.result-item p {
+  color: #94a3b8;
+  font-size: 0.9rem;
+  margin: 0;
+}
