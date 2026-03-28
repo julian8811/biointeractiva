@@ -2997,108 +2997,718 @@ function renderPhyloLesson() {
   return `
     <div class="lesson phylo-intro">
       <h3>🌳 Fundamentos de Filogenética</h3>
-      <p>La filogenética reconstruye la historia evolutiva de los organismos mediante el análisis comparativo de secuencias moleculares.</p>
+      <p>La filogenética reconstruye la historia evolutiva de los organismos mediante el análisis comparativo de secuencias moleculares. El objetivo principal es entender las relaciones evolutivas entre especies o genes.</p>
       
       <div class="phylo-concepts">
         <div class="concept-card">
-          <h5>📐 Alineamiento Múltiple (MSA)</h5>
-          <p>Alinear múltiples secuencias para identificar regiones conservadas.</p>
-          <p><strong>Herramientas:</strong> MAFFT, Clustal Omega, MUSCLE</p>
+          <h5>📐 Alineamiento Múltiple de Secuencias (MSA)</h5>
+          <p>Proceso de alinear tres o más secuencias biológicas para identificar:</p>
+          <ul>
+            <li>Regiones conservadas (similares por descendencia común)</li>
+            <li>Sitios variables (mutaciones)</li>
+            <li>Indels (inserciones y deleciones)</li>
+          </ul>
+          <p><strong>Herramientas:</strong> MAFFT, Clustal Omega, MUSCLE, T-Coffee</p>
         </div>
+        
         <div class="concept-card">
-          <h5>📊 Selección de Modelo</h5>
-          <p>Elegir el modelo evolutivo que mejor describe las sustituciones.</p>
-          <p><strong>Modelos:</strong> JTT, GTR, HKLY85</p>
+          <h5>📊 Modelos Evolutivos</h5>
+          <p>Los modelos describen cómo los nucleótidos o aminoácidos cambian a lo largo del tiempo:</p>
+          <ul>
+            <li><strong>JC69:</strong> Jukes-Cantor (iguales probabilidades)</li>
+            <li><strong>K80:</strong> Kimura 2-parámetros (transiciones vs tránsversiones)</li>
+            <li><strong>GTR:</strong> General Time Reversible (más realista)</li>
+            <li><strong>+G:</strong> Gamma (heterogeneidad de sitios)</li>
+            <li><strong>+I:</strong> Proporción de sitios invariables</li>
+          </ul>
+          <p><strong>Herramientas:</strong> jModelTest, ModelFinder, ProtTest</p>
         </div>
+        
         <div class="concept-card">
-          <h5>🌲 Inferencia Filogenética</h5>
-          <p>Construir árboles que representan relaciones evolutivas.</p>
-          <p><strong>Métodos:</strong> NJ, ML, Bayesiano</p>
+          <h5>🌲 Métodos de Inferencia Filogenética</h5>
+          <ul>
+            <li><strong>UPGMA:</strong> Clustering jerárquico (asume reloj molecular)</li>
+            <li><strong>Neighbor-Joining (NJ):</strong> Rápido, distancia evolutiva</li>
+            <li><strong>Máxima Parsimonia (MP):</strong> Menos cambios evolutivos</li>
+            <li><strong>Máxima Verosimilitud (ML):</strong> Usa modelos probabilísticos</li>
+            <li><strong>Inferencia Bayesiana:</strong> Distribuciones posteriores</li>
+          </ul>
         </div>
+        
         <div class="concept-card">
-          <h5>📈 Bootstrap</h5>
-          <p>Evaluar la robustez statistical de cada nodo en el árbol.</p>
-          <p><strong>Interpretación:</strong> >70% soporte moderate, >90% fuerte</p>
+          <h5>📈 Bootstrap y Soporte Estadístico</h5>
+          <p>El bootstrap re-muestrea posiciones del alineamiento para evaluar la robustez de cada nodo:</p>
+          <ul>
+            <li><strong><70%:</strong> Soporte débil - dudoso</li>
+            <li><strong>70-85%:</strong> Soporte moderado</li>
+            <li><strong>85-95%:</strong> Soporte bueno</li>
+            <li><strong>>95%:</strong> Soporte muy fuerte</li>
+          </ul>
+          <p><strong>Nota:</strong> IQ-TREE ofrece ultrafast bootstrap (mucho más rápido)</p>
         </div>
       </div>
     </div>
 
     <div class="lesson">
-      <h3>🧬 Interpretación de árboles</h3>
-      <div class="code">Ejemplo de árbol Newick:
-((SpeciesA:0.1,SpeciesB:0.1):0.5,(SpeciesC:0.2,SpeciesD:0.2):0.3);
+      <h3>🧬 Formato Newick - El lenguaje de los árboles</h3>
+      <p>Newick es el formato estándar para representar árboles filogenéticos como texto:</p>
+      
+      <div class="code">Ejemplo básico:
+(A:0.1,B:0.1):0.5;
 
-- Las ramas cortas = evolución rápida
-- Las ramas largas = evolución lenta  
-- Bootstrap alto = nodo bien soportado
-- outgroup = grupo externo para rooting</div>
+Esto representa:
+        ___________ (0.5)
+       |
+_______|          ___ A (0.1)
+       |         |___ B (0.1)
+       |_________________________</div>
+      
+      <div class="phylo-examples">
+        <h5>Estructura de un árbol Newick:</h5>
+        <ul>
+          <li><code>(A,B)</code> - Nodo con dos taxones hermanos</li>
+          <li><code>(A:0.1,B:0.1)</code> - Longitudes de rama</li>
+          <li><code>((A,B),C)</code> - Anidamiento (A y B agrupados)</li>
+          <li><code>(A,B)C)</code> - C es outgroup (raíz)</li>
+        </ul>
+        
+        <h5>Ejemplo real:</h5>
+        <div class="code">((Human:0.01,Chimp:0.01):0.02,(Mouse:0.05,Rat:0.05):0.03):0.1;</div>
+        
+        <p><strong>Interpretación:</strong> Human y Chimp son muy cercanos (0.01), el grupo roedor está más alejado (0.05).</p>
+      </div>
+    </div>
+
+    <div class="lesson">
+      <h3>🔬 Pipeline Completo de Filogenética</h3>
+      <p>Un análisis filogenético típico sigue estos pasos:</p>
+      
+      <div class="pipeline-flow enhanced">
+        <div class="pipeline-step">
+          <span class="step-num">1</span>
+          <div class="step-content">
+            <h5>📥 Obtención de secuencias</h5>
+            <p>Descargar secuencias de GenBank, UniProt, o extraer de genomas.</p>
+            <code>esearch -db nuccore -query "COX1[Gene] AND mitochondria[Organism]" | efetch -format fasta</code>
+            <div class="step-tools">BLAST, NCBI, UniProt</div>
+          </div>
+        </div>
+        
+        <div class="pipeline-step">
+          <span class="step-num">2</span>
+          <div class="step-content">
+            <h5>🔧 Control de calidad</h5>
+            <p>Eliminar secuencias contaminadas o de baja calidad.</p>
+            <code>cd-hit-est -i secuencias.fasta -o filtreadas.fasta -c 0.95</code>
+            <div class="step-tools">FASTQC, CD-HIT, Trimal</div>
+          </div>
+        </div>
+        
+        <div class="pipeline-step">
+          <span class="step-num">3</span>
+          <div class="step-content">
+            <h5>📐 Alineamiento Múltiple</h5>
+            <p>Alinear todas las secuencias para identificar homologías.</p>
+            <code>mafft --auto secuencias.fasta > alineamiento.fasta</code>
+            <div class="step-tools">MAFFT, MUSCLE, Clustal Omega</div>
+          </div>
+        </div>
+        
+        <div class="pipeline-step">
+          <span class="step-num">4</span>
+          <div class="step-content">
+            <h5>✂️ Recorte del alineamiento</h5>
+            <p>Eliminar regiones ambiguas o con muchos gaps.</p>
+            <code>trimal -in alineamiento.fasta -out recortado.fasta -gt 0.8</code>
+            <div class="step-tools">Trimal, Gblocks</div>
+          </div>
+        </div>
+        
+        <div class="pipeline-step">
+          <span class="step-num">5</span>
+          <div class="step-content">
+            <h5>📊 Selección de modelo</h5>
+            <p>Encontrar el modelo evolutivo óptimo para los datos.</p>
+            <code>iqtree -s alineamiento.fasta -m TESTONLY</code>
+            <div class="step-tools">ModelFinder, jModelTest, ProtTest</div>
+          </div>
+        </div>
+        
+        <div class="pipeline-step">
+          <span class="step-num">6</span>
+          <div class="step-content">
+            <h5>🌲 Inferencia del árbol</h5>
+            <p>Construir el árbol filogenético con el modelo seleccionado.</p>
+            <code>iqtree -s alineamiento.fasta -m GTR+G -b 1000</code>
+            <div class="step-tools">IQ-TREE, RAxML, MrBayes</div>
+          </div>
+        </div>
+        
+        <div class="pipeline-step">
+          <span class="step-num">7</span>
+          <div class="step-content">
+            <h5>🎨 Visualización y anotación</h5>
+            <p>Interpretar y anotar el árbol para publicación.</p>
+            <code># Abrir en FigTree o iTOL</code>
+            <div class="step-tools">FigTree, iTOL, DendroPy</div>
+          </div>
+        </div>
+      </div>
     </div>
 
     <div class="lesson">
       <h3>🛠️ Herramientas de Filogenética</h3>
+      
+      <div class="tools-grid">
+        <div class="tool-card">
+          <h4>🔧 MAFFT</h4>
+          <p><strong>Alineamiento múltiple de secuencias</strong></p>
+          <p>Muy rápido, ideal para genomas completos o transcriptomas.</p>
+          <code>mafft --auto --thread 8 secuencias.fasta > alineamiento.fasta</code>
+          <ul>
+            <li><code>--auto</code> Auto-selección de algoritmo</li>
+            <li><code>--genafpair</code> Needleman-Wunsch</li>
+            <li><code>--localpair</code> Smith-Waterman</li>
+          </ul>
+        </div>
+        
+        <div class="tool-card">
+          <h4>🧬 IQ-TREE</h4>
+          <p><strong>Máxima verosimilitud + ultrafast bootstrap</strong></p>
+          <p>Moderno, eficiente, selecciona automáticamente el mejor modelo.</p>
+          <code>iqtree -s alineamiento.fasta -m MFP -bb 1000 -alrt 1000</code>
+          <ul>
+            <li><code>-m MFP</code> ModelFinder + reconstrucción</li>
+            <li><code>-bb 1000</code> Ultrafast bootstrap</li>
+            <li><code>-alrt 1000</code> SH-aLRT</li>
+          </ul>
+        </div>
+        
+        <div class="tool-card">
+          <h4>🌲 RAxML</h4>
+          <p><strong>Máxima verosimilitud para árboles grandes</strong></p>
+          <p>Estándar de oro para filogenias de múltiples genes.</p>
+          <code>raxmlHPC -s alineamiento.fasta -n resultado -m GTRGAMMA -f a -x 12345 -N 100</code>
+          <ul>
+            <li><code>-m GTRGAMMA</code> Modelo GTR+Gamma</li>
+            <li><code>-f a</code>bootstrapping rápido</li>
+            <li><code>-x</code> Semilla para bootstrap</li>
+          </ul>
+        </div>
+        
+        <div class="tool-card">
+          <h4>🔮 MrBayes</h4>
+          <p><strong>Inferencia filogenética bayesiana</strong></p>
+          <p>Genera distribuciones posteriores de árboles.</p>
+          <code>mb bloque_comandos.nex</code>
+          <ul>
+            <li>Usa archivos NEXUS</li>
+            <li>MCMC para muestreo</li>
+            <li>Soporte de posterior</li>
+          </ul>
+        </div>
+        
+        <div class="tool-card">
+          <h4>📊 FigTree</h4>
+          <p><strong>Visualización de árboles</strong></p>
+          <p>Interfaz gráfica para editar y anotar árboles.</p>
+          <ul>
+            <li>Colorear ramas por características</li>
+            <li>Rooting y rooting automático</li>
+            <li>Mostrar bootstrap en nodos</li>
+          </ul>
+        </div>
+        
+        <div class="tool-card">
+          <h4>🌐 iTOL</h4>
+          <p><strong>Interactive Tree Of Life</strong></p>
+          <p>Visualización online con annotations avanzadas.</p>
+          <ul>
+            <li>Subir árbol Newick</li>
+            <li>Annotations interactivas</li>
+            <li>Integración con bases de datos</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    
+    <div class="lesson">
+      <h3>💡 Consejos Prácticos</h3>
       <ul>
-        <li><strong>MAFFT:</strong> Alineamiento múltiple rápido</li>
-        <li><strong>IQ-TREE:</strong> Máxima verosimilitud + ultrafast bootstrap</li>
-        <li><strong>RAxML:</strong> Filogenias de máxima verosimilitud</li>
-        <li><strong>MrBayes:</strong> Inferencia bayesiana</li>
-        <li><strong>FigTree:</strong> Visualización de árboles</li>
+        <li><strong>Usa múltiples genes:</strong> Las filogenias de un solo gen pueden tener historia confusa</li>
+        <li><strong>Incluye outgroup:</strong> Necesario para rootear el árbol correctamente</li>
+        <li><strong>Bootstrap alto:</strong> No confíes en nodos con soporte <70%</li>
+        <li><strong>Reloj molecular:</strong> Verifica si tus datos cumplen el supuesto de reloj</li>
+        <li><strong>Modelos:</strong> Un modelo malo da resultados malos - usa ModelFinder</li>
       </ul>
     </div>
+  `;
+}
+
+// ============================================
+// EMULADORES DE FILOGENÉTICA
+// ============================================
+function renderPhyloEmuladores() {
+  return `
+    <div class="phylo-emulators">
+      <h3>🧪 Emuladores de Filogenética</h3>
+      <p>Practica con las herramientas más usadas en análisis filogenéticos.</p>
+      
+      <!-- Emulador MAFFT -->
+      <div class="emulator-card">
+        <h4>🔧 MAFFT - Alineamiento Múltiple</h4>
+        <p>MAFFT es una herramienta rápida y precisa para alineamiento múltiple de secuencias.</p>
+        
+        <div class="emulator-input">
+          <label>Secuencias de entrada (FASTA):</label>
+          <textarea id="mafftInput" rows="6" placeholder=">Seq1
+ATGCGTACG
+>Seq2
+ATGCGTATG
+>Seq3
+ATGCATACG">
+ATGCGTACG
+ATGCGTATG
+ATGCATACG
+ATGCTTACG</textarea>
+        </div>
+        
+        <div class="emulator-options">
+          <label>Opciones:</label>
+          <select id="mafftOption">
+            <option value="--auto">--auto (Automático)</option>
+            <option value="--genafpair">--genafpair (Global-Align)</option>
+            <option value="--localpair">--localpair (Local-Align)</option>
+            <option value="--nwildcard">--nwildcard (Sin ambigüedades)</option>
+          </select>
+        </div>
+        
+        <button class="emulator-btn" onclick="runMafft()">▶ Ejecutar MAFFT</button>
+        
+        <div class="emulator-output">
+          <label>Resultado (Alineamiento):</label>
+          <pre id="mafftOutput">El resultado del alineamiento aparecerá aquí...</pre>
+        </div>
+      </div>
+      
+      <!-- Emulador IQ-TREE -->
+      <div class="emulator-card">
+        <h4>🧬 IQ-TREE - Inferencia Filogenética</h4>
+        <p>IQ-TREE construye árboles filogenéticos usando máxima verosimilitud con selección automática de modelo.</p>
+        
+        <div class="emulator-input">
+          <label>Alineamiento de entrada:</label>
+          <textarea id="iqtreeInput" rows="4" placeholder="Pega tu alineamiento en formato FASTA o PHYLIP">
+>SpeciesA
+ATGCGTACGATGC
+>SpeciesB
+ATGCGTACGATGT
+>SpeciesC
+ATGCTTAGCGATG
+>SpeciesD
+ATGCTTAGCAATG</textarea>
+        </div>
+        
+        <div class="emulator-options">
+          <label>Modelo evolutivo:</label>
+          <select id="iqtreeModel">
+            <option value="TEST">TEST (ModelFinder automático)</option>
+            <option value="GTR">GTR (General Time Reversible)</option>
+            <option value="GTR+G">GTR+G (Con tasa gamma)</option>
+            <option value="GTR+I+G">GTR+I+G (Invariables + Gamma)</option>
+            <option value="JC69">JC69 (Jukes-Cantor)</option>
+            <option value="HKY">HKY (Hasegawa-Kishino-Yano)</option>
+          </select>
+          
+          <label>Bootstrap:</label>
+          <select id="iqtreeBootstrap">
+            <option value="1000">1000 réplicas (Estándar)</option>
+            <option value="100">100 réplicas (Rápido)</option>
+            <option value="5000">5000 réplicas (Exacto)</option>
+            <option value="0">Sin bootstrap</option>
+          </select>
+        </div>
+        
+        <button class="emulator-btn" onclick="runIQTree()">▶ Ejecutar IQ-TREE</button>
+        
+        <div class="emulator-output">
+          <label>Resultado:</label>
+          <pre id="iqtreeOutput">El árbol filogenético aparecerá aquí...</pre>
+        </div>
+      </div>
+      
+      <!-- Visualizador de Newick -->
+      <div class="emulator-card">
+        <h4>🌲 Visualizador de Newick</h4>
+        <p>Convierte y visualiza árboles en formato Newick.</p>
+        
+        <div class="emulator-input">
+          <label>Árbol en formato Newick:</label>
+          <input type="text" id="newickInput" placeholder="((A:0.1,B:0.1):0.5,(C:0.2,D:0.2):0.3);" 
+                 value="((Human:0.01,Chimp:0.01):0.02,(Mouse:0.05,Rat:0.05):0.03);">
+        </div>
+        
+        <button class="emulator-btn" onclick="visualizeNewick()">🌳 Visualizar Árbol</button>
+        
+        <div class="emulator-output">
+          <label>Árbol ASCII:</label>
+          <pre id="newickOutput"></pre>
+          
+          <label>Información del árbol:</label>
+          <div id="newickInfo"></div>
+        </div>
+      </div>
+      
+      <!-- Simulador de Bootstrap -->
+      <div class="emulator-card">
+        <h4>📈 Simulador de Bootstrap</h4>
+        <p>Aprende cómo funciona el bootstrap en filogenética.</p>
+        
+        <div class="bootstrap-sim">
+          <p>El bootstrap re-muestrea posiciones del alineamiento para crear "pseudo-replicas":</p>
+          
+          <div class="sim-panel">
+            <div class="sim-sequences">
+              <strong>Secuencia Original:</strong>
+              <code>ATGC GTAC GTAC GTA-</code>
+              <code>ATGC GTAG GTGC GTA-</code>
+              <code>ATGC GTAA GTAC GTAT</code>
+            </div>
+            
+            <div class="sim-arrow">⬇️ Re-muestreo ⬇️</div>
+            
+            <div class="sim-bootstraps">
+              <strong>Replica Bootstrap 1:</strong>
+              <code>ATGC GTAA GTAC GTA-</code>
+              <code>ATGC GTAA GTGC GTA-</code>
+              <code>ATGC GTAA GTAC GTAT</code>
+              
+              <strong>Replica Bootstrap 2:</strong>
+              <code>ATGC GTAC GTGC GTA-</code>
+              <code>ATGC GTAG GTGC GTA-</code>
+              <code>ATGC GTAC GTAC GTA-</code>
+            </div>
+          </div>
+          
+          <p><strong>Interpretación:</strong> Si en 95 de 100 pseudo-alineamientos aparece el mismo nodo, ese nodo tiene 95% de soporte bootstrap.</p>
+          
+          <div class="bootstrap-visual">
+            <div class="tree-simple">
+              <span class="node" style="--support: 98">●</span>
+              <div class="branch-left">
+                <span class="node" style="--support: 95">●</span>
+              </div>
+              <div class="branch-right">
+                <span class="node" style="--support: 45">●</span>
+              </div>
+            </div>
+            <p><strong>98%</strong> = muy confiable | <strong>45%</strong> = dudoso</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+// Handlers para emuladores
+window.runMafft = function() {
+  const input = document.getElementById('mafftInput').value.trim();
+  const option = document.getElementById('mafftOption').value;
+  const output = document.getElementById('mafftOutput');
+  
+  if (!input) {
+    output.textContent = '❌ Error: Ingresa secuencias en formato FASTA';
+    return;
+  }
+  
+  // Simular alineamiento
+  const lines = input.split('\n').filter(l => l.trim());
+  const seqs = [];
+  let currentSeq = '';
+  
+  lines.forEach(line => {
+    if (line.startsWith('>')) {
+      if (currentSeq) seqs.push(currentSeq);
+      currentSeq = '';
+    } else {
+      currentSeq += line.trim();
+    }
+  });
+  if (currentSeq) seqs.push(currentSeq);
+  
+  // Simular alineamiento (añadir gaps)
+  const aligned = seqs.map((seq, i) => {
+    let result = seq.substring(0, 4);
+    // Simular algunos gaps y sustituciones
+    if (i > 0) {
+      result += ' ' + seq.substring(4, 8).replace(/A|T|G|C/g, (c, j) => {
+        return Math.random() > 0.7 ? '-' : c;
+      });
+      result += ' ' + seq.substring(8, 12).replace(/A|T|G|C/g, (c) => {
+        return Math.random() > 0.6 ? '-' : c;
+      });
+    } else {
+      result += ' ' + seq.substring(4, 8) + ' ' + seq.substring(8, 12);
+    }
+    return result;
+  });
+  
+  output.innerHTML = `✅ ${option} - Alineamiento completado
+
+Secuencias alineadas:
+${aligned.map((s, i) => `Seq${i+1}: ${s}`).join('\n')}
+
+Longitud final: ${Math.max(...aligned.map(s => s.replace(/\s/g, '').length))} bp
+Identidad promedio: ~${Math.floor(70 + Math.random() * 25)}%`;
+};
+
+window.runIQTree = function() {
+  const input = document.getElementById('iqtreeInput').value.trim();
+  const model = document.getElementById('iqtreeModel').value;
+  const bootstrap = document.getElementById('iqtreeBootstrap').value;
+  const output = document.getElementById('iqtreeOutput');
+  
+  if (!input) {
+    output.textContent = '❌ Error: Ingresa un alineamiento';
+    return;
+  }
+  
+  // Simular resultado de IQ-TREE
+  const numSeqs = (input.match(/>/g) || []).length || 4;
+  const tree = generateRandomTree(numSeqs);
+  
+  output.innerHTML = `🏆 IQ-TREE - Resultados
+
+Modelo: ${model}
+Bootstrap: ${bootstrap} réplicas
+
+Log-likelihood: -${(Math.random() * 100 + 200).toFixed(2)}
+
+Mejor modelo encontrado: ${model}
+
+Árbol estimado:
+${tree}
+
+Soporte de nodos (Ultrafast Bootstrap):
+  Nodo1: ${Math.floor(85 + Math.random()() * 15)}%
+  Nodo2: ${Math.floor(70 + Math.random() * 25)}%
+  Nodo3: ${Math.floor(90 + Math.random() * 10)}%
+  
+Tiempo de ejecución: ${(Math.random() * 2 + 0.5).toFixed(1)}s`;
+};
+
+function generateRandomTree(n) {
+  const taxa = ['SpeciesA', 'SpeciesB', 'SpeciesC', 'SpeciesD', 'SpeciesE', 'SpeciesF'];
+  const selected = taxa.slice(0, Math.min(n, 6));
+  
+  if (selected.length <= 2) {
+    return `(${selected[0]}:0.1,${selected[1]}:0.1);`;
+  }
+  
+  // Generar árbol aleatorio simple
+  const len = selected.length;
+  const mid = Math.floor(len / 2);
+  const left = selected.slice(0, mid);
+  const right = selected.slice(mid);
+  
+  return `(${generateBranch(left)}:0.0${Math.floor(Math.random()*5)},${generateBranch(right)}:0.0${Math.floor(Math.random()*5)});`;
+}
+
+function generateBranch(arr) {
+  if (arr.length === 1) return `${arr[0]}:0.${Math.floor(Math.random()*9)+1}`;
+  const mid = Math.floor(arr.length / 2);
+  return `(${generateBranch(arr.slice(0, mid))}:0.0${Math.floor(Math.random()*5)},${generateBranch(arr.slice(mid))}:0.0${Math.floor(Math.random()*5)})`;
+}
+
+window.visualizeNewick = function() {
+  const input = document.getElementById('newickInput').value.trim();
+  const output = document.getElementById('newickOutput');
+  const info = document.getElementById('newickInfo');
+  
+  if (!input) {
+    output.textContent = '❌ Error: Ingresa un árbol en formato Newick';
+    return;
+  }
+  
+  // Parsear Newick simple
+  let tree = input.replace(/[;]/g, '');
+  
+  // Contar nodos y taxones
+  const taxa = tree.match(/[A-Za-z]+(?=:)/g) || [];
+  const numNodes = (tree.match(/\(/g) || []).length;
+  
+  // Generar representación ASCII simple
+  const ascii = generateAsciiTree(tree);
+  
+  output.textContent = ascii;
+  
+  info.innerHTML = `
+    <div class="tree-stats">
+      <div class="stat">
+        <strong>Taxones:</strong> ${taxa.length}
+      </div>
+      <div class="stat">
+        <strong>Nodos internos:</strong> ${numNodes}
+      </div>
+      <div class="stat">
+        <strong>Longitud total:</strong> ${(Math.random() * 2 + 0.1).toFixed(3)}
+      </div>
+    </div>
+  `;
+};
+
+function generateAsciiTree(newick) {
+  // Simplificación: generar representación visual
+  const taxa = newick.match(/[A-Za-z]+(?=:)/g) || ['A', 'B', 'C', 'D'];
+  
+  return `
+         ┌── ${taxa[0]}
+      ┌──┤
+      │  └── ${taxa[1]}
+    ──┤
+      │  ┌── ${taxa[2]}
+      └──┤
+         └── ${taxa[3] || 'outgroup'}
   `;
 }
 
 function renderPhyloInteractive() {
   return `
     <div class="interactive">
-      <h4>🌳 Identifica el tipo de árbol</h4>
+      <h3>✏️ Ejercicios de Filogenética</h3>
+      
+      <!-- Ejercicio 1: Métodos de inferencia -->
       <div class="exercise-card">
-        <p>¿Qué método de inferencia es más usado para árboles filogenéticos grandes?</p>
+        <h5>🌲 Ejercicio 1: Métodos de Inferencia</h5>
+        <p>¿Qué método de inferencia es más recomendado para árboles filogenéticos grandes con muchos taxones?</p>
         <select id="phyloEx1">
           <option value="">Selecciona...</option>
           <option value="nj">Neighbor Joining</option>
-          <option value="ml">Maximum Likelihood</option>
+          <option value="ml">Maximum Likelihood (ML)</option>
           <option value="bayes">Bayesiano</option>
+          <option value="upgma">UPGMA</option>
         </select>
         <button onclick="checkPhyloEx1()">Verificar</button>
         <div id="phyloEx1Feedback" class="feedback hidden"></div>
       </div>
       
+      <!-- Ejercicio 2: Interpretación de Bootstrap -->
       <div class="exercise-card">
-        <p>Si un nodo tiene bootstrap 95%, ¿cómo lo interpretas?</p>
-        <input type="text" id="phyloEx2" placeholder="Alto soporte estadístico">
+        <h5>📈 Ejercicio 2: Interpretación de Bootstrap</h5>
+        <p>Si un nodo tiene <strong>bootstrap 95%</strong>, ¿cómo lo interpretas?</p>
+        <input type="text" id="phyloEx2" placeholder="Escribe tu respuesta...">
         <button onclick="checkPhyloEx2()">Verificar</button>
         <div id="phyloEx2Feedback" class="feedback hidden"></div>
       </div>
-    </div>
-
-    <div class="interactive">
-      <h4>🧪 Laboratorio: Construye un alineamiento</h4>
-      <p>Ordena los pasos para crear un árbol filogenético:</p>
-      <div class="phylo-steps">
-        <div class="phylo-step">1. Obtener secuencias</div>
-        <div class="phylo-step">2. Alineamiento múltiple (MAFFT)</div>
-        <div class="phylo-step">3. Seleccionar modelo (ModelFinder)</div>
-        <div class="phylo-step">4. Inferir árbol (IQ-TREE)</div>
-        <div class="phylo-step">5. Visualizar (FigTree)</div>
+      
+      <!-- Ejercicio 3: Modelos evolutivos -->
+      <div class="exercise-card">
+        <h5>📊 Ejercicio 3: Modelos Evolutivos</h5>
+        <p>¿Qué modelo evolutivo es el más general (menos restrictivo)?</p>
+        <select id="phyloEx3">
+          <option value="">Selecciona...</option>
+          <option value="jc">JC69 (Jukes-Cantor)</option>
+          <option value="gtr">GTR (General Time Reversible)</option>
+          <option value="k80">K80 (Kimura 2-param)</option>
+          <option value="hky">HKY</option>
+        </select>
+        <button onclick="checkPhyloEx3()">Verificar</button>
+        <div id="phyloEx3Feedback" class="feedback hidden"></div>
       </div>
-      <input type="text" id="phyloLabInput" placeholder="Escribe el orden: 1,2,3,4,5">
-      <button onclick="checkPhyloLab()">Verificar</button>
-      <div id="phyloLabFeedback" class="feedback hidden"></div>
+      
+      <!-- Ejercicio 4: Comando MAFFT -->
+      <div class="exercise-card">
+        <h5>🔧 Ejercicio 4: Comando MAFFT</h5>
+        <p>Escribe el comando para alinear secuencias usando MAFFT con el algoritmo automático:</p>
+        <input type="text" id="phyloEx4" placeholder="mafft --auto archivo.fasta > resultado.fasta">
+        <button onclick="checkPhyloEx4()">Verificar</button>
+        <div id="phyloEx4Feedback" class="feedback hidden"></div>
+      </div>
+      
+      <!-- Ejercicio 5: Formato Newick -->
+      <div class="exercise-card">
+        <h5>🌳 Ejercicio 5: Formato Newick</h5>
+        <p>En el siguiente árbol: <code>((A,B),C)</code>, ¿cuál es el outgroup?</p>
+        <select id="phyloEx5">
+          <option value="">Selecciona...</option>
+          <option value="a">A</option>
+          <option value="b">B</option>
+          <option value="c">C</option>
+          <option value="ab">A y B</option>
+        </select>
+        <button onclick="checkPhyloEx5()">Verificar</button>
+        <div id="phyloEx5Feedback" class="feedback hidden"></div>
+      </div>
+      
+      <!-- Ejercicio 6: Pipeline -->
+      <div class="exercise-card">
+        <h5>🔄 Ejercicio 6: Orden del Pipeline</h5>
+        <p>Ordena los pasos para crear un árbol filogenético (1-6):</p>
+        <div class="pipeline-order">
+          <div class="step-item"><span class="step-num">_</span> Obtener secuencias de GenBank</div>
+          <div class="step-item"><span class="step-num">_</span> Control de calidad (FASTQC)</div>
+          <div class="step-item"><span class="step-num">_</span> Alineamiento múltiple (MAFFT)</div>
+          <div class="step-item"><span class="step-num">_</span> Recorte (Trimal/Gblocks)</div>
+          <div class="step-item"><span class="step-num">_</span> Selección de modelo (ModelFinder)</div>
+          <div class="step-item"><span class="step-num">_</span> Inferencia (IQ-TREE/RAxML)</div>
+        </div>
+        <input type="text" id="phyloEx6" placeholder="Ej: 1,2,3,4,5,6">
+        <button onclick="checkPhyloEx6()">Verificar</button>
+        <div id="phyloEx6Feedback" class="feedback hidden"></div>
+      </div>
     </div>
   `;
 }
 
 function renderPhyloQuiz() {
   const questions = [
-    { q: "¿Qué herramienta para alineamiento múltiple es más rápida?", options: ["MAFFT", "Clustal", "T-Coffee"] },
-    { q: "¿Qué significa bootstrap en filogenética?", options: ["Un programa", "Soporte estadístico", "Un modelo"] },
-    { q: "¿Qué formato se usa para representar árboles?", options: ["FASTA", "Newick", "VCF"] },
-    { q: "¿Cuál método usa máxima verosimilitud?", options: ["NJ", "ML", "Parsimony"] },
-    { q: "¿Qué valor de bootstrap indica alto soporte?", options: ["50%", "95%", "10%"] }
+    { 
+      q: "¿Qué herramienta de alineamiento múltiple es más rápida para genomas grandes?", 
+      options: ["MAFFT", "Clustal Omega", "T-Coffee", "MUSCLE"] 
+    },
+    { 
+      q: "¿Qué significa bootstrap en filogenética?", 
+      options: ["Un programa de alineamiento", "Soporte estadístico de nodos", "Un modelo evolutivo", "Un tipo de árbol"] 
+    },
+    { 
+      q: "¿Qué formato estándar se usa para representar árboles filogenéticos?", 
+      options: ["FASTA", "Newick", "VCF", "BAM"] 
+    },
+    { 
+      q: "¿Cuál método de inferencia usa máxima verosimilitud (Maximum Likelihood)?", 
+      options: ["Neighbor-Joining", "UPGMA", "ML", "Parsimony"] 
+    },
+    { 
+      q: "¿Qué valor de bootstrap indica un nodo con soporte MUY FUERTE?", 
+      options: ["50%", "70%", "95%", "30%"] 
+    },
+    { 
+      q: "¿Cuál de estos modelos evolutivos es el más general (menos supuestos)?", 
+      options: ["JC69", "K80", "GTR", "F84"] 
+    },
+    { 
+      q: "¿Qué herramienta permite hacer ultrafast bootstrap en filogenias?", 
+      options: ["RAxML", "IQ-TREE", "MrBayes", "PhyML"] 
+    },
+    { 
+      q: "En el formato Newick: ((A,B),C); ¿cuál nodo es el más interno?", 
+      options: ["A", "B", "A y B", "C"] 
+    },
+    { 
+      q: "¿Para qué sirve el outgroup en un árbol filogenético?", 
+      options: ["Determinar la raíz del árbol", "Acelerar cálculos", "Eliminar secuencias", "Mejorar el alineamiento"] 
+    },
+    { 
+      q: "¿Qué herramienta se usa para visualizar y anotar árboles filogenéticos?", 
+      options: ["BLAST", "FigTree", "MAFFT", "GATK"] 
+    }
   ];
-  const answers = [0, 1, 1, 1, 1];
+  const answers = [0, 1, 1, 2, 2, 2, 1, 2, 0, 1];
   
   return `
+    <div class="quiz-intro">
+      <p>Responde las siguientes preguntas sobre filogenética:</p>
+    </div>
     <div class="cli-quiz">
       ${questions.map((q, i) => `
         <div class="quiz-q">
@@ -3132,7 +3742,7 @@ function renderPhyloModule() {
       
       <div class="cli-tabs">
         <button class="cli-tab active" data-tab="conceptos">📚 Conceptos</button>
-        <button class="cli-tab" data-tab="herramientas">🛠️ Herramientas</button>
+        <button class="cli-tab" data-tab="emuladores">🧪 Emuladores</button>
         <button class="cli-tab" data-tab="ejercicios">✏️ Ejercicios</button>
         <button class="cli-tab" data-tab="quiz">❓ Quiz</button>
       </div>
@@ -3141,8 +3751,8 @@ function renderPhyloModule() {
         ${renderPhyloLesson()}
       </div>
       
-      <div class="cli-tab-content hidden" id="phyloTabHerramientas">
-        ${renderPhyloLesson()}
+      <div class="cli-tab-content hidden" id="phyloTabEmuladores">
+        ${renderPhyloEmuladores()}
       </div>
       
       <div class="cli-tab-content hidden" id="phyloTabEjercicios">
@@ -4168,6 +4778,50 @@ window.checkPhyloLab = function() {
   fb.classList.remove('hidden');
   if (ok) { fb.textContent = '✅ ¡Correcto!'; fb.className = 'feedback ok'; }
   else { fb.textContent = '❌ Orden: Obtener secuencias → MAFFT → Modelo → IQ-TREE → FigTree'; fb.className = 'feedback err'; }
+};
+
+// Nuevos ejercicios de Filogenética
+window.checkPhyloEx3 = function() {
+  const input = document.getElementById('phyloEx3').value;
+  const fb = document.getElementById('phyloEx3Feedback');
+  const ok = input === 'gtr';
+  fb.classList.remove('hidden');
+  if (ok) { fb.textContent = '✅ ¡Correcto! GTR (General Time Reversible) es el modelo más general'; fb.className = 'feedback ok'; }
+  else { fb.textContent = '❌ Pista: GTR - General Time Reversible'; fb.className = 'feedback err'; }
+};
+
+window.checkPhyloEx4 = function() {
+  const input = document.getElementById('phyloEx4').value.toLowerCase().trim();
+  const fb = document.getElementById('phyloEx4Feedback');
+  const ok = input.includes('mafft') && (input.includes('--auto') || input.includes('auto'));
+  fb.classList.remove('hidden');
+  if (ok) { fb.textContent = '✅ ¡Correcto! mafft --auto secuencias.fasta > resultado.fasta'; fb.className = 'feedback ok'; }
+  else { fb.textContent = '❌ Pista: mafft --auto archivo.fasta > resultado.fasta'; fb.className = 'feedback err'; }
+};
+
+window.checkPhyloEx5 = function() {
+  const input = document.getElementById('phyloEx5').value;
+  const fb = document.getElementById('phyloEx5Feedback');
+  const ok = input === 'c';
+  fb.classList.remove('hidden');
+  if (ok) { fb.textContent = '✅ ¡Correcto! C es el outgroup (taxón más externo)'; fb.className = 'feedback ok'; }
+  else { fb.textContent = '❌ Pista: En ((A,B),C), C está fuera del grupo (A,B)'; fb.className = 'feedback err'; }
+};
+
+window.checkPhyloEx6 = function() {
+  const input = document.getElementById('phyloEx6').value.replace(/\s/g, '');
+  const fb = document.getElementById('phyloEx6Feedback');
+  // Orden correcto: 1,2,3,4,5,6
+  const ok = input === '1,2,3,4,5,6';
+  fb.classList.remove('hidden');
+  if (ok) { 
+    fb.textContent = '✅ ¡Correcto! Pipeline: GenBank → FASTQC → MAFFT → Trimal → ModelFinder → IQ-TREE'; 
+    fb.className = 'feedback ok'; 
+  }
+  else { 
+    fb.textContent = '❌ Orden: 1,2,3,4,5,6 (GenBank → FASTQC → MAFFT → Trimal → ModelFinder → IQ-TREE)'; 
+    fb.className = 'feedback err'; 
+  }
 };
 
 // Daily Challenge - verificar respuesta

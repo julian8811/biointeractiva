@@ -3565,3 +3565,240 @@ textarea {
     grid-template-columns: 1fr;
   }
 }
+
+/* ============================================ 
+   EMULADORES DE FILOGENÉTICA
+   ============================================ */
+
+.phylo-emulators {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.phylo-emulators h3 {
+  color: var(--accent);
+  margin-bottom: 0.5rem;
+}
+
+.emulator-card {
+  background: var(--panel);
+  border: 1px solid #334155;
+  border-radius: 12px;
+  padding: 1.5rem;
+}
+
+.emulator-card h4 {
+  color: var(--accent-2);
+  margin: 0 0 0.75rem 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.emulator-card h4::before {
+  content: '🔬';
+}
+
+.emulator-input {
+  margin-bottom: 1rem;
+}
+
+.emulator-input label {
+  display: block;
+  color: var(--muted);
+  font-size: 0.9rem;
+  margin-bottom: 0.5rem;
+}
+
+.emulator-input textarea,
+.emulator-input input[type="text"] {
+  width: 100%;
+  background: var(--bg);
+  color: var(--text);
+  border: 1px solid #475569;
+  padding: 0.75rem;
+  border-radius: 6px;
+  font-family: monospace;
+  font-size: 0.85rem;
+}
+
+.emulator-input textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+.emulator-options {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+
+.emulator-options label {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.emulator-options select {
+  background: var(--bg);
+  color: var(--text);
+  border: 1px solid #475569;
+  padding: 0.5rem;
+  border-radius: 6px;
+}
+
+.emulator-btn {
+  background: linear-gradient(135deg, var(--accent) 0%, #06b6d4 100%);
+  color: #06222b;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 700;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.emulator-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(34, 211, 238, 0.4);
+}
+
+.emulator-output {
+  margin-top: 1rem;
+  background: var(--bg);
+  border-radius: 8px;
+  padding: 1rem;
+}
+
+.emulator-output label {
+  display: block;
+  color: var(--accent);
+  font-size: 0.9rem;
+  margin-bottom: 0.5rem;
+}
+
+.emulator-output pre {
+  background: #1e293b;
+  padding: 1rem;
+  border-radius: 6px;
+  overflow-x: auto;
+  font-family: monospace;
+  font-size: 0.85rem;
+  color: #22d3ee;
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* Pipeline order para ejercicios */
+.pipeline-order {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin: 1rem 0;
+}
+
+.pipeline-order .step-item {
+  background: var(--soft);
+  padding: 0.75rem 1rem;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.pipeline-order .step-num {
+  background: var(--accent);
+  color: #06222b;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 0.85rem;
+}
+
+/* Bootstrap simulator */
+.bootstrap-sim {
+  background: var(--bg);
+  padding: 1.5rem;
+  border-radius: 8px;
+}
+
+.sim-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin: 1rem 0;
+}
+
+.sim-sequences, .sim-bootstraps {
+  background: var(--soft);
+  padding: 1rem;
+  border-radius: 6px;
+  font-family: monospace;
+  font-size: 0.85rem;
+  line-height: 1.8;
+}
+
+.sim-sequences code, .sim-bootstraps code {
+  display: block;
+  color: var(--text);
+}
+
+.sim-arrow {
+  text-align: center;
+  color: var(--accent);
+  font-size: 1.2rem;
+}
+
+.bootstrap-visual {
+  margin-top: 1.5rem;
+  text-align: center;
+}
+
+.tree-simple {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 2rem;
+  padding: 2rem;
+  font-size: 2rem;
+}
+
+.tree-simple .node {
+  color: var(--ok);
+  opacity: calc(var(--support, 50) / 100);
+}
+
+/* Tree stats */
+.tree-stats {
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  margin-top: 0.5rem;
+}
+
+.tree-stats .stat {
+  background: var(--soft);
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-size: 0.9rem;
+}
+
+/* Quiz intro */
+.quiz-intro {
+  background: var(--soft);
+  padding: 1rem 1.5rem;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+  border-left: 4px solid var(--accent);
+}
+
+.quiz-intro p {
+  margin: 0;
+  color: var(--text);
+}
