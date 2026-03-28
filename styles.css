@@ -703,6 +703,85 @@ textarea {
   filter: brightness(1.1);
 }
 
+/* Ejercicios con --help para Genómica */
+.ejercicio-help-intro {
+  background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+  border-left: 4px solid var(--accent);
+  padding: 1rem 1.25rem;
+  margin-bottom: 1.25rem;
+  border-radius: 0 8px 8px 0;
+}
+
+.ejercicio-help-intro p {
+  margin: 0.5rem 0;
+  color: var(--text);
+}
+
+.ejercicio-help-intro code {
+  background: #334155;
+  color: var(--accent);
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  font-family: monospace;
+  font-size: 0.9em;
+}
+
+.pasos-investigacion {
+  background: #1e293b;
+  padding: 1rem;
+  border-radius: 8px;
+  margin-top: 1rem;
+  line-height: 2;
+}
+
+.step-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  background: var(--accent);
+  color: #06222b;
+  border-radius: 50%;
+  font-weight: bold;
+  font-size: 0.8rem;
+  margin-right: 0.5rem;
+}
+
+.ejercicio-final-badge {
+  display: inline-block;
+  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+  color: #000;
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  margin-left: 0.5rem;
+}
+
+.exercise-card.is-help-exercise {
+  border: 2px solid var(--accent-2);
+  background: linear-gradient(180deg, #1e1b4b 0%, var(--panel) 30%);
+}
+
+.exercise-card.is-help-exercise h4 {
+  color: var(--accent-2);
+}
+
+.exercise-description {
+  line-height: 1.6;
+}
+
+.exercise-description code {
+  background: #334155;
+  color: var(--accent);
+  padding: 0.15rem 0.4rem;
+  border-radius: 4px;
+  font-family: monospace;
+  font-size: 0.9em;
+}
+
 /* Laboratorio */
 .cli-lab {
   display: grid;

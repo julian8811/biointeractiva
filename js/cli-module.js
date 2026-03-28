@@ -501,6 +501,83 @@ export const cliExercises = {
       const cleaned = input.trim().toLowerCase().replace(/\s+/g, ' ');
       return cleaned === 'df -h';
     }
+  },
+  
+  // EJERCICIO FINAL: Usar --help para Genómica
+  ejercicio_help_genomica: {
+    title: "🏆 Ejercicio Final: Descubrir herramientas con --help",
+    description: `
+      <div class="ejercicio-help-intro">
+        <p><strong>Escenario:</strong> Tienes un archivo <code>mapped.bam</code> y necesitas saber cuántas lecturas se mapean correctamente y el porcentaje de cobertura.</p>
+        <p><strong>Tu misión:</strong> Usa <code>--help</code> para descubrir qué herramienta y opción usar.</p>
+        <div class="pasos-investigacion">
+          <span class="step-badge">1</span> Escribe <code>samtools --help</code> para ver los subcomandos disponibles<br>
+          <span class="step-badge">2</span> Elige el subcomando apropiado y usa <code>--help</code> para ver sus opciones<br>
+          <span class="step-badge">3</span> Escribe el comando final que muestre las estadísticas de mapeo
+        </div>
+      </div>
+    `,
+    hint: "Usa 'samtools flagstat' para ver estadísticas de mapeo. Escribe: samtools --help para descubrir los subcomandos.",
+    solution: "samtools flagstat mapped.bam",
+    test: (input) => {
+      const cleaned = input.trim().toLowerCase().replace(/\s+/g, ' ');
+      // Aceptar samtools + flagstat + archivo.bam
+      return cleaned.includes('samtools') && 
+             cleaned.includes('flagstat') && 
+             cleaned.includes('.bam');
+    },
+    isHelpExercise: true // Flag para identificar ejercicio especial
+  },
+  
+  // Ejercicio extra: Filtrar variantes con --help
+  ejercicio_bcftools_help: {
+    title: "🔬 Ejercicio: Filtrar variantes con bcftools",
+    description: `
+      <div class="ejercicio-help-intro">
+        <p><strong>Escenario:</strong> Tienes un archivo <code>variants.vcf</code> con variantes y quieres filtrar solo aquellas con calidad (QUAL) mayor o igual a 30 Y profundidad de lectura (DP) mayor o igual a 10.</p>
+        <p><strong>Tu misión:</strong> Usa <code>bcftools --help</code> para descubrir cómo filtrar variantes.</p>
+        <div class="pasos-investigacion">
+          <span class="step-badge">1</span> Escribe <code>bcftools --help</code> para ver los comandos disponibles<br>
+          <span class="step-badge">2</span> Identifica el subcomando para filtrar VCFs<br>
+          <span class="step-badge">3</span> Escribe el comando con la condición de filtro
+        </div>
+      </div>
+    `,
+    hint: "Usa 'bcftools view' con la opción -i para filtrar. Sintaxis: bcftools view -i 'QUAL>=30 && DP>=10' variants.vcf",
+    solution: "bcftools view -i 'QUAL>=30 && DP>=10' variants.vcf",
+    test: (input) => {
+      const cleaned = input.trim().toLowerCase().replace(/\s+/g, ' ');
+      return cleaned.includes('bcftools') && 
+             cleaned.includes('view') && 
+             (cleaned.includes('qual>=30') || cleaned.includes('qual > 30') || cleaned.includes('qual >= 30')) &&
+             (cleaned.includes('dp>=10') || cleaned.includes('dp > 10') || cleaned.includes('dp >= 10'));
+    },
+    isHelpExercise: true
+  },
+  
+  // Ejercicio extra: FastQC con --help
+  ejercicio_fastqc_help: {
+    title: "📊 Ejercicio: Control de calidad con FastQC",
+    description: `
+      <div class="ejercicio-help-intro">
+        <p><strong>Escenario:</strong> Tienes archivos FASTQ comprimidos (<code>sample_R1.fastq.gz</code> y <code>sample_R2.fastq.gz</code>) y quieres hacer control de calidad.</p>
+        <p><strong>Tu misión:</strong> Investiga con <code>fastqc --help</code> para:</p>
+        <div class="pasos-investigacion">
+          <span class="step-badge">1</span> Ver cómo especificar múltiples archivos<br>
+          <span class="step-badge">2</span> Descubrir cómo especificar directorio de salida (-o)<br>
+          <span class="step-badge">3</span> Escribe el comando completo
+        </div>
+      </div>
+    `,
+    hint: "FastQC puede tomar múltiples archivos y -o para especificar directorio de salida: fastqc sample_R1.fastq.gz sample_R2.fastq.gz -o qc_results/",
+    solution: "fastqc sample_R1.fastq.gz sample_R2.fastq.gz -o qc_results/",
+    test: (input) => {
+      const cleaned = input.trim().toLowerCase().replace(/\s+/g, ' ');
+      return cleaned.includes('fastqc') && 
+             cleaned.includes('.fastq.gz') &&
+             cleaned.includes('-o');
+    },
+    isHelpExercise: true
   }
 };
 
@@ -668,10 +745,17 @@ function renderEjerciciosTab() {
   return `
     <div class="cli-exercises">
       <p class="exercises-intro">Practica escribiendo los comandos correctos. Cada ejercicio te ayudará a dominar un comando esencial para bioinformática.</p>
-      ${exercises.map(([key, ex], idx) => `
-        <div class="exercise-card" data-exercise="${key}">
-          <h4>Ejercicio ${idx + 1}: ${ex.title}</h4>
-          <p>${ex.description}</p>
+      ${exercises.map(([key, ex], idx) => {
+        // Determinar clase adicional para ejercicios especiales
+        const extraClass = ex.isHelpExercise ? 'is-help-exercise' : '';
+        // Determinar si mostrar número de ejercicio (no para ejercicios con título completo)
+        const showNumber = !ex.title.match(/^(🏆|🔬|📊|✅)/);
+        const titleNumber = showNumber ? `Ejercicio ${idx + 1}: ` : '';
+        
+        return `
+        <div class="exercise-card ${extraClass}" data-exercise="${key}">
+          <h4>${titleNumber}${ex.title}</h4>
+          <div class="exercise-description">${ex.description}</div>
           <div class="exercise-hint">
             <button class="hint-btn" onclick="showHint('${key}')">💡 Ver pista</button>
             <p class="hint-text hidden">${ex.hint}</p>
@@ -680,7 +764,7 @@ function renderEjerciciosTab() {
           <button class="check-btn" onclick="checkExercise('${key}')">✓ Verificar</button>
           <div class="exercise-feedback hidden"></div>
         </div>
-      `).join('')}
+      `}).join('')}
     </div>
   `;
 }
