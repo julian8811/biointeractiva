@@ -3,7 +3,7 @@
  * Enables offline functionality
  */
 
-const CACHE_NAME = 'biointeractiva-v1';
+const CACHE_NAME = 'biointeractiva-v2';
 const ASSETS = [
   './',
   './index.html',
