@@ -3,7 +3,7 @@
  * Enables offline functionality with auto-versioning
  */
 
-const CACHE_VERSION = 'v5';
+const CACHE_VERSION = 'v6';
 const CACHE_NAME = `biointeractiva-${CACHE_VERSION}`;
 const ASSETS = [
   './',

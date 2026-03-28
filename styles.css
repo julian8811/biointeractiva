@@ -3802,3 +3802,285 @@ textarea {
   margin: 0;
   color: var(--text);
 }
+
+/* ============================================ 
+   BEAST Y EMBELLECIMIENTO
+   ============================================ */
+
+/* BEAST Section */
+.beast-section {
+  border-left: 4px solid #9b59b6;
+  padding-left: 1rem;
+}
+
+/* Wizard steps */
+.beast-wizard {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.wizard-step {
+  background: var(--bg);
+  padding: 1rem;
+  border-radius: 8px;
+  border-left: 3px solid #9b59b6;
+}
+
+.wizard-step .step-num {
+  background: #9b59b6;
+  color: white;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 0.8rem;
+  margin-right: 0.5rem;
+}
+
+.wizard-step h5 {
+  display: inline;
+  color: #9b59b6;
+}
+
+/* BEAST results */
+.beast-results {
+  margin-top: 1rem;
+  padding: 1rem;
+  background: var(--bg);
+  border-radius: 8px;
+}
+
+.beast-results.hidden {
+  display: none;
+}
+
+.results-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 0.75rem;
+}
+
+.result-item {
+  background: var(--soft);
+  padding: 0.75rem;
+  border-radius: 6px;
+  font-size: 0.9rem;
+}
+
+/* BEAST progress */
+.beast-progress .progress-bar-container {
+  background: var(--soft);
+  height: 24px;
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 1rem;
+}
+
+.beast-progress .progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, #9b59b6, #8e44ad);
+  width: 0%;
+  transition: width 0.3s;
+  border-radius: 12px;
+}
+
+/* FigTree controls */
+.figtree-controls {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1rem;
+  margin: 1rem 0;
+  padding: 1rem;
+  background: var(--bg);
+  border-radius: 8px;
+}
+
+.control-group h5 {
+  margin: 0 0 0.5rem 0;
+  color: var(--accent);
+  font-size: 0.9rem;
+}
+
+.control-group label {
+  display: block;
+  margin: 0.25rem 0;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+/* FigTree preview */
+.figtree-preview {
+  margin-top: 1rem;
+}
+
+.figtree-preview .tree-visual {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 8px;
+  overflow-x: auto;
+  min-height: 200px;
+}
+
+.ascii-tree {
+  font-family: monospace;
+  font-size: 12px;
+  line-height: 1.2;
+  color: #2c3e50;
+  white-space: pre;
+}
+
+.figtree-info {
+  display: flex;
+  gap: 1.5rem;
+  margin-top: 1rem;
+  flex-wrap: wrap;
+}
+
+.figtree-info p {
+  margin: 0.25rem 0;
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+.figtree-info strong {
+  color: var(--text);
+}
+
+/* Export buttons */
+.export-options {
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--soft);
+}
+
+.export-options h5 {
+  margin: 0 0 0.75rem 0;
+  color: var(--accent);
+}
+
+.export-buttons {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.export-btn {
+  background: var(--soft);
+  color: var(--text);
+  border: 1px solid #475569;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: all 0.2s;
+}
+
+.export-btn:hover {
+  background: var(--accent);
+  color: #06222b;
+  border-color: var(--accent);
+}
+
+/* Beautify guide */
+.beautify-guide {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.beautify-section {
+  background: var(--bg);
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.beautify-section h5 {
+  color: var(--accent-2);
+  margin: 0 0 0.75rem 0;
+}
+
+.beautify-section ul {
+  margin: 0;
+  padding-left: 1.25rem;
+}
+
+.beautify-section li {
+  margin: 0.5rem 0;
+  color: var(--muted);
+}
+
+.config-item {
+  margin: 1rem 0;
+  padding: 0.75rem;
+  background: var(--soft);
+  border-radius: 6px;
+}
+
+.config-item h6 {
+  margin: 0 0 0.5rem 0;
+  color: var(--text);
+  font-size: 0.9rem;
+}
+
+.config-item ul {
+  margin: 0;
+}
+
+/* Color palettes */
+.color-palettes {
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.palette {
+  background: var(--soft);
+  padding: 0.75rem;
+  border-radius: 6px;
+}
+
+.palette strong {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-size: 0.85rem;
+}
+
+.palette-colors {
+  display: flex;
+  gap: 4px;
+}
+
+.palette-colors span {
+  width: 32px;
+  height: 24px;
+  border-radius: 4px;
+}
+
+/* Comparison table */
+.comparison-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1rem 0;
+  font-size: 0.9rem;
+}
+
+.comparison-table th,
+.comparison-table td {
+  padding: 0.75rem;
+  text-align: left;
+  border: 1px solid #334155;
+}
+
+.comparison-table th {
+  background: var(--soft);
+  color: var(--accent);
+}
+
+.comparison-table tr:nth-child(even) {
+  background: var(--bg);
+}

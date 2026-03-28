@@ -3242,6 +3242,221 @@ _______|          ___ A (0.1)
         <li><strong>Modelos:</strong> Un modelo malo da resultados malos - usa ModelFinder</li>
       </ul>
     </div>
+
+    <!-- BEAST Section -->
+    <div class="lesson beast-section">
+      <h3>🔮 BEAST - Análisis Bayesiano</h3>
+      <p>BEAST (Bayesian Evolutionary Analysis by Sampling Trees) es un programa para análisis evolutivo bayesiano que co-estima filogenias y parámetros moleculares usando el método MCMC (Markov Chain Monte Carlo).</p>
+      
+      <div class="phylo-concepts">
+        <div class="concept-card">
+          <h5>🎯 ¿Qué es BEAST?</h5>
+          <p>A diferencia de máxima verosimilitud, BEAST:</p>
+          <ul>
+            <li>Produce <strong>distribuciones posteriores</strong> de árboles</li>
+            <li>Permite <strong>datación molecular</strong> (reloj molecular)</li>
+            <li>Co-estima	topología y tiempos de divergencia</li>
+            <li>Maneja incertidumbre en todas las dimensiones</li>
+          </ul>
+        </div>
+        
+        <div class="concept-card">
+          <h5>🔄 Método MCMC</h5>
+          <p>Markov Chain Monte Carlo muestrea el espacio de árboles:</p>
+          <ul>
+            <li><strong>Burn-in:</strong> primeras iteraciones descartadas (10-25%)</li>
+            <li><strong>ESS (Effective Sample Size):</strong> >200 indica buena mezcla</li>
+            <li><strong>Tiempo de corrida:</strong> minutos a días según datos</li>
+            <li><strong>Convergencia:</strong> múltiples cadenas deben converger</li>
+          </ul>
+        </div>
+        
+        <div class="concept-card">
+          <h5>⏰ Reloj Molecular</h5>
+          <p>BEAST permite diferentes modelos de reloj:</p>
+          <ul>
+            <li><strong>Strict Clock:</strong> misma tasa en todas las ramas</li>
+            <li><strong>Relaxed Clock:</strong> tasas variables (lognormal/exponencial)</li>
+            <li><strong>Random Local Clock:</strong> cambios discretos de tasa</li>
+          </ul>
+          <p><strong>Importante:</strong> Elegir reloj correcto es crucial para datación</p>
+        </div>
+        
+        <div class="concept-card">
+          <h5>📊 Priors y Postérieurs</h5>
+          <p>BEAST combina likelihood con priors:</p>
+          <ul>
+            <li><strong>Prior:</strong> Conocimiento previo sobre parámetros</li>
+            <li><strong>Likelihood:</strong> Probabilidad de datos dado el modelo</li>
+            <li><strong>Posterior:</strong> Prior × Likelihood (lo que BEAST muestrea)</li>
+          </ul>
+          <p><strong> Priors comunes:</strong></p>
+          <ul>
+            <li>treeModel: Coalescent (constante, exponential, skyline)</li>
+            <li>clockModel: Uniform, LogNormal, Exponential</li>
+            <li>siteModel: 4 categorias de sitios</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="lesson">
+      <h3>🛠️ Herramientas BEAST</h3>
+      <div class="tools-grid">
+        <div class="tool-card">
+          <h4>🎨 BEAUti</h4>
+          <p><strong>Bayesian Evolutionary Analysis Utility</strong></p>
+          <p>Interfaz gráfica para preparar análisis BEAST. Genera archivos XML.</p>
+          <code>Arrastrar alineamiento → Configurar modelos → Generar XML</code>
+          <ul>
+            <li>Importar datos (FASTA, NEXUS, alignment)</li>
+            <li>Seleccionar modelo de sustitución</li>
+            <li>Configurar reloj molecular</li>
+            <li>Establecer priors</li>
+            <li>Configurar MCMC</li>
+          </ul>
+        </div>
+        
+        <div class="tool-card">
+          <h4>⚡ BEAST</h4>
+          <p><strong>Motor de análisis bayesiano</strong></p>
+          <p>Ejecuta el análisis MCMC.</p>
+          <code>beast -threads 8 archivo.xml</code>
+          <ul>
+            <li>Muestrea árboles de la distribución posterior</li>
+            <li>Genera archivos .trees y .log</li>
+            <li>Permite análisis de coalescente</li>
+            <li>Soporte para millones de sitios</li>
+          </ul>
+        </div>
+        
+        <div class="tool-card">
+          <h4>🌲 TreeAnnotator</h4>
+          <p><strong>Anotador de árboles</strong></p>
+          <p>Consensa los árboles muestreados.</p>
+          <code>treeannotator -burnin 1000 archivo.trees resultado.tre</code>
+          <ul>
+            <li>Quema las primeras iteraciones (burn-in)</li>
+            <li>Calcula medias y varianzas</li>
+            <li>Selecciona árbol de máxima credibilidad</li>
+            <li>Anota nodos con estadísticos</li>
+          </ul>
+        </div>
+        
+        <div class="tool-card">
+          <h4>📈 FigTree</h4>
+          <p><strong>Visualizador de árboles</strong></p>
+          <p>Editor gráfico para árboles annotados.</p>
+          <ul>
+            <li>Colorear ramas por atributos</li>
+            <li>Mostrar edades de nodos</li>
+            <li>Intervalos de credibilidad</li>
+            <li>Exportar para publicación</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="lesson">
+      <h3>📋 Pipeline BEAST</h3>
+      <p>Pasos para un análisis bayesiano en BEAST:</p>
+      
+      <div class="pipeline-flow enhanced">
+        <div class="pipeline-step">
+          <span class="step-num">1</span>
+          <div class="step-content">
+            <h5>📥 Preparar datos</h5>
+            <p>Alinear secuencias con MAFFT, exportar en formato compatible.</p>
+            <code>mafft --auto genes.fasta > alineamiento.fasta</code>
+          </div>
+        </div>
+        
+        <div class="pipeline-step">
+          <span class="step-num">2</span>
+          <div class="step-content">
+            <h5>🎨 BEAUti - Configurar</h5>
+            <p>Importar, seleccionar modelos, establecer priors.</p>
+            <code>Interfaz gráfica BEAUti</code>
+          </div>
+        </div>
+        
+        <div class="pipeline-step">
+          <span class="step-num">3</span>
+          <div class="step-content">
+            <h5>⚡ BEAST - Ejecutar</h5>
+            <p>Correr MCMC, monitorear convergencia.</p>
+            <code>beast -threads 8 analisis.xml</code>
+          </div>
+        </div>
+        
+        <div class="pipeline-step">
+          <span class="step-num">4</span>
+          <div class="step-content">
+            <h5>📊 Verificar convergencia</h5>
+            <p>Usar Tracer para verificar ESS y burn-in.</p>
+            <code>Ver en Tracer: ESS > 200</code>
+          </div>
+        </div>
+        
+        <div class="pipeline-step">
+          <span class="step-num">5</span>
+          <div class="step-content">
+            <h5>🌲 TreeAnnotator - Consensar</h5>
+            <p>Generar árbol anotado de la posterior.</p>
+            <code>treeannotator analisis.trees consensus.tre</code>
+          </div>
+        </div>
+        
+        <div class="pipeline-step">
+          <span class="step-num">6</span>
+          <div class="step-content">
+            <h5>📈 FigTree - Visualizar</h5>
+            <p>Editar y exportar para publicación.</p>
+            <code>Abrir en FigTree, exportar SVG/PDF</code>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="lesson">
+      <h3>🎓 Diferencia: ML vs Bayesiano</h3>
+      <table class="comparison-table">
+        <thead>
+          <tr>
+            <th>Característica</th>
+            <th>Máxima Verosimilitud (ML)</th>
+            <th>Inferencia Bayesiana (BEAST)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Output</strong></td>
+            <td>Un árbol "mejor"</td>
+            <td>Distribución de árboles</td>
+          </tr>
+          <tr>
+            <td><strong>Datación</strong></td>
+            <td>Requiere external clock</td>
+            <td>Reloj molecular integrado</td>
+          </tr>
+          <tr>
+            <td><strong>Computación</strong></td>
+            <td>Más rápido</td>
+            <td>Más lento (MCMC)</td>
+          </tr>
+          <tr>
+            <td><strong>Incertidumbre</strong></td>
+            <td>Bootstrap (proxy)</td>
+            <td>Postérior explícita</td>
+          </tr>
+          <tr>
+            <td><strong>Herramientas</strong></td>
+            <td>IQ-TREE, RAxML</td>
+            <td>BEAST, MrBayes</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   `;
 }
 
@@ -3568,9 +3783,660 @@ function generateAsciiTree(newick) {
     ──┤
       │  ┌── ${taxa[2]}
       └──┤
-         └── ${taxa[3] || 'outgroup'}
+          └── ${taxa[3] || 'outgroup'}
   `;
 }
+
+function renderPhyloEmuladores() {
+  return `
+    <div class="phylo-emulators">
+      <h3>🧪 Emuladores de Filogenética</h3>
+      <p>Practica con las herramientas de alineamiento, inferencia y visualización filogenética.</p>
+      
+      <!-- Emulador MAFFT -->
+      <div class="emulator-card">
+        <h4>🔧 MAFFT - Alineamiento Múltiple</h4>
+        <p>MAFFT es una herramienta rápida y precisa para alineamiento múltiple de secuencias.</p>
+        
+        <div class="emulator-input">
+          <label>Secuencias de entrada (FASTA):</label>
+          <textarea id="mafftInput" rows="4" placeholder=">Seq1
+ATGCGTACG
+>Seq2
+ATGCGTATG">>Seq1
+ATGCGTACG
+ATGCGTATG
+ATGCATACG
+ATGCTTACG</textarea>
+        </div>
+        
+        <div class="emulator-options">
+          <label>Opción:</label>
+          <select id="mafftOption">
+            <option value="--auto">--auto (Automático)</option>
+            <option value="--genafpair">--genafpair</option>
+            <option value="--localpair">--localpair</option>
+          </select>
+        </div>
+        
+        <button class="emulator-btn" onclick="runMafft()">▶ Ejecutar MAFFT</button>
+        
+        <div class="emulator-output">
+          <pre id="mafftOutput">El alineamiento aparecerá aquí...</pre>
+        </div>
+      </div>
+      
+      <!-- Emulador IQ-TREE -->
+      <div class="emulator-card">
+        <h4>🧬 IQ-TREE - Inferencia ML</h4>
+        <p>Máxima verosimilitud con selección automática de modelo.</p>
+        
+        <div class="emulator-input">
+          <label>Alineamiento (FASTA):</label>
+          <textarea id="iqtreeInput" rows="4" placeholder="Pega tu alineamiento">>SpeciesA
+ATGCGTACGATGC
+>SpeciesB
+ATGCGTACGATGT
+>SpeciesC
+ATGCTTAGCGATG
+>SpeciesD
+ATGCTTAGCAATG</textarea>
+        </div>
+        
+        <div class="emulator-options">
+          <label>Modelo:</label>
+          <select id="iqtreeModel">
+            <option value="TEST">TEST (ModelFinder)</option>
+            <option value="GTR">GTR</option>
+            <option value="GTR+G">GTR+G</option>
+            <option value="JC69">JC69</option>
+          </select>
+          <label>Bootstrap:</label>
+          <select id="iqtreeBootstrap">
+            <option value="1000">1000</option>
+            <option value="100">100</option>
+          </select>
+        </div>
+        
+        <button class="emulator-btn" onclick="runIQTree()">▶ Ejecutar IQ-TREE</button>
+        
+        <div class="emulator-output">
+          <pre id="iqtreeOutput">El árbol aparecerá aquí...</pre>
+        </div>
+      </div>
+      
+      <!-- EMULADOR BEAUTi -->
+      <div class="emulator-card beast-card">
+        <h4>🎨 BEAUti - Configurador de BEAST</h4>
+        <p>BEAUti es la interfaz gráfica para preparar análisis BEAST. Genera archivos XML.</p>
+        
+        <div class="beast-wizard">
+          <div class="wizard-step">
+            <span class="step-num">1</span>
+            <h5>Importar Datos</h5>
+            <div class="emulator-input">
+              <label>Alineamiento (FASTA):</label>
+              <textarea id="beautiInput" rows="3" placeholder="Pega secuencias FASTA">>Taxon1
+ATGCGATCGATCG
+>Taxon2
+ATGCGATCGATCT
+>Taxon3
+ATGCAATCGATCA
+>Taxon4
+ATGCGAGTCGATCG
+>Outgroup
+ATGCGGTTCGATCG</textarea>
+            </div>
+          </div>
+          
+          <div class="wizard-step">
+            <span class="step-num">2</span>
+            <h5>Modelo de Sustitución</h5>
+            <div class="emulator-options">
+              <label>Modelo:</label>
+              <select id="beautiSubst">
+                <option value="JC69">JC69</option>
+                <option value="HKY">HKY</option>
+                <option value="GTR" selected>GTR (General Time Reversible)</option>
+              </select>
+              <label>Frecuencias:</label>
+              <select id="beautiFrequencies">
+                <option value="empirical">Empirical</option>
+                <option value="estimated">Estimated</option>
+              </select>
+            </div>
+          </div>
+          
+          <div class="wizard-step">
+            <span class="step-num">3</span>
+            <h5>Reloj Molecular</h5>
+            <div class="emulator-options">
+              <label>Tipo de reloj:</label>
+              <select id="beautiClock">
+                <option value="strict">Strict Clock (misma tasa)</option>
+                <option value="lognormal" selected>Relaxed LogNormal</option>
+                <option value="exponential">Relaxed Exponential</option>
+              </select>
+            </div>
+          </div>
+          
+          <div class="wizard-step">
+            <span class="step-num">4</span>
+            <h5>Priors</h5>
+            <div class="emulator-options">
+              <label>Árbol:</label>
+              <select id="beautiTreePrior">
+                <option value="coalescent">Coalescent Constant Population</option>
+                <option value="exponential" selected>Coalescent Exponential Population</option>
+                <option value="yule">Yule Process</option>
+              </select>
+              <label> clock.mean:</label>
+              <select id="beautiClockPrior">
+                <option value="1.0">Uniform (1.0)</option>
+                <option value="exponential" selected>Exponential</option>
+              </select>
+            </div>
+          </div>
+          
+          <div class="wizard-step">
+            <span class="step-num">5</span>
+            <h5>MCMC</h5>
+            <div class="emulator-options">
+              <label>Longitud:</label>
+              <select id="beautiLength">
+                <option value="1000000">10,000,000 (recomendado)</option>
+                <option value="1000000">1,000,000</option>
+                <option value="5000000">5,000,000</option>
+              </select>
+              <label>Log cada:</label>
+              <select id="beautiLogEvery">
+                <option value="1000">1000</option>
+                <option value="10000" selected>10,000</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        
+        <button class="emulator-btn" onclick="runBEAUTi()">▶ Generar XML para BEAST</button>
+        
+        <div class="emulator-output">
+          <label>Archivo XML generado:</label>
+          <pre id="beautiOutput">El código XML aparecerá aquí...</pre>
+        </div>
+      </div>
+      
+      <!-- EMULADOR BEAST -->
+      <div class="emulator-card beast-card">
+        <h4>⚡ BEAST - Análisis Bayesiano</h4>
+        <p>Ejecuta el análisis MCMC para inferencia bayesiana.</p>
+        
+        <div class="emulator-input">
+          <label>Archivo XML (de BEAUti):</label>
+          <textarea id="beastInput" rows="3" placeholder="Pega el XML o usa el ejemplo">beast analisis.xml</textarea>
+        </div>
+        
+        <div class="emulator-options">
+          <label>Hilos:</label>
+          <select id="beastThreads">
+            <option value="1">1</option>
+            <option value="4">4</option>
+            <option value="8" selected>8</option>
+          </select>
+          <label>Pre现:</label>
+          <select id="beastPreBurnin">
+            <option value="0">0</option>
+            <option value="10" selected>10%</option>
+          </select>
+        </div>
+        
+        <button class="emulator-btn" onclick="runBEAST()">▶ Ejecutar BEAST</button>
+        
+        <div class="emulator-output beast-progress">
+          <div class="progress-bar-container">
+            <div class="progress-bar" id="beastProgress"></div>
+          </div>
+          <pre id="beastOutput">Esperando ejecución...
+
+Estado: Listo
+XML cargado: analisis.xml
+Hilos: 8</pre>
+        </div>
+        
+        <div class="beast-results hidden" id="beastResults">
+          <h5>📊 Resultados</h5>
+          <div class="results-grid">
+            <div class="result-item">
+              <strong>Archivo .trees:</strong> analisis.trees
+            </div>
+            <div class="result-item">
+              <strong>Archivo .log:</strong> analisis.log
+            </div>
+            <div class="result-item">
+              <strong>Arboles muestreados:</strong> 10,000
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- EMULADOR TREEANNOTATOR -->
+      <div class="emulator-card">
+        <h4>🌲 TreeAnnotator - Anotar Árbol</h4>
+        <p>Consensa los árboles de la distribución posterior.</p>
+        
+        <div class="emulator-input">
+          <label>Archivo .trees:</label>
+          <input type="text" id="treeAnnotInput" placeholder="analisis.trees" value="analisis.trees">
+        </div>
+        
+        <div class="emulator-options">
+          <label>Burn-in (%):</label>
+          <select id="treeAnnotBurnin">
+            <option value="10">10%</option>
+            <option value="25" selected>25%</option>
+            <option value="50">50%</option>
+          </select>
+          <label>Tipo de árbol:</label>
+          <select id="treeAnnotType">
+            <option value="mcc">Maximum Clade Credibility (MCC)</option>
+            <option value="mr">Maximum Reciprocal</option>
+            <option value="mean">Mean Heights</option>
+          </select>
+        </div>
+        
+        <button class="emulator-btn" onclick="runTreeAnnotator()">▶ Ejecutar TreeAnnotator</button>
+        
+        <div class="emulator-output">
+          <label>Árbol anotado:</label>
+          <pre id="treeAnnotOutput">El árbol anotado aparecerá aquí...
+
+# Annotated Trees
+# Generated by TreeAnnotator
+# Burn-in: 25%
+# 
+Begin trees;
+tree TREE1 = [&R](((Taxon1:0.01[&posterior=0.95]:0.005,Taxon2:0.01[&posterior=0.87]:0.005):0.003[&posterior=0.72],(Taxon3:0.02[&posterior=0.91]:0.008,Taxon4:0.015[&posterior=0.83]:0.008):0.002[&posterior=0.68]):0.001[&posterior=0.55],Outgroup:0.025[&posterior=0.99]:0.0);
+End;</pre>
+        </div>
+      </div>
+      
+      <!-- EMULADOR FIGTREE -->
+      <div class="emulator-card figtree-card">
+        <h4>📈 FigTree - Visualizador</h4>
+        <p>Visualiza y decora árboles para publicación.</p>
+        
+        <div class="emulator-input">
+          <label>Árbol Newick:</label>
+          <input type="text" id="figtreeInput" placeholder="Árbol en formato Newick" 
+                 value="((Taxon1:0.01,Taxon2:0.01):0.005,(Taxon3:0.02,Taxon4:0.015):0.003,Outgroup:0.025):0.0;">
+        </div>
+        
+        <div class="figtree-controls">
+          <div class="control-group">
+            <h5>🎨 Estilo de Árbol</h5>
+            <label>
+              <input type="radio" name="treeStyle" value="rectangular" checked> Rectangular
+            </label>
+            <label>
+              <input type="radio" name="treeStyle" value="radial"> Radial/Circular
+            </label>
+            <label>
+              <input type="radio" name="treeStyle" value="unrooted"> Unrooted
+            </label>
+          </div>
+          
+          <div class="control-group">
+            <h5>📊 Mostrar</h5>
+            <label>
+              <input type="checkbox" id="showPosterior" checked> Posterior (nodos)
+            </label>
+            <label>
+              <input type="checkbox" id="showAges"> Edades de nodos
+            </label>
+            <label>
+              <input type="checkbox" id="showBars"> Barras de error
+            </label>
+          </div>
+          
+          <div class="control-group">
+            <h5>🌈 Colorear por</h5>
+            <select id="colorBy">
+              <option value="none">Sin color</option>
+              <option value="posterior">Posterior</option>
+              <option value="age">Edad</option>
+              <option value="custom">Grupo personalizado</option>
+            </select>
+          </div>
+          
+          <div class="control-group">
+            <h5>📐 Opciones de texto</h5>
+            <label>Tamaño de fuente:</label>
+            <input type="range" id="fontSize" min="8" max="24" value="12">
+            <label>
+              <input type="checkbox" id="showLabels" checked> Mostrar etiquetas
+            </label>
+          </div>
+        </div>
+        
+        <button class="emulator-btn" onclick="renderFigTree()">🌳 Visualizar</button>
+        
+        <div class="emulator-output figtree-preview">
+          <label>Vista previa:</label>
+          <div class="tree-visual" id="figtreeVisual">
+            <div class="ascii-tree">
+${`                    ┌─ Taxon1 (0.95)
+               ┌────┤
+          ┌────┤    └─ Taxon2 (0.87)
+          │    │
+     ─────┤    └───── Taxon3 (0.91)
+          │
+          └────────────── Outgroup (0.99)
+            `}
+            </div>
+          </div>
+          
+          <div class="figtree-info">
+            <p><strong>Estilo:</strong> <span id="figStyleInfo">Rectangular</span></p>
+            <p><strong>Nodos:</strong> 7</p>
+            <p><strong>Longitud total:</strong> 0.055</p>
+          </div>
+        </div>
+        
+        <div class="export-options">
+          <h5>💾 Exportar para Publicación</h5>
+          <div class="export-buttons">
+            <button class="export-btn" onclick="exportFigTree('svg')">SVG (Vector)</button>
+            <button class="export-btn" onclick="exportFigTree('pdf')">PDF</button>
+            <button class="export-btn" onclick="exportFigTree('png')">PNG (300 DPI)</button>
+          </div>
+        </div>
+      </div>
+      
+      <!-- EMBELLECIMIENTO DE ÁRBOLES -->
+      <div class="emulator-card beautify-card">
+        <h4>🎨 Embellecimiento de Árboles</h4>
+        <p>Guía práctica para crear árboles filogenéticos de publicación.</p>
+        
+        <div class="beautify-guide">
+          <div class="beautify-section">
+            <h5>📐 Principios de Diseño</h5>
+            <ul>
+              <li><strong>Claridad:</strong> El árbol debe ser legible sin esfuerzo</li>
+              <li><strong>Jerarquía:</strong> Usar espacios para mostrar relaciones</li>
+              <li><strong>Proporción:</strong> Longitudes de rama proporcionales</li>
+              <li><strong>Color:</strong>最大 3-4 colores para evitar sobrecarga</li>
+            </ul>
+          </div>
+          
+          <div class="beautify-section">
+            <h5>🛠️ Configuraciones Recomendadas</h5>
+            
+            <div class="config-item">
+              <h6>Para revistas (calidad vectorial)</h6>
+              <ul>
+                <li>Exportar como SVG o PDF</li>
+                <li>300+ DPI si es PNG</li>
+                <li>Letra ≥8pt</li>
+                <li>Líneas ≥0.5pt</li>
+              </ul>
+            </div>
+            
+            <div class="config-item">
+              <h6>Para presentaciones</h6>
+              <ul>
+                <li>Fondo claro con texto oscuro</li>
+                <li>Alto contraste en bootstrap</li>
+                <li>Colores distintivos por grupo</li>
+                <li>Animaciones en PowerPoint</li>
+              </ul>
+            </div>
+            
+            <div class="config-item">
+              <h6>Para revisiones</h6>
+              <ul>
+                <li>Mostrar todos los valores de soporte</li>
+                <li>Incluir barra de escala</li>
+                <li>Leyenda explicativa</li>
+              </ul>
+            </div>
+          </div>
+          
+          <div class="beautify-section">
+            <h5>🎨 Paletas de Colores Recomendadas</h5>
+            <div class="color-palettes">
+              <div class="palette">
+                <strong>Clásica</strong>
+                <div class="palette-colors">
+                  <span style="background:#2C3E50"></span>
+                  <span style="background:#E74C3C"></span>
+                  <span style="background:#3498DB"></span>
+                  <span style="background:#F39C12"></span>
+                </div>
+              </div>
+              <div class="palette">
+                <strong>Viridis</strong>
+                <div class="palette-colors">
+                  <span style="background:#440154"></span>
+                  <span style="background:#31688E"></span>
+                  <span style="background:#35B779"></span>
+                  <span style="background:#FDE725"></span>
+                </div>
+              </div>
+              <div class="palette">
+                <strong>Pastel</strong>
+                <div class="palette-colors">
+                  <span style="background:#FBB4AE"></span>
+                  <span style="background:#B3CDE3"></span>
+                  <span style="background:#CCEBC5"></span>
+                  <span style="background:#DECBE4"></span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+// Handlers de BEAST
+window.runBEAUTi = function() {
+  const input = document.getElementById('beautiInput').value.trim();
+  const subst = document.getElementById('beautiSubst').value;
+  const clock = document.getElementById('beautiClock').value;
+  const treePrior = document.getElementById('beautiTreePrior').value;
+  const length = document.getElementById('beautiLength').value;
+  const output = document.getElementById('beautiOutput');
+  
+  if (!input) {
+    output.textContent = '❌ Error: Ingresa secuencias';
+    return;
+  }
+  
+  const numTaxa = (input.match(/>/g) || []).length || 4;
+  
+  output.textContent = `<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+
+<beast version="2.7" namespace="beast.pkgmgmt:beast.base.core:beast.base.inference:beast.base.inference.distribution:beast.base.inference.util:beast.evolution:beast.evolution.alignment:beast.evolution.datatype:beast.evolution.tree:beast.evolution.branchratemodel:beast.evolution.sitemodel:beast.evolution.substitutionmodel:beast.evolution.likelihood">
+
+  <data id="alignment" dataType="standard">
+${input.split('\n').filter(l => l.trim()).map(l => l.startsWith('>') ? '    <sequence spec="Sequence" taxon="' + l.replace(/[<>]/g, '') + '" value="' : '"' + l.replace(/[^ATGC]/g, '') + '"/>').join('\n')}
+  </data>
+
+  <tree spec="Tree" id="tree">
+    <trait spec="TraitSet" traitname="date" units="year" value="${Array(numTaxa).fill(0).join(',')}">
+      <taxa spec="TaxonSet" id="taxa" alignment="@alignment"/>
+    </trait>
+    <taxonset spec="TaxonSet" id="taxa2" alignment="@alignment"/>
+  </tree>
+
+  <siteModel spec="SiteModel" id="siteModel">
+    <mutationRate spec="RealParameter" id="mutationRate" value="1.0"/>
+    <shape spec="RealParameter" id="gammaShape" value="0.5" lower="0.0"/>
+    <substModel spec="${subst}" id="substModel">
+      <frequencies spec="Frequencies" id="empiricalFreqs">
+        <frequencies spec="RealParameter" value="0.25 0.25 0.25 0.25"/>
+      </frequencies>
+    </substModel>
+  </siteModel>
+
+  <branchRateModel spec="${clock === 'strict' ? 'StrictClockModel' : 'RelaxedClockModel'}" id="clockModel"/>
+
+  <treePrior spec="${treePrior === 'yule' ? 'YuleModel' : 'Coalescent'}" id="treePrior"/>
+
+  <mcmc spec="MCMCCoordinator" id="mcmc" chainLength="${length}">
+    <state spec="State" id="state" storeEvery="5000">
+      <stateNode idref="tree"/>
+      <stateNode idref="mutationRate"/>
+      <stateNode idref="gammaShape"/>
+      <stateNode idref="substModel.frequencies"/>
+    </state>
+    
+    <distribution spec="CompoundDistribution" id="posterior">
+      <distribution spec="CompoundDistribution" id="prior">
+        <distribution spec="CompoundDistribution" id="treePriorDist"/>
+      </distribution>
+      <distribution spec="TreeLikelihood" id="treeLikelihood" useAmbiguities="true" useTipLikelihoods="true">
+        <data spec="FilteredAlignment" id="filteredData" data="@alignment" filter="-1"/>
+        <tree spec="Tree" idref="tree"/>
+        <siteModel spec="SiteModel" idref="siteModel"/>
+        <branchRateModel spec="BranchRateModel" idref="clockModel"/>
+      </distribution>
+    </distribution>
+    
+    <operators spec="CompoundOperator" id="operators"/>
+    
+    <logger spec="Logger" id="tracelog" fileName="analisis.log" logEvery="1000" model="@posterior" sanitise="true" sort="smart">
+      <log idref="posterior"/>
+      <log spec="TreeHeightLogger" tree="@tree" id="treeHeight"/>
+      <log spec="RateStatistic" branchratemodel="@clockModel" tree="@tree" id="rate"/>
+    </logger>
+    
+    <logger spec="Logger" id="treelog" fileName="analisis.trees" logEvery="1000" mode="tree">
+      <log spec="TreeWithMetaDataLogger" id="treeWithMetaDataLogger" branchratemodel="@clockModel" metadata="posterior" tree="@tree"/>
+    </logger>
+  </mcmc>
+
+</beast>`;
+};
+
+window.runBEAST = function() {
+  const output = document.getElementById('beastOutput');
+  const progress = document.getElementById('beastProgress');
+  const results = document.getElementById('beastResults');
+  
+  output.textContent = `Ejecutando BEAST...
+─────────────────────────────────
+XML: analisis.xml
+Threads: 8
+Chain length: 10,000,000
+Pre-burn-in: 10%
+
+[1%] █░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 1,000,000
+[10%] ██████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 1,000,000
+[25%] ████████████████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 2,500,000
+[50%] ██████████████████████████████████████████░░░░░░░░░░░░░ 5,000,000
+[75%] ████████████████████████████████████████████████████████░░░░ 7,500,000
+[100%]███████████████████████████████████████████████████████████ 10,000,000
+
+─────────────────────────────────
+Análisis completado en 45.2 segundos
+
+ESS values:
+  posterior: 5234 (>200 ✓)
+  treeHeight: 3421 (>200 ✓)
+  mutationRate: 2891 (>200 ✓)
+
+─────────────────────────────────
+Archivos generados:
+  analisis.trees (10,000 árboles)
+  analisis.log (10,000 muestras)`;
+
+  if (progress) progress.style.width = '100%';
+  if (results) results.classList.remove('hidden');
+};
+
+window.runTreeAnnotator = function() {
+  const input = document.getElementById('treeAnnotInput').value;
+  const burnin = document.getElementById('treeAnnotBurnin').value;
+  const type = document.getElementById('treeAnnotType').value;
+  const output = document.getElementById('treeAnnotOutput');
+  
+  output.textContent = `Ejecutando TreeAnnotator...
+─────────────────────────────────
+Input: ${input}
+Burn-in: ${burnin}%
+Target: ${type === 'mcc' ? 'Maximum Clade Credibility' : type}
+
+Procesando árboles...
+- Total árboles: 10,000
+- Burn-in (${burnin}%): ${Math.floor(10000 * burnin / 100)}
+- Analizados: ${Math.floor(10000 * (100 - burnin) / 100)}
+
+Consensuando...
+✓ Nodo raíz: posterior=1.00, height=0.055
+✓ Nodo A-B: posterior=0.95, height=0.025
+✓ Nodo C-D: posterior=0.91, height=0.030
+✓ Nodo A: posterior=0.87, height=0.010
+✓ Nodo B: posterior=0.87, height=0.010
+✓ Nodo C: posterior=0.83, height=0.020
+✓ Nodo D: posterior=0.83, height=0.015
+
+─────────────────────────────────
+Resultado: consenso.tre (árbol anotado)
+Listo para visualizar en FigTree.`;
+};
+
+window.renderFigTree = function() {
+  const style = document.querySelector('input[name="treeStyle"]:checked').value;
+  const showPosterior = document.getElementById('showPosterior').checked;
+  const showAges = document.getElementById('showAges').checked;
+  const fontSize = document.getElementById('fontSize').value;
+  const visual = document.getElementById('figtreeVisual');
+  const styleInfo = document.getElementById('figStyleInfo');
+  
+  const styleNames = { rectangular: 'Rectangular', radial: 'Radial/Circular', unrooted: 'Unrooted' };
+  styleInfo.textContent = styleNames[style];
+  
+  visual.style.fontSize = fontSize + 'px';
+  
+  if (style === 'rectangular') {
+    visual.innerHTML = `<div class="ascii-tree rect">${`
+                    ┌─ Taxon1 (0.95)
+               ┌────┤
+          ┌────┤    └─ Taxon2 (0.87)
+          │    │
+     ─────┤    └───── Taxon3 (0.91)
+          │
+          └────────────── Outgroup (0.99)
+            `}</div>`;
+  } else if (style === 'radial') {
+    visual.innerHTML = `<div class="ascii-tree radial">${`
+        ┌─ Taxon1
+     ───┤
+        │  ┌─ Taxon2
+        └──┤
+           │  ┌─ Taxon3
+           └──┤
+              └─ Outgroup
+            `}</div>`;
+  } else {
+    visual.innerHTML = `<div class="ascii-tree unrooted">${`
+            Taxon1
+              │
+         ┌────┴────┐
+        /           \\
+   Taxon2         Taxon3
+        \\          /
+         ──────────
+               │
+            Outgroup
+            `}</div>`;
+  }
+};
+
+window.exportFigTree = function(format) {
+  alert(`Exportando árbol en formato ${format.toUpperCase()}\n\nEn una implementación real, esto descargaría el archivo.\n\nEjemplo: phylogenetic_tree.${format}`);
+};
 
 function renderPhyloInteractive() {
   return `
