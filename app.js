@@ -4306,18 +4306,6 @@ function attachTabHandlers() {
       }
     });
   });
-  
-  // Event delegation para botones de emuladores con data-action
-  document.addEventListener('click', function(e) {
-    const btn = e.target.closest('.emulator-btn, .emulator-run-btn');
-    if (btn && btn.dataset.action) {
-      e.preventDefault();
-      const action = btn.dataset.action;
-      if (typeof window[action] === 'function') {
-        window[action]();
-      }
-    }
-  });
 }
 
 // Renderizar Biblioteca
@@ -5792,6 +5780,22 @@ function init() {
 document.addEventListener('DOMContentLoaded', function() {
   // Inicializaciones básicas
   init();
+  
+  // Event delegation para botones de emuladores (data-action)
+  document.addEventListener('click', function(e) {
+    const btn = e.target.closest('.emulator-btn, .emulator-run-btn');
+    if (btn && btn.dataset.action) {
+      e.preventDefault();
+      e.stopPropagation();
+      const action = btn.dataset.action;
+      console.log('Emulator button clicked:', action); // Debug
+      if (typeof window[action] === 'function') {
+        window[action]();
+      } else {
+        console.error('Function not found:', action);
+      }
+    }
+  });
   
   // Inicializaciones de nuevas features
   initAchievements();
