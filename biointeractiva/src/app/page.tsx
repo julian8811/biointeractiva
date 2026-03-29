@@ -96,21 +96,14 @@ export default function Home() {
                 línea de comando, búsqueda en bases de datos, genómica y filogenética.
               </p>
             </div>
-            <Show when="signed-in">
-              <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
-                <UserButton />
-              </div>
-            </Show>
-            <Show when="signed-out">
-              <div className="hero__buttons">
-                <SignInButton mode="modal">
-                  <button className="btn-primary">Iniciar Sesión</button>
-                </SignInButton>
-                <SignUpButton mode="modal">
-                  <button className="btn-secondary">Registrarse</button>
-                </SignUpButton>
-              </div>
-            </Show>
+            <div className="hero__buttons">
+              <SignInButton mode="modal">
+                <button className="btn-primary">Iniciar Sesión</button>
+              </SignInButton>
+              <SignUpButton mode="modal">
+                <button className="btn-secondary">Registrarse</button>
+              </SignUpButton>
+            </div>
           </div>
         </div>
       </header>
