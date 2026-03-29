@@ -3558,7 +3558,7 @@ Mejor modelo encontrado: ${model}
 ${tree}
 
 Soporte de nodos (Ultrafast Bootstrap):
-  Nodo1: ${Math.floor(85 + Math.random()() * 15)}%
+  Nodo1: ${Math.floor(85 + Math.random() * 15)}%
   Nodo2: ${Math.floor(70 + Math.random() * 25)}%
   Nodo3: ${Math.floor(90 + Math.random() * 10)}%
   
@@ -3896,28 +3896,48 @@ Listo para visualizar en FigTree.`;
 };
 
 window.renderFigTree = function() {
-  const style = document.querySelector('input[name="treeStyle"]:checked').value;
-  const showPosterior = document.getElementById('showPosterior').checked;
-  const showAges = document.getElementById('showAges').checked;
-  const fontSize = document.getElementById('fontSize').value;
+  // Handle both full and simplified versions
+  const styleEl = document.querySelector('input[name="treeStyle"]:checked');
+  const showPosteriorEl = document.getElementById('showPosterior');
+  const showAgesEl = document.getElementById('showAges');
+  const fontSizeEl = document.getElementById('fontSize');
   const visual = document.getElementById('figtreeVisual');
   const styleInfo = document.getElementById('figStyleInfo');
   
+  // Use default values if elements don't exist
+  const style = styleEl ? styleEl.value : 'rectangular';
+  const showPosterior = showPosteriorEl ? showPosteriorEl.checked : true;
+  const showAges = showAgesEl ? showAgesEl.checked : false;
+  const fontSize = fontSizeEl ? fontSizeEl.value : '12';
+  
+  if (!visual) {
+    alert('Error: No se encontró el contenedor de visualización');
+    return;
+  }
+  
   const styleNames = { rectangular: 'Rectangular', radial: 'Radial/Circular', unrooted: 'Unrooted' };
-  styleInfo.textContent = styleNames[style];
+  if (styleInfo) styleInfo.textContent = styleNames[style];
   
   visual.style.fontSize = fontSize + 'px';
   
-  if (style === 'rectangular') {
-    visual.innerHTML = `<div class="ascii-tree rect">${`
-                    ┌─ Taxon1 (0.95)
+  const treeData = showPosterior ? 
+    `                    ┌─ Taxon1 (0.95)
                ┌────┤
           ┌────┤    └─ Taxon2 (0.87)
           │    │
      ─────┤    └───── Taxon3 (0.91)
           │
-          └────────────── Outgroup (0.99)
-            `}</div>`;
+          └────────────── Outgroup (0.99)` :
+    `                    ┌─ Taxon1
+               ┌────┤
+          ┌────┤    └─ Taxon2
+          │    │
+     ─────┤    └───── Taxon3
+          │
+          └────────────── Outgroup`;
+  
+  if (style === 'rectangular') {
+    visual.innerHTML = `<div class="ascii-tree rect">${treeData}</div>`;
   } else if (style === 'radial') {
     visual.innerHTML = `<div class="ascii-tree radial">${`
         ┌─ Taxon1
@@ -3937,8 +3957,8 @@ window.renderFigTree = function() {
    Taxon2         Taxon3
         \\          /
          ──────────
-               │
-            Outgroup
+              │
+           Outgroup
             `}</div>`;
   }
 };
