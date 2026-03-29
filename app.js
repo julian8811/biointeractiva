@@ -3525,6 +3525,7 @@ Identidad promedio: ~${Math.floor(70 + Math.random() * 25)}%`;
 };
 
 window.runIQTree = function() {
+  alert('runIQTree called!');
   // Handle both full and simplified versions
   const inputEl = document.getElementById('iqtreeInput');
   const modelEl = document.getElementById('iqtreeModel');
@@ -3679,7 +3680,7 @@ ATGCGTACGATGC
 >SpeciesB
 ATGCGTACGATGT</textarea>
         </div>
-        <button class="emulator-btn" data-action="runIQTree">▶ Ejecutar</button>
+        <button class="emulator-btn" data-action="runIQTree" onclick="console.log('IQ-TREE clicked'); window.runIQTree()">▶ Ejecutar</button>
         <div class="emulator-output"><pre id="iqtreeOutput">Resultado...</pre></div>
       </div>
       
@@ -5808,11 +5809,17 @@ document.addEventListener('DOMContentLoaded', function() {
       e.preventDefault();
       e.stopPropagation();
       const action = btn.dataset.action;
-      console.log('Emulator button clicked:', action); // Debug
-      if (typeof window[action] === 'function') {
-        window[action]();
-      } else {
-        console.error('Function not found:', action);
+      console.log('Emulator button clicked:', action);
+      try {
+        if (typeof window[action] === 'function') {
+          window[action]();
+        } else {
+          console.error('Function not found:', action);
+          alert('Error: Función "' + action + '" no encontrada');
+        }
+      } catch (err) {
+        console.error('Error executing:', err);
+        alert('Error al ejecutar ' + action + ': ' + err.message);
       }
     }
   });
