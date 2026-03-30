@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 160">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#0f172a"/>
+      <stop offset="100%" style="stop-color:#020617"/>
+    </linearGradient>
+  </defs>
+  <rect width="600" height="160" fill="url(#bg)"/>
+  <rect x="10" y="10" width="580" height="25" rx="8" fill="#1e293b"/>
+  <circle cx="30" cy="22" r="6" fill="#ef4444"/>
+  <circle cx="50" cy="22" r="6" fill="#f59e0b"/>
+  <circle cx="70" cy="22" r="6" fill="#22c55e"/>
+  <text x="100" y="27" fill="#94a3b8" font-family="Consolas,monospace" font-size="12">less</text>
+  <text x="20" y="60" fill="#22d3ee" font-family="Consolas,monospace" font-size="14">$ less archivo.txt</text>
+  <text x="20" y="90" fill="#34d399" font-family="Consolas,monospace" font-size="12"># Visor interactivo de archivos grandes</text>
+  <text x="20" y="115" fill="#94a3b8" font-family="Consolas,monospace" font-size="12"># Navega: flechas ↑↓ | Busca: /palabra | Sale: q</text>
+  <text x="20" y="140" fill="#a78bfa" font-family="Consolas,monospace" font-size="12">Líneas 1-100 de 50000 (20%)</text>
+</svg>
