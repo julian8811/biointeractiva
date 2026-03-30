@@ -27,6 +27,12 @@ export const metadata: Metadata = {
   },
 };
 
+// Support both prefixed and non-prefixed Clerk keys
+const publishableKey = 
+  process.env.NEXT_PUBLIC_biointeractiva_CLERK_PUBLISHABLE_KEY || 
+  process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY || 
+  "";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -34,6 +40,7 @@ export default function RootLayout({
 }>) {
   return (
     <ClerkProvider
+      publishableKey={publishableKey}
       signInUrl="/sign-in"
       signUpUrl="/sign-up"
     >

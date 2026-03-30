@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { UserButton, Show, SignInButton, SignUpButton, useAuth } from "@clerk/nextjs";
+import { SignInButton, SignUpButton, useAuth } from "@clerk/nextjs";
 import { useProgress } from "@/hooks/useProgress";
 
 const modules = [
@@ -97,12 +97,12 @@ export default function Home() {
               </p>
             </div>
             <div className="hero__buttons">
-              <SignInButton mode="modal">
-                <button className="btn-primary">Iniciar Sesión</button>
-              </SignInButton>
-              <SignUpButton mode="modal">
-                <button className="btn-secondary">Registrarse</button>
-              </SignUpButton>
+              <a href="/sign-in" className="btn-primary">
+                Iniciar Sesión
+              </a>
+              <a href="/sign-up" className="btn-secondary">
+                Registrarse
+              </a>
             </div>
           </div>
         </div>
